@@ -112,6 +112,11 @@ const navItems: NavItem[] = [
 export default function BottomNav() {
   const pathname = usePathname();
 
+  // Hide BottomNav on admin and login pages
+  if (pathname.startsWith('/admin') || pathname.startsWith('/login')) {
+    return null;
+  }
+
   return (
     <nav className="fixed bottom-0 left-0 z-50 w-full border-t border-tharika-peacock-blue/10 bg-white shadow-md">
       <div className="mx-auto flex max-w-md items-center justify-around py-3">
