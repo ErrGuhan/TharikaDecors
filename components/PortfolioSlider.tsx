@@ -2,8 +2,9 @@
 
 import React, { useState, useCallback, useEffect } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { motion, AnimatePresence, PanInfo } from 'framer-motion';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Home, MessageCircle } from 'lucide-react';
 import { PortfolioImage, weddingImages } from '@/lib/data';
 
 export interface PortfolioSlide {
@@ -16,6 +17,9 @@ export interface PortfolioSlide {
 }
 
 const SWIPE_CONFIDENCE_THRESHOLD = 50;
+
+const WHATSAPP_URL =
+  'https://wa.me/916384947914?text=Hello%20Tharika%20Decors!%20I%20was%20looking%20at%20your%20portfolio%20and%20would%20like%20to%20inquire%20about%20booking%20event%20decor';
 
 interface PortfolioSliderProps {
   slides?: (PortfolioSlide | PortfolioImage)[];
@@ -95,6 +99,36 @@ export default function PortfolioSlider({
 
   return (
     <div className="relative h-screen w-full overflow-hidden bg-black select-none">
+      {/* ── Top Header Brand Watermark ── */}
+      <div className="absolute top-5 left-5 z-40 flex items-center gap-3 pointer-events-auto">
+        <Link
+          href="/"
+          className="relative w-28 sm:w-36 h-12 block drop-shadow-lg hover:scale-105 transition-transform"
+        >
+          <Image
+            src="/logo.png"
+            alt="Tharika Decors Logo"
+            fill
+            className="object-contain"
+            priority
+            unoptimized
+          />
+        </Link>
+      </div>
+
+      {/* Top Right Quick Action */}
+      <div className="absolute top-5 right-5 z-40 flex items-center gap-2 pointer-events-auto">
+        <a
+          href={WHATSAPP_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-tharika-gold-gradient text-tharika-blue font-bold text-xs shadow-lg hover:scale-105 transition-transform"
+        >
+          <MessageCircle className="w-3.5 h-3.5 fill-tharika-blue text-transparent" />
+          <span>Inquire</span>
+        </a>
+      </div>
+
       {/* ── 1. Full Screen Image Container with Gestures ── */}
       <motion.div
         className="relative h-full w-full cursor-grab active:cursor-grabbing"
@@ -133,7 +167,7 @@ export default function PortfolioSlider({
         type="button"
         onClick={handlePrev}
         aria-label="Previous image"
-        className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 z-30 flex h-12 w-12 md:h-14 md:w-14 items-center justify-center rounded-full bg-white/20 text-white backdrop-blur-md shadow-lg transition-all duration-200 hover:bg-white/30 hover:scale-110 active:scale-95 focus:outline-none focus:ring-2 focus:ring-white/50"
+        className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 z-30 flex h-12 w-12 md:h-14 md:w-14 items-center justify-center rounded-full bg-white/20 text-white backdrop-blur-md shadow-lg transition-all duration-200 hover:bg-white/30 hover:scale-110 active:scale-95 focus:outline-none focus:ring-2 focus:ring-white/50 cursor-pointer"
       >
         <ChevronLeft className="h-6 w-6 md:h-7 md:w-7" />
       </button>
@@ -143,19 +177,19 @@ export default function PortfolioSlider({
         type="button"
         onClick={handleNext}
         aria-label="Next image"
-        className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 z-30 flex h-12 w-12 md:h-14 md:w-14 items-center justify-center rounded-full bg-white/20 text-white backdrop-blur-md shadow-lg transition-all duration-200 hover:bg-white/30 hover:scale-110 active:scale-95 focus:outline-none focus:ring-2 focus:ring-white/50"
+        className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 z-30 flex h-12 w-12 md:h-14 md:w-14 items-center justify-center rounded-full bg-white/20 text-white backdrop-blur-md shadow-lg transition-all duration-200 hover:bg-white/30 hover:scale-110 active:scale-95 focus:outline-none focus:ring-2 focus:ring-white/50 cursor-pointer"
       >
         <ChevronRight className="h-6 w-6 md:h-7 md:w-7" />
       </button>
 
-      {/* ── 3. Slide Indicators (Optional Luxury Dots) ── */}
+      {/* ── 3. Slide Indicators (Luxury Dots) ── */}
       <div className="absolute top-6 left-1/2 -translate-x-1/2 z-30 flex gap-2">
         {activeSlides.map((_, idx) => (
           <button
             key={idx}
             onClick={() => setPage([idx, idx > currentIndex ? 1 : -1])}
             aria-label={`Go to slide ${idx + 1}`}
-            className={`h-1.5 rounded-full transition-all duration-300 ${
+            className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
               idx === currentIndex
                 ? 'w-8 bg-white'
                 : 'w-2 bg-white/40 hover:bg-white/70'
@@ -165,7 +199,7 @@ export default function PortfolioSlider({
       </div>
 
       {/* ── 4. Bottom Dark Gradient & Title Text Overlay ── */}
-      <div className="absolute bottom-0 left-0 right-0 z-20 bg-gradient-to-t from-black/80 to-transparent pt-24 pb-20 md:pb-14 px-6 md:px-12 pointer-events-none">
+      <div className="absolute bottom-0 left-0 right-0 z-20 bg-gradient-to-t from-black/85 via-black/40 to-transparent pt-28 pb-20 md:pb-14 px-6 md:px-12 pointer-events-none">
         <div className="mx-auto max-w-5xl">
           <AnimatePresence mode="wait">
             <motion.div
@@ -176,7 +210,7 @@ export default function PortfolioSlider({
               transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
             >
               {currentSlide.category && (
-                <span className="inline-block text-xs md:text-sm font-medium tracking-widest uppercase text-white/75 mb-2">
+                <span className="inline-block text-xs md:text-sm font-medium tracking-widest uppercase text-tharika-gold mb-2">
                   {currentSlide.category}
                 </span>
               )}

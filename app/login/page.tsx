@@ -1,9 +1,11 @@
 'use client';
 
 import React, { useState } from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Lock, Mail, Loader2, ShieldCheck } from 'lucide-react';
+import { Lock, Mail, Loader2, ShieldCheck, Home } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 
 export default function LoginPage() {
@@ -14,7 +16,7 @@ export default function LoginPage() {
   const [errorMessage, setErrorMessage] = useState('');
   const [focusedField, setFocusedField] = useState<string | null>(null);
 
-  // Step 2: Authentication Logic
+  // Authentication Logic
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
@@ -37,7 +39,6 @@ export default function LoginPage() {
       }
     } catch (err: any) {
       console.error('Sign in error:', err);
-      // Step 3: Error Handling
       setErrorMessage(
         err.message || 'Invalid login credentials. Please check your email and password.'
       );
@@ -47,35 +48,40 @@ export default function LoginPage() {
   };
 
   return (
-    // Step 1: Layout with min-h-screen & tharika-cream background
     <div className="min-h-screen bg-tharika-cream flex flex-col justify-center items-center py-12 px-4 sm:px-6 lg:px-8">
       {/* Background Subtle Gradient */}
       <div
         className="fixed inset-0 pointer-events-none opacity-40"
         style={{
           backgroundImage:
-            'radial-gradient(circle at 50% 20%, rgba(10, 54, 89, 0.06) 0%, transparent 65%)',
+            'radial-gradient(circle at 50% 20%, rgba(10, 54, 89, 0.08) 0%, transparent 70%)',
         }}
         aria-hidden="true"
       />
 
-      {/* Step 1: Minimalist Login Card */}
       <motion.div
-        className="relative z-10 w-full max-w-md bg-white shadow-xl rounded-2xl p-8 border border-tharika-blue/10"
+        className="relative z-10 w-full max-w-md bg-white shadow-xl rounded-3xl p-8 border border-tharika-blue/10"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
       >
-        {/* Card Header with Playfair Display */}
-        <div className="text-center mb-8">
-          <div className="inline-flex p-3 rounded-2xl bg-tharika-blue/10 text-tharika-blue mb-4 shadow-inner">
-            <ShieldCheck className="w-7 h-7" />
-          </div>
-          <h1 className="font-heading text-3xl sm:text-4xl font-normal text-tharika-blue tracking-tight">
-            Admin Portal
+        {/* Official Brand Logo */}
+        <div className="text-center mb-6 flex flex-col items-center">
+          <Link href="/" className="relative w-44 h-20 mb-3 block hover:scale-105 transition-transform duration-300">
+            <Image
+              src="/logo.png"
+              alt="Tharika Decors & Events"
+              fill
+              className="object-contain"
+              priority
+              unoptimized
+            />
+          </Link>
+          <h1 className="font-heading text-2xl font-bold text-tharika-blue tracking-tight">
+            Admin Studio Portal
           </h1>
-          <p className="text-xs text-gray-500 mt-2">
-            Sign in to manage Tharika Decors portfolio and bookings.
+          <p className="text-xs text-gray-500 mt-1">
+            Sign in to manage Tharika Decors showcases &amp; categories.
           </p>
         </div>
 
@@ -150,12 +156,12 @@ export default function LoginPage() {
                   <span>Authenticating...</span>
                 </>
               ) : (
-                <span>Sign In</span>
+                <span>Sign In to Studio</span>
               )}
             </motion.button>
           </div>
 
-          {/* Step 3: Subtle Error Message in red below the form */}
+          {/* Error Message in red below the form */}
           <AnimatePresence>
             {errorMessage && (
               <motion.div
@@ -164,12 +170,20 @@ export default function LoginPage() {
                 exit={{ opacity: 0, y: -6 }}
                 className="pt-2 text-center"
               >
-                <p className="text-xs text-red-600 font-medium">
-                  {errorMessage}
-                </p>
+                <p className="text-xs text-red-600 font-medium">{errorMessage}</p>
               </motion.div>
             )}
           </AnimatePresence>
+
+          <div className="text-center pt-2">
+            <Link
+              href="/"
+              className="inline-flex items-center gap-1 text-xs text-gray-500 hover:text-tharika-blue transition-colors"
+            >
+              <Home className="w-3 h-3" />
+              <span>Back to Website</span>
+            </Link>
+          </div>
         </form>
       </motion.div>
     </div>

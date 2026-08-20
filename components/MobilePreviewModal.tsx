@@ -31,7 +31,7 @@ export default function MobilePreviewModal({
         <div className="flex items-center justify-between w-full max-w-[375px] mb-3 text-white">
           <div className="flex items-center gap-2 text-xs text-gray-300 font-medium">
             <Smartphone className="w-4 h-4 text-tharika-gold" />
-            <span>Live Portfolio Mobile Preview</span>
+            <span>Live Mobile Slider Preview</span>
           </div>
           <button
             type="button"
@@ -87,6 +87,20 @@ export default function MobilePreviewModal({
 
             {/* Gradient Overlays (exact match to public PortfolioSlider) */}
             <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/90 pointer-events-none" />
+
+            {/* Top Logo Watermark */}
+            <div className="absolute top-14 left-6 z-20 pointer-events-none">
+              <div className="relative w-28 h-10 drop-shadow-lg">
+                <Image
+                  src="/logo.png"
+                  alt="Tharika Decors"
+                  fill
+                  className="object-contain"
+                  priority
+                  unoptimized
+                />
+              </div>
+            </div>
 
             {/* Content Overlay */}
             <div className="absolute inset-x-0 bottom-12 p-6 z-10 flex flex-col justify-end text-white pointer-events-none">

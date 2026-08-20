@@ -1,6 +1,7 @@
 import './globals.css';
 import type { Metadata } from 'next';
 import { Inter, Playfair_Display } from 'next/font/google';
+import Header from '@/components/Header';
 import BottomNav from '@/components/BottomNav';
 
 const inter = Inter({
@@ -16,8 +17,17 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: 'Tharika Decors',
-  description: 'Tharika Decors — Bespoke and luxurious event styling & decor.',
+  title: 'Tharika Decors & Events | Luxury Event Styling & Decor',
+  description:
+    'Bespoke wedding stages, mandaps, baby shower themes, and luxury event styling curated with royal peacock elegance by Tharika Decors.',
+  icons: {
+    icon: [
+      { url: '/logo.png', sizes: 'any' },
+      { url: '/favicon.png', type: 'image/png' },
+    ],
+    shortcut: '/favicon.ico',
+    apple: '/logo.png',
+  },
 };
 
 export default function RootLayout({
@@ -27,9 +37,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
+      <head>
+        <link rel="icon" href="/logo.png" />
+        <link rel="apple-touch-icon" href="/logo.png" />
+      </head>
       <body
-        className={`${inter.className} bg-[#FAFAFA] text-gray-900 antialiased min-h-screen flex flex-col`}
+        className={`${inter.className} bg-tharika-cream text-gray-900 antialiased min-h-screen flex flex-col`}
       >
+        <Header />
         <main className="flex-1 w-full pb-16 md:pb-0">{children}</main>
         <BottomNav />
       </body>

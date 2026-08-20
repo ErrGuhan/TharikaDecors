@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   LayoutDashboard,
@@ -50,19 +51,21 @@ export default function AdminDashboardShell({
       {/* ── 1. Left Column: Modern Minimalist Fixed/Sticky Sidebar ── */}
       <aside className="w-full md:w-64 bg-white border-r border-gray-200/80 flex flex-col justify-between flex-shrink-0 z-30">
         <div>
-          {/* Brand Header */}
-          <div className="p-6 border-b border-gray-100 flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-tharika-blue flex items-center justify-center text-white shadow-sm">
-              <Sparkles className="w-5 h-5 text-tharika-gold" />
-            </div>
-            <div>
-              <h1 className="font-heading text-lg font-bold text-tharika-blue tracking-tight leading-none">
-                Tharika Decors
-              </h1>
-              <span className="text-[10px] font-semibold tracking-wider text-tharika-gold uppercase">
-                CMS Studio
-              </span>
-            </div>
+          {/* Brand Header with Official Logo */}
+          <div className="p-6 border-b border-gray-100 flex flex-col items-center text-center">
+            <Link href="/" className="relative w-40 h-16 mb-2 block hover:scale-105 transition-transform">
+              <Image
+                src="/logo.png"
+                alt="Tharika Decors & Events"
+                fill
+                className="object-contain"
+                priority
+                unoptimized
+              />
+            </Link>
+            <span className="text-[10px] font-bold tracking-widest text-tharika-gold uppercase px-2.5 py-0.5 rounded-full bg-tharika-blue/5 border border-tharika-blue/10">
+              CMS Studio Portal
+            </span>
           </div>
 
           {/* Navigation Links */}
@@ -96,9 +99,13 @@ export default function AdminDashboardShell({
                 <Tag className="w-4 h-4" />
                 <span>Manage Categories</span>
               </div>
-              <span className={`px-2 py-0.5 rounded-full text-[10px] ${
-                activeTab === 'categories' ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-600'
-              }`}>
+              <span
+                className={`px-2 py-0.5 rounded-full text-[10px] ${
+                  activeTab === 'categories'
+                    ? 'bg-white/20 text-white'
+                    : 'bg-gray-100 text-gray-600'
+                }`}
+              >
                 {initialCategories.length}
               </span>
             </button>
@@ -157,9 +164,7 @@ export default function AdminDashboardShell({
               {userEmail.charAt(0).toUpperCase()}
             </div>
             <div className="overflow-hidden">
-              <p className="text-xs font-semibold text-gray-900 truncate">
-                {userEmail}
-              </p>
+              <p className="text-xs font-semibold text-gray-900 truncate">{userEmail}</p>
               <p className="text-[10px] text-emerald-600 font-medium flex items-center gap-1">
                 <ShieldCheck className="w-3 h-3" />
                 <span>Admin Verified</span>
@@ -206,18 +211,15 @@ export default function AdminDashboardShell({
           </div>
         </div>
 
-        {/* Tab 1: Dashboard (Upload Flow & Data Table) */}
+        {/* Tab 1: Dashboard */}
         {activeTab === 'dashboard' && (
           <div className="space-y-8">
-            {/* 2. The Upload Flow (Clean Card-based Form with ImageCropper & Live Mobile Preview) */}
             <UploadForm categories={initialCategories} />
-
-            {/* 4. Clean Tailwind CSS Data Table with Full CRUD & 9:16 Previews */}
             <AdminRecordsList initialItems={initialItems} />
           </div>
         )}
 
-        {/* Tab 2: Manage Categories */}
+        {/* Tab 2: Categories */}
         {activeTab === 'categories' && (
           <CategoryManager initialCategories={initialCategories} />
         )}
@@ -245,9 +247,7 @@ export default function AdminDashboardShell({
                   <CheckCircle2 className="w-4 h-4 text-emerald-600" />
                   <span>PostgreSQL Database</span>
                 </div>
-                <p className="text-xs text-gray-500">
-                  Connected via Prisma ORM on Supabase pooler.
-                </p>
+                <p className="text-xs text-gray-500">Connected via Prisma ORM on Supabase pooler.</p>
               </div>
 
               <div className="p-4 rounded-xl border border-gray-200 bg-gray-50/50">
