@@ -1,47 +1,50 @@
 import { Metadata } from 'next';
 import prisma from '@/lib/prisma';
 import PortfolioSlider from '@/components/PortfolioSlider';
-import { babyShowerImages as fallbackBabyShowerImages } from '@/lib/data';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export const metadata: Metadata = {
-  title: 'Baby Showers Portfolio | Tharika Decors',
+  title: 'Baby Showers Portfolio | Tharika Decors & Events',
   description:
-    'Discover ethereal baby shower celebrations, pastel balloon clouds, floral backdrops, and dessert tables by Tharika Decors.',
+    'Enchanting baby shower themes, cradle ceremonies, balloon garlands, and bespoke milestone styling by Tharika Decors.',
 };
 
 export default async function BabyShowersPage() {
-  let images: { id: string | number; title: string; url: string; category?: string }[] = [];
+  let items: { id: string; title: string; imageUrl: string; caption?: string | null; category?: string }[] = [];
 
   try {
-    // Fetch dynamic baby shower showcases from PostgreSQL database via Prisma relation
-    const dbItems = await prisma.portfolioItem.findMany({
+    // Strictly fetch dynamic data from PostgreSQL database via Prisma
+    const portfolioItems = await prisma.portfolioItem.findMany({
       where: {
-        category: {
-          slug: { in: ['baby-shower', 'baby-showers'] },
-        },
+        OR: [
+          { category: { slug: { in: ['baby-shower', 'baby-showers'] } } },
+          { category: { name: { contains: 'baby', mode: 'insensitive' } } },
+        ],
       },
       include: { category: true },
-      orderBy: { createdAt: 'desc' },
+      orderBy: [{ isCover: 'desc' }, { createdAt: 'desc' }],
     });
 
-    images = dbItems.map((item) => ({
+    items = portfolioItems.map((item) => ({
       id: item.id,
       title: item.title,
-      url: item.imageUrl,
+      imageUrl: item.imageUrl,
+      caption: item.caption,
       category: item.category?.name || 'Baby Shower',
     }));
   } catch (error) {
-    console.warn('Database query failed in baby-showers page (using fallback):', error);
+    console.error('Error fetching baby shower portfolio items from database:', error);
   }
-
-  const displayImages = images.length > 0 ? images : fallbackBabyShowerImages;
 
   return (
     <main className="w-full min-h-screen bg-black">
-      <PortfolioSlider slides={displayImages} />
+      <PortfolioSlider
+        items={items}
+        categoryTitle="Baby Shower Decor"
+        emptyMessage="New whimsical baby shower and cradle ceremony decor showcases will be published soon."
+      />
     </main>
   );
 }

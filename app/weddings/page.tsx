@@ -1,47 +1,50 @@
 import { Metadata } from 'next';
 import prisma from '@/lib/prisma';
 import PortfolioSlider from '@/components/PortfolioSlider';
-import { weddingImages as fallbackWeddingImages } from '@/lib/data';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export const metadata: Metadata = {
-  title: 'Weddings Portfolio | Tharika Decors',
+  title: 'Weddings Portfolio | Tharika Decors & Events',
   description:
-    'Explore bespoke wedding stages, mandaps, floral arches, and luxury banquet decor curated by Tharika Decors.',
+    'Explore bespoke wedding stages, royal mandaps, floral arches, and luxury banquet decor curated by Tharika Decors.',
 };
 
 export default async function WeddingsPage() {
-  let images: { id: string | number; title: string; url: string; category?: string }[] = [];
+  let items: { id: string; title: string; imageUrl: string; caption?: string | null; category?: string }[] = [];
 
   try {
-    // Fetch dynamic wedding showcases from PostgreSQL database via Prisma relation
-    const dbItems = await prisma.portfolioItem.findMany({
+    // Strictly fetch dynamic data from PostgreSQL database via Prisma
+    const portfolioItems = await prisma.portfolioItem.findMany({
       where: {
-        category: {
-          slug: { in: ['wedding', 'weddings'] },
-        },
+        OR: [
+          { category: { slug: { in: ['wedding', 'weddings'] } } },
+          { category: { name: { contains: 'wedding', mode: 'insensitive' } } },
+        ],
       },
       include: { category: true },
-      orderBy: { createdAt: 'desc' },
+      orderBy: [{ isCover: 'desc' }, { createdAt: 'desc' }],
     });
 
-    images = dbItems.map((item) => ({
+    items = portfolioItems.map((item) => ({
       id: item.id,
       title: item.title,
-      url: item.imageUrl,
+      imageUrl: item.imageUrl,
+      caption: item.caption,
       category: item.category?.name || 'Wedding',
     }));
   } catch (error) {
-    console.warn('Database query failed in weddings page (using fallback):', error);
+    console.error('Error fetching wedding portfolio items from database:', error);
   }
-
-  const displayImages = images.length > 0 ? images : fallbackWeddingImages;
 
   return (
     <main className="w-full min-h-screen bg-black">
-      <PortfolioSlider slides={displayImages} />
+      <PortfolioSlider
+        items={items}
+        categoryTitle="Wedding Decor"
+        emptyMessage="New wedding mandap and floral stage showcases will be available soon."
+      />
     </main>
   );
 }
