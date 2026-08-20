@@ -48,7 +48,7 @@ export default function HomeHeroAndCategories({ categories }: HomeHeroAndCategor
 
         {/* Luxurious Dark Overlay */}
         <div
-          className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/50 to-black/80"
+          className="absolute inset-0 bg-gradient-to-b from-black/65 via-black/55 to-black/85"
           aria-hidden="true"
         />
 
@@ -74,7 +74,7 @@ export default function HomeHeroAndCategories({ categories }: HomeHeroAndCategor
 
           {/* H1 Heading in Playfair Display */}
           <motion.h1
-            className="font-heading text-3xl sm:text-5xl md:text-6xl font-normal leading-tight tracking-tight text-white max-w-3xl drop-shadow-md"
+            className="font-heading text-3xl sm:text-5xl md:text-6xl font-normal leading-tight tracking-tight text-white max-w-3xl drop-shadow-lg"
             variants={fadeUpVariants}
             custom={0.2}
             initial="hidden"
@@ -85,7 +85,7 @@ export default function HomeHeroAndCategories({ categories }: HomeHeroAndCategor
 
           {/* Subtitle in Inter */}
           <motion.p
-            className="mt-4 text-sm sm:text-base md:text-lg font-light tracking-wide text-white/90 max-w-xl leading-relaxed"
+            className="mt-4 text-sm sm:text-base md:text-lg font-light tracking-wide text-white/95 max-w-xl leading-relaxed drop-shadow"
             variants={fadeUpVariants}
             custom={0.3}
             initial="hidden"
@@ -106,7 +106,7 @@ export default function HomeHeroAndCategories({ categories }: HomeHeroAndCategor
               href={WHATSAPP_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2.5 px-8 py-4 text-sm sm:text-base font-bold tracking-wide text-[#0A3659] rounded-full bg-tharika-gold-gradient shadow-lg shadow-black/20 hover:shadow-2xl transition-all cursor-pointer"
+              className="inline-flex items-center justify-center gap-2.5 px-8 py-4 text-sm sm:text-base font-bold tracking-wide text-[#0A3659] rounded-full bg-tharika-gold-gradient shadow-lg shadow-black/25 hover:shadow-2xl transition-all cursor-pointer"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.98 }}
             >
@@ -116,7 +116,7 @@ export default function HomeHeroAndCategories({ categories }: HomeHeroAndCategor
 
             <Link
               href="/portfolio"
-              className="inline-flex items-center justify-center gap-2 px-7 py-4 text-sm sm:text-base font-semibold tracking-wide text-white rounded-full bg-white/15 hover:bg-white/25 backdrop-blur-md border border-white/25 transition-all shadow-md"
+              className="inline-flex items-center justify-center gap-2 px-7 py-4 text-sm sm:text-base font-semibold tracking-wide text-white rounded-full bg-white/20 hover:bg-white/30 backdrop-blur-md border border-white/30 transition-all shadow-md"
             >
               <Sparkles className="w-4 h-4 text-tharika-gold" />
               <span>Explore Portfolio</span>
@@ -125,26 +125,35 @@ export default function HomeHeroAndCategories({ categories }: HomeHeroAndCategor
         </div>
       </section>
 
-      {/* ── 3. The Category Grid ── */}
-      <section className="py-24 px-6 sm:px-8 lg:px-12">
+      {/* ── 3. The Category Grid (High-Contrast Theme-Aligned Typography) ── */}
+      <section className="py-20 sm:py-28 px-6 sm:px-8 lg:px-12 bg-tharika-cream">
         <div className="mx-auto max-w-6xl">
           {/* Section Header */}
           <motion.div
-            className="mb-14 text-center"
+            className="mb-14 text-center flex flex-col items-center"
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.4 }}
             transition={{ duration: 0.7, ease: EASE }}
           >
-            <span className="text-xs sm:text-sm font-semibold uppercase tracking-widest text-[#0D593F]">
-              Curated Services
-            </span>
-            <h2 className="mt-3 font-heading text-3xl sm:text-4xl text-[#0A3659] tracking-tight">
+            {/* Tagline Badge in Deep Royal Navy & Radiant Gold */}
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-tharika-blue text-tharika-gold text-xs font-bold uppercase tracking-widest shadow-xs mb-4 border border-tharika-gold/30">
+              <Sparkles className="w-3.5 h-3.5 text-tharika-gold" />
+              <span>Curated Services</span>
+            </div>
+
+            {/* Main Section Heading */}
+            <h2 className="font-heading text-3xl sm:text-5xl text-tharika-blue font-bold tracking-tight">
               Celebrations We Curate
             </h2>
-            <p className="mx-auto mt-4 max-w-xl text-sm sm:text-base text-[#0A3659]/70">
-              Thoughtfully conceived designs crafted to transform every milestone into an enduring memory.
+
+            {/* Subtitle Description with High Contrast */}
+            <p className="mt-3.5 max-w-xl text-sm sm:text-base text-gray-700 font-medium leading-relaxed">
+              Thoughtfully conceived designs crafted to transform every milestone into an enduring royal memory.
             </p>
+
+            {/* Subtle Gold Accent Divider */}
+            <div className="w-16 h-1 rounded-full bg-tharika-gold-gradient mt-4 opacity-90" />
           </motion.div>
 
           {/* Grid of Dynamic Category Cards */}
@@ -163,7 +172,7 @@ export default function HomeHeroAndCategories({ categories }: HomeHeroAndCategor
               >
                 <Link
                   href={cat.href}
-                  className="group relative block aspect-square overflow-hidden rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer"
+                  className="group relative block aspect-square overflow-hidden rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer border border-tharika-blue/10"
                 >
                   {/* Image */}
                   {cat.imageUrl ? (
@@ -178,21 +187,21 @@ export default function HomeHeroAndCategories({ categories }: HomeHeroAndCategor
                     </div>
                   )}
 
-                  {/* Dark Gradient Overlay at bottom */}
+                  {/* Dark Gradient Overlay at bottom for maximum legibility */}
                   <div
-                    className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-transparent"
+                    className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"
                     aria-hidden="true"
                   />
 
-                  {/* Elegant White Card Title */}
+                  {/* High-Contrast Card Content */}
                   <div className="absolute inset-0 flex items-end p-8">
                     <div>
-                      <h3 className="font-heading text-2xl sm:text-3xl font-medium text-white tracking-wide">
+                      <h3 className="font-heading text-2xl sm:text-3xl font-semibold text-white tracking-wide drop-shadow-md">
                         {cat.title}
                       </h3>
-                      <p className="mt-1 text-xs uppercase tracking-widest text-white/75 group-hover:text-white transition-colors flex items-center gap-1">
+                      <p className="mt-2 text-xs font-bold uppercase tracking-widest text-tharika-gold group-hover:text-white transition-colors flex items-center gap-1.5 drop-shadow">
                         <span>Explore Decor</span>
-                        <ArrowRight className="w-3.5 h-3.5" />
+                        <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
                       </p>
                     </div>
                   </div>
