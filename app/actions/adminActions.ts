@@ -14,7 +14,7 @@ export interface ActionResponse {
   error?: string;
 }
 
-// Helper to check admin authorization
+// Helper to verify admin authorization securely
 async function verifyAdminAuth(): Promise<boolean> {
   if (process.env.NODE_ENV === 'development') return true;
 
@@ -32,16 +32,18 @@ async function verifyAdminAuth(): Promise<boolean> {
 
 function revalidateAllRoutes() {
   revalidatePath('/');
+  revalidatePath('/admin');
   revalidatePath('/weddings');
   revalidatePath('/baby-showers');
   revalidatePath('/portfolio');
-  revalidatePath('/admin');
 }
 
 /**
- * 1. Upload Portfolio Item
+ * 1. createPortfolioItem(formData: FormData)
+ * Reads title, caption, category, isCover (boolean), uploads the image file to Supabase storage portfolio-images,
+ * and creates the record in PostgreSQL.
  */
-export async function uploadPortfolioItem(formData: FormData): Promise<ActionResponse> {
+export async function createPortfolioItem(formData: FormData): Promise<ActionResponse> {
   try {
     const isAuthorized = await verifyAdminAuth();
     if (!isAuthorized) {
@@ -55,7 +57,7 @@ export async function uploadPortfolioItem(formData: FormData): Promise<ActionRes
     const title = (formData.get('title') as string | null)?.trim();
     const category = (formData.get('category') as string | null)?.trim();
     const caption = (formData.get('caption') as string | null)?.trim() || '';
-    const isCover = formData.get('isCover') === 'true';
+    const isCover = formData.get('isCover') === 'true' || formData.get('isCover') === 'on';
 
     if (!file || !(file instanceof File) || file.size === 0) {
       return { success: false, error: 'A valid image file is required.' };
@@ -69,7 +71,7 @@ export async function uploadPortfolioItem(formData: FormData): Promise<ActionRes
       return { success: false, error: 'Category must be wedding, baby-shower, or ear-piercing.' };
     }
 
-    // Upload to Supabase Storage
+    // Upload to Supabase Storage bucket 'portfolio-images'
     const supabase = getServiceSupabase();
     const fileExt = file.name.split('.').pop() || 'jpg';
     const sanitizedTitle = title.replace(/[^a-zA-Z0-9_-]/g, '_').toLowerCase();
@@ -90,7 +92,7 @@ export async function uploadPortfolioItem(formData: FormData): Promise<ActionRes
     let imageUrl = '';
 
     if (uploadError) {
-      console.warn('Storage upload note:', uploadError.message);
+      console.warn('Supabase storage upload note:', uploadError.message);
       imageUrl = `https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1200&q=80`;
     } else {
       const { data: publicUrlData } = supabase.storage
@@ -99,33 +101,46 @@ export async function uploadPortfolioItem(formData: FormData): Promise<ActionRes
       imageUrl = publicUrlData.publicUrl;
     }
 
-    // If isCover is true, reset other covers in this category
+    // If isCover is true, reset other covers in this category and create item in transaction
+    let newItem;
     if (isCover) {
-      await prisma.portfolioItem.updateMany({
-        where: { category },
-        data: { isCover: false },
+      const [_, created] = await prisma.$transaction([
+        prisma.portfolioItem.updateMany({
+          where: { category },
+          data: { isCover: false },
+        }),
+        prisma.portfolioItem.create({
+          data: {
+            title,
+            caption,
+            category,
+            imageUrl,
+            isCover: true,
+          },
+        }),
+      ]);
+      newItem = created;
+    } else {
+      newItem = await prisma.portfolioItem.create({
+        data: {
+          title,
+          caption,
+          category,
+          imageUrl,
+          isCover: false,
+        },
       });
     }
-
-    const newItem = await prisma.portfolioItem.create({
-      data: {
-        title,
-        caption,
-        category,
-        imageUrl,
-        isCover,
-      },
-    });
 
     revalidateAllRoutes();
 
     return {
       success: true,
-      message: 'Portfolio item uploaded and saved successfully!',
+      message: 'Portfolio item created and saved successfully!',
       item: newItem,
     };
   } catch (error: any) {
-    console.error('Error in uploadPortfolioItem action:', error);
+    console.error('Error in createPortfolioItem:', error);
     return {
       success: false,
       error: error.message || 'An unexpected error occurred while saving.',
@@ -133,8 +148,12 @@ export async function uploadPortfolioItem(formData: FormData): Promise<ActionRes
   }
 }
 
+// Alias for backwards compatibility
+export const uploadPortfolioItem = createPortfolioItem;
+
 /**
- * 2. Update Portfolio Item (Title, Caption, Category, or replace Photo)
+ * 2. updatePortfolioItem(id: string, formData: FormData)
+ * Updates title, caption, category, and isCover. If a new image file is provided, uploads it and replaces imageUrl.
  */
 export async function updatePortfolioItem(
   id: string,
@@ -156,6 +175,8 @@ export async function updatePortfolioItem(
     const title = (formData.get('title') as string | null)?.trim();
     const category = (formData.get('category') as string | null)?.trim();
     const caption = (formData.get('caption') as string | null)?.trim() || '';
+    const isCoverRaw = formData.get('isCover');
+    const isCover = isCoverRaw !== null ? isCoverRaw === 'true' || isCoverRaw === 'on' : undefined;
     const file = formData.get('file') as File | null;
 
     if (!title) {
@@ -172,7 +193,11 @@ export async function updatePortfolioItem(
       caption,
     };
 
-    // If a new file is uploaded, replace the image
+    if (isCover !== undefined) {
+      updateData.isCover = isCover;
+    }
+
+    // If new file is uploaded, upload to Supabase and replace imageUrl
     if (file && file instanceof File && file.size > 0) {
       const supabase = getServiceSupabase();
       const fileExt = file.name.split('.').pop() || 'jpg';
@@ -199,10 +224,25 @@ export async function updatePortfolioItem(
       }
     }
 
-    const updatedItem = await prisma.portfolioItem.update({
-      where: { id },
-      data: updateData,
-    });
+    let updatedItem;
+    if (isCover === true) {
+      const [_, item] = await prisma.$transaction([
+        prisma.portfolioItem.updateMany({
+          where: { category, NOT: { id } },
+          data: { isCover: false },
+        }),
+        prisma.portfolioItem.update({
+          where: { id },
+          data: updateData,
+        }),
+      ]);
+      updatedItem = item;
+    } else {
+      updatedItem = await prisma.portfolioItem.update({
+        where: { id },
+        data: updateData,
+      });
+    }
 
     revalidateAllRoutes();
 
@@ -221,7 +261,8 @@ export async function updatePortfolioItem(
 }
 
 /**
- * 3. Delete Portfolio Item
+ * 3. deletePortfolioItem(id: string)
+ * Deletes the record from Prisma by ID.
  */
 export async function deletePortfolioItem(id: string): Promise<ActionResponse> {
   try {
@@ -237,7 +278,6 @@ export async function deletePortfolioItem(id: string): Promise<ActionResponse> {
       return { success: false, error: 'Item ID is required.' };
     }
 
-    // Delete record from Prisma
     const deletedItem = await prisma.portfolioItem.delete({
       where: { id },
     });
@@ -259,7 +299,8 @@ export async function deletePortfolioItem(id: string): Promise<ActionResponse> {
 }
 
 /**
- * 4. Set Item as Category Cover Photo
+ * 4. setCoverPhoto(id: string, category: string)
+ * In a transaction, sets isCover: false for all items matching category, then sets isCover: true for the chosen id.
  */
 export async function setCoverPhoto(
   id: string,
@@ -278,17 +319,19 @@ export async function setCoverPhoto(
       return { success: false, error: 'Item ID and Category are required.' };
     }
 
-    // 1. Reset all items in this category to isCover: false
-    await prisma.portfolioItem.updateMany({
-      where: { category },
-      data: { isCover: false },
-    });
-
-    // 2. Set target item to isCover: true
-    const updatedItem = await prisma.portfolioItem.update({
-      where: { id },
-      data: { isCover: true },
-    });
+    // In a Prisma transaction:
+    // 1. Reset all items matching category to isCover: false
+    // 2. Set chosen id to isCover: true
+    const [_, updatedItem] = await prisma.$transaction([
+      prisma.portfolioItem.updateMany({
+        where: { category },
+        data: { isCover: false },
+      }),
+      prisma.portfolioItem.update({
+        where: { id },
+        data: { isCover: true },
+      }),
+    ]);
 
     revalidateAllRoutes();
 
