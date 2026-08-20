@@ -35,18 +35,29 @@ export default async function AdminDashboardPage() {
     redirect('/login');
   }
 
-  // Fetch existing items from Prisma PostgreSQL
+  // Fetch existing items with category relation from Prisma PostgreSQL
   let existingItems: any[] = [];
+  let availableCategories: any[] = [];
+
   try {
-    const rawItems = await prisma.portfolioItem.findMany({
-      orderBy: { createdAt: 'desc' },
-    });
+    const [rawItems, categories] = await Promise.all([
+      prisma.portfolioItem.findMany({
+        include: { category: true },
+        orderBy: { createdAt: 'desc' },
+      }),
+      prisma.category.findMany({
+        orderBy: { name: 'asc' },
+      }),
+    ]);
+
+    availableCategories = categories;
 
     existingItems = rawItems.map((item) => ({
       id: item.id,
       title: item.title,
       caption: item.caption,
-      category: item.category,
+      category: item.category?.name || item.category?.slug || 'General',
+      categoryId: item.categoryId,
       imageUrl: item.imageUrl,
       isCover: item.isCover,
       createdAt: item.createdAt.toISOString(),

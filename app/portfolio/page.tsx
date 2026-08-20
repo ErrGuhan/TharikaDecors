@@ -16,6 +16,7 @@ export default async function PortfolioPage() {
 
   try {
     const dbItems = await prisma.portfolioItem.findMany({
+      include: { category: true },
       orderBy: { createdAt: 'desc' },
     });
 
@@ -23,7 +24,7 @@ export default async function PortfolioPage() {
       id: item.id,
       title: item.title,
       url: item.imageUrl,
-      category: item.category,
+      category: item.category?.name || 'Showcase',
     }));
   } catch (error) {
     console.warn('Database query fallback in portfolio page:', error);

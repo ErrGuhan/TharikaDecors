@@ -4,14 +4,25 @@ import { getServiceSupabase } from '@/lib/supabase';
 
 // Authorized admin emails check helper
 const AUTHORIZED_ADMIN_EMAILS = (
-  process.env.ADMIN_EMAILS || 'admin@tharikadecor.com,owner@tharikadecor.com'
+  process.env.ADMIN_EMAILS || 'admin@tharikadecor.com,owner@tharikadecor.com,admin@tharikadecors.com'
 )
   .split(',')
   .map((e) => e.trim().toLowerCase());
 
+function slugify(text: string): string {
+  return text
+    .toString()
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, '-')
+    .replace(/[^\w\-]+/g, '')
+    .replace(/\-\-+/g, '-');
+}
+
 export async function GET(req: NextRequest) {
   try {
     const items = await prisma.portfolioItem.findMany({
+      include: { category: true },
       orderBy: { createdAt: 'desc' },
     });
     return NextResponse.json({ success: true, items });
@@ -28,12 +39,12 @@ export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData();
     const file = formData.get('file') as File | null;
-    const title = formData.get('title') as string | null;
-    const category = formData.get('category') as string | null;
-    const userEmail = formData.get('userEmail') as string | null;
+    const title = (formData.get('title') as string | null)?.trim();
+    const categoryRaw = (formData.get('category') as string | null)?.trim();
+    const userEmail = (formData.get('userEmail') as string | null)?.trim();
 
     // 1. Validation
-    if (!title || !category) {
+    if (!title || !categoryRaw) {
       return NextResponse.json(
         { success: false, error: 'Title and Category are required.' },
         { status: 400 }
@@ -55,13 +66,25 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Resolve Category ID
+    const slug = slugify(categoryRaw);
+    let cat = await prisma.category.findUnique({ where: { slug } });
+    if (!cat) {
+      cat = await prisma.category.create({
+        data: {
+          name: categoryRaw,
+          slug,
+        },
+      });
+    }
+
     // 2. Upload file to Supabase Storage
     const supabase = getServiceSupabase();
     const bucketName = 'portfolio-images';
 
     const fileExt = file.name.split('.').pop() || 'jpg';
     const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 9)}.${fileExt}`;
-    const filePath = `uploads/${category.toLowerCase().replace(/\s+/g, '-')}/${fileName}`;
+    const filePath = `uploads/${slug}/${fileName}`;
 
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
@@ -77,7 +100,6 @@ export async function POST(req: NextRequest) {
 
     if (uploadError) {
       console.warn('Supabase storage warning (check credentials/bucket):', uploadError.message);
-      // Fallback for development if credentials or bucket are mock
       imageUrl = `https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1200&q=80`;
     } else {
       const { data: publicUrlData } = supabase.storage
@@ -94,10 +116,11 @@ export async function POST(req: NextRequest) {
       data: {
         title,
         caption,
-        category,
+        categoryId: cat.id,
         imageUrl,
         isCover,
       },
+      include: { category: true },
     });
 
     return NextResponse.json({

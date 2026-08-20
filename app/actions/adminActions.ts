@@ -11,6 +11,7 @@ export interface ActionResponse {
   success: boolean;
   message?: string;
   item?: any;
+  category?: any;
   error?: string;
 }
 
@@ -39,9 +40,150 @@ function revalidateAllRoutes() {
 }
 
 /**
- * 1. createPortfolioItem(formData: FormData)
- * Reads title, caption, category, isCover (boolean), uploads the image file to Supabase storage portfolio-images,
- * and creates the record in PostgreSQL.
+ * Utility: Convert a string name to a URL-friendly slug
+ */
+function slugify(text: string): string {
+  return text
+    .toString()
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, '-')
+    .replace(/[^\w\-]+/g, '')
+    .replace(/\-\-+/g, '-');
+}
+
+/**
+ * 1. createCategory(name: string, slug?: string)
+ */
+export async function createCategory(name: string, slug?: string): Promise<ActionResponse> {
+  try {
+    const isAuthorized = await verifyAdminAuth();
+    if (!isAuthorized) {
+      return {
+        success: false,
+        error: 'Unauthorized: Only authorized admin accounts can perform this action.',
+      };
+    }
+
+    const trimmedName = name.trim();
+    if (!trimmedName) {
+      return { success: false, error: 'Category name is required.' };
+    }
+
+    const generatedSlug = (slug?.trim() || slugify(trimmedName)).toLowerCase();
+
+    // Check if category or slug already exists
+    const existing = await prisma.category.findUnique({
+      where: { slug: generatedSlug },
+    });
+
+    if (existing) {
+      return {
+        success: true,
+        message: `Category "${existing.name}" already exists.`,
+        category: existing,
+      };
+    }
+
+    const newCategory = await prisma.category.create({
+      data: {
+        name: trimmedName,
+        slug: generatedSlug,
+      },
+    });
+
+    revalidateAllRoutes();
+
+    return {
+      success: true,
+      message: `Category "${newCategory.name}" created successfully!`,
+      category: newCategory,
+    };
+  } catch (error: any) {
+    console.error('Error in createCategory action:', error);
+    return {
+      success: false,
+      error: error.message || 'Failed to create category.',
+    };
+  }
+}
+
+/**
+ * 2. deleteCategory(id: string)
+ */
+export async function deleteCategory(id: string): Promise<ActionResponse> {
+  try {
+    const isAuthorized = await verifyAdminAuth();
+    if (!isAuthorized) {
+      return {
+        success: false,
+        error: 'Unauthorized: Only authorized admin accounts can perform this action.',
+      };
+    }
+
+    if (!id) {
+      return { success: false, error: 'Category ID is required.' };
+    }
+
+    const deletedCategory = await prisma.category.delete({
+      where: { id },
+    });
+
+    revalidateAllRoutes();
+
+    return {
+      success: true,
+      message: `Deleted category "${deletedCategory.name}" successfully.`,
+      category: deletedCategory,
+    };
+  } catch (error: any) {
+    console.error('Error in deleteCategory action:', error);
+    return {
+      success: false,
+      error: error.message || 'Failed to delete category.',
+    };
+  }
+}
+
+/**
+ * Helper to ensure a Category exists (by ID, slug, or name)
+ */
+async function resolveCategoryId(categoryIdentifier: string): Promise<string> {
+  const trimmed = categoryIdentifier.trim();
+  const slug = slugify(trimmed);
+
+  // Try finding by ID
+  let cat = await prisma.category.findUnique({
+    where: { id: trimmed },
+  }).catch(() => null);
+
+  if (cat) return cat.id;
+
+  // Try finding by slug
+  cat = await prisma.category.findUnique({
+    where: { slug },
+  });
+
+  if (cat) return cat.id;
+
+  // Create new category dynamically if not found
+  const name = trimmed
+    .split(/[-_]/)
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(' ');
+
+  const created = await prisma.category.create({
+    data: {
+      name,
+      slug,
+    },
+  });
+
+  return created.id;
+}
+
+/**
+ * 3. createPortfolioItem(formData: FormData)
  */
 export async function createPortfolioItem(formData: FormData): Promise<ActionResponse> {
   try {
@@ -55,7 +197,7 @@ export async function createPortfolioItem(formData: FormData): Promise<ActionRes
 
     const file = formData.get('file') as File | null;
     const title = (formData.get('title') as string | null)?.trim();
-    const category = (formData.get('category') as string | null)?.trim();
+    const categoryRaw = (formData.get('category') as string | null)?.trim() || (formData.get('categoryId') as string | null)?.trim();
     const caption = (formData.get('caption') as string | null)?.trim() || '';
     const isCover = formData.get('isCover') === 'true' || formData.get('isCover') === 'on';
 
@@ -67,16 +209,18 @@ export async function createPortfolioItem(formData: FormData): Promise<ActionRes
       return { success: false, error: 'Title is required.' };
     }
 
-    if (!category || !['wedding', 'baby-shower', 'ear-piercing'].includes(category)) {
-      return { success: false, error: 'Category must be wedding, baby-shower, or ear-piercing.' };
+    if (!categoryRaw) {
+      return { success: false, error: 'Category is required.' };
     }
+
+    const categoryId = await resolveCategoryId(categoryRaw);
 
     // Upload to Supabase Storage bucket 'portfolio-images'
     const supabase = getServiceSupabase();
     const fileExt = file.name.split('.').pop() || 'jpg';
     const sanitizedTitle = title.replace(/[^a-zA-Z0-9_-]/g, '_').toLowerCase();
     const uniqueFileName = `${Date.now()}-${sanitizedTitle}.${fileExt}`;
-    const filePath = `${category}/${uniqueFileName}`;
+    const filePath = `${categoryRaw}/${uniqueFileName}`;
 
     const arrayBuffer = await file.arrayBuffer();
     const fileBuffer = Buffer.from(arrayBuffer);
@@ -101,22 +245,22 @@ export async function createPortfolioItem(formData: FormData): Promise<ActionRes
       imageUrl = publicUrlData.publicUrl;
     }
 
-    // If isCover is true, reset other covers in this category and create item in transaction
     let newItem;
     if (isCover) {
       const [_, created] = await prisma.$transaction([
         prisma.portfolioItem.updateMany({
-          where: { category },
+          where: { categoryId },
           data: { isCover: false },
         }),
         prisma.portfolioItem.create({
           data: {
             title,
             caption,
-            category,
+            categoryId,
             imageUrl,
             isCover: true,
           },
+          include: { category: true },
         }),
       ]);
       newItem = created;
@@ -125,10 +269,11 @@ export async function createPortfolioItem(formData: FormData): Promise<ActionRes
         data: {
           title,
           caption,
-          category,
+          categoryId,
           imageUrl,
           isCover: false,
         },
+        include: { category: true },
       });
     }
 
@@ -148,12 +293,10 @@ export async function createPortfolioItem(formData: FormData): Promise<ActionRes
   }
 }
 
-// Alias for backwards compatibility
 export const uploadPortfolioItem = createPortfolioItem;
 
 /**
- * 2. updatePortfolioItem(id: string, formData: FormData)
- * Updates title, caption, category, and isCover. If a new image file is provided, uploads it and replaces imageUrl.
+ * 4. updatePortfolioItem(id: string, formData: FormData)
  */
 export async function updatePortfolioItem(
   id: string,
@@ -173,7 +316,7 @@ export async function updatePortfolioItem(
     }
 
     const title = (formData.get('title') as string | null)?.trim();
-    const category = (formData.get('category') as string | null)?.trim();
+    const categoryRaw = (formData.get('category') as string | null)?.trim() || (formData.get('categoryId') as string | null)?.trim();
     const caption = (formData.get('caption') as string | null)?.trim() || '';
     const isCoverRaw = formData.get('isCover');
     const isCover = isCoverRaw !== null ? isCoverRaw === 'true' || isCoverRaw === 'on' : undefined;
@@ -183,27 +326,27 @@ export async function updatePortfolioItem(
       return { success: false, error: 'Title is required.' };
     }
 
-    if (!category || !['wedding', 'baby-shower', 'ear-piercing'].includes(category)) {
-      return { success: false, error: 'Category must be wedding, baby-shower, or ear-piercing.' };
-    }
-
     const updateData: any = {
       title,
-      category,
       caption,
     };
+
+    let categoryId: string | undefined;
+    if (categoryRaw) {
+      categoryId = await resolveCategoryId(categoryRaw);
+      updateData.categoryId = categoryId;
+    }
 
     if (isCover !== undefined) {
       updateData.isCover = isCover;
     }
 
-    // If new file is uploaded, upload to Supabase and replace imageUrl
     if (file && file instanceof File && file.size > 0) {
       const supabase = getServiceSupabase();
       const fileExt = file.name.split('.').pop() || 'jpg';
       const sanitizedTitle = title.replace(/[^a-zA-Z0-9_-]/g, '_').toLowerCase();
       const uniqueFileName = `${Date.now()}-${sanitizedTitle}.${fileExt}`;
-      const filePath = `${category}/${uniqueFileName}`;
+      const filePath = `uploads/${uniqueFileName}`;
 
       const arrayBuffer = await file.arrayBuffer();
       const fileBuffer = Buffer.from(arrayBuffer);
@@ -225,15 +368,16 @@ export async function updatePortfolioItem(
     }
 
     let updatedItem;
-    if (isCover === true) {
+    if (isCover === true && categoryId) {
       const [_, item] = await prisma.$transaction([
         prisma.portfolioItem.updateMany({
-          where: { category, NOT: { id } },
+          where: { categoryId, NOT: { id } },
           data: { isCover: false },
         }),
         prisma.portfolioItem.update({
           where: { id },
           data: updateData,
+          include: { category: true },
         }),
       ]);
       updatedItem = item;
@@ -241,6 +385,7 @@ export async function updatePortfolioItem(
       updatedItem = await prisma.portfolioItem.update({
         where: { id },
         data: updateData,
+        include: { category: true },
       });
     }
 
@@ -261,8 +406,7 @@ export async function updatePortfolioItem(
 }
 
 /**
- * 3. deletePortfolioItem(id: string)
- * Deletes the record from Prisma by ID.
+ * 5. deletePortfolioItem(id: string)
  */
 export async function deletePortfolioItem(id: string): Promise<ActionResponse> {
   try {
@@ -299,12 +443,11 @@ export async function deletePortfolioItem(id: string): Promise<ActionResponse> {
 }
 
 /**
- * 4. setCoverPhoto(id: string, category: string)
- * In a transaction, sets isCover: false for all items matching category, then sets isCover: true for the chosen id.
+ * 6. setCoverPhoto(id: string, category: string)
  */
 export async function setCoverPhoto(
   id: string,
-  category: string
+  categoryIdentifier: string
 ): Promise<ActionResponse> {
   try {
     const isAuthorized = await verifyAdminAuth();
@@ -315,21 +458,21 @@ export async function setCoverPhoto(
       };
     }
 
-    if (!id || !category) {
+    if (!id || !categoryIdentifier) {
       return { success: false, error: 'Item ID and Category are required.' };
     }
 
-    // In a Prisma transaction:
-    // 1. Reset all items matching category to isCover: false
-    // 2. Set chosen id to isCover: true
+    const categoryId = await resolveCategoryId(categoryIdentifier);
+
     const [_, updatedItem] = await prisma.$transaction([
       prisma.portfolioItem.updateMany({
-        where: { category },
+        where: { categoryId },
         data: { isCover: false },
       }),
       prisma.portfolioItem.update({
         where: { id },
         data: { isCover: true },
+        include: { category: true },
       }),
     ]);
 
@@ -337,7 +480,7 @@ export async function setCoverPhoto(
 
     return {
       success: true,
-      message: `"${updatedItem.title}" set as primary cover for ${category}!`,
+      message: `"${updatedItem.title}" set as primary cover photo!`,
       item: updatedItem,
     };
   } catch (error: any) {

@@ -16,24 +16,27 @@ export default async function WeddingsPage() {
   let images: { id: string | number; title: string; url: string; category?: string }[] = [];
 
   try {
-    // Step 2: Fetch dynamic data from PostgreSQL database via Prisma
+    // Fetch dynamic wedding showcases from PostgreSQL database via Prisma relation
     const dbItems = await prisma.portfolioItem.findMany({
-      where: { category: 'wedding' },
+      where: {
+        category: {
+          slug: { in: ['wedding', 'weddings'] },
+        },
+      },
+      include: { category: true },
       orderBy: { createdAt: 'desc' },
     });
 
-    // Step 3: Map imageUrl and title fields
     images = dbItems.map((item) => ({
       id: item.id,
       title: item.title,
       url: item.imageUrl,
-      category: 'Wedding',
+      category: item.category?.name || 'Wedding',
     }));
   } catch (error) {
     console.warn('Database query failed in weddings page (using fallback):', error);
   }
 
-  // Use database images if present, otherwise fallback to curated showcases
   const displayImages = images.length > 0 ? images : fallbackWeddingImages;
 
   return (

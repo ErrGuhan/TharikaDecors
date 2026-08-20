@@ -8,15 +8,26 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
+model Category {
+  id        String          @id @default(uuid())
+  name      String
+  slug      String          @unique
+  createdAt DateTime        @default(now())
+  items     PortfolioItem[]
+
+  @@map("categories")
+}
+
 model PortfolioItem {
-  id          String   @id @default(uuid())
-  title       String
-  caption     String?  @default("")
-  category    String   // 'wedding' | 'baby-shower' | 'ear-piercing'
-  imageUrl    String
-  isCover     Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id         String   @id @default(uuid())
+  title      String
+  caption    String?  @default("")
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  imageUrl   String
+  isCover    Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   @@map("portfolio_items")
 }
