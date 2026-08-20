@@ -41,12 +41,18 @@ export default async function HomePage() {
         } else if (cat.slug === 'baby-shower' || cat.slug === 'baby-showers') {
           href = '/baby-showers';
           defaultImage = '/baby-shower-cover.jpg';
+        } else if (cat.slug === 'ear-piercing' || cat.slug === 'ear-piercing-gala') {
+          href = '/portfolio';
+          defaultImage = '/ear-piercing-cover.jpg';
         }
 
         return {
           title: cat.name,
           href,
-          imageUrl: coverItem?.imageUrl || defaultImage || '/wedding-cover.png',
+          imageUrl:
+            coverItem?.imageUrl ||
+            defaultImage ||
+            '/ear-piercing-cover.jpg',
           itemCount: cat._count.items,
         };
       });
@@ -73,8 +79,7 @@ export default async function HomePage() {
       {
         title: 'Ear Piercing & Gala',
         href: '/portfolio',
-        imageUrl:
-          'https://images.pexels.com/photos/28389453/pexels-photo-28389453.jpeg?auto=compress&cs=tinysrgb&h=800&w=800',
+        imageUrl: '/ear-piercing-cover.jpg',
         itemCount: 0,
       },
     ];

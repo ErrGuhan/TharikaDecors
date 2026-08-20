@@ -32,6 +32,33 @@ export default async function PortfolioPage() {
     console.error('Database query error in portfolio page:', error);
   }
 
+  // If no custom uploads are in database yet, showcase the user's 3 authentic event collections
+  if (items.length === 0) {
+    items = [
+      {
+        id: 'showcase-wedding',
+        title: 'Traditional Muhurtham & Mandap Decor',
+        imageUrl: '/wedding-cover.png',
+        caption: 'Sacred wedding thaali, fragrant jasmine garlands, and gold-hued traditional ritual decor.',
+        category: 'Weddings',
+      },
+      {
+        id: 'showcase-baby-shower',
+        title: 'Traditional Valaikappu & Seemantham Decor',
+        imageUrl: '/baby-shower-cover.jpg',
+        caption: 'Auspicious glass bangles, vibrant florals, and bespoke celebratory stage styling.',
+        category: 'Baby Showers',
+      },
+      {
+        id: 'showcase-ear-piercing',
+        title: 'Ear Piercing Ceremony & Royal Gala Styling',
+        imageUrl: '/ear-piercing-cover.jpg',
+        caption: 'Bespoke golden ear piercing decor, pearl stage elements, and festive family celebration backdrops.',
+        category: 'Ear Piercing',
+      },
+    ];
+  }
+
   return (
     <main className="w-full min-h-screen bg-black">
       <PortfolioSlider
