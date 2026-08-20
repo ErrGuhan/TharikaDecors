@@ -3,12 +3,22 @@
 import React, { useState, useRef } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import { UploadCloud, CheckCircle2, AlertCircle, Loader2, X, PlusCircle } from 'lucide-react';
+import {
+  UploadCloud,
+  CheckCircle2,
+  AlertCircle,
+  Loader2,
+  X,
+  PlusCircle,
+  Star,
+} from 'lucide-react';
 import { uploadPortfolioItem } from '@/app/actions/adminActions';
 
 export default function UploadForm() {
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState<'wedding' | 'baby-shower' | 'ear-piercing'>('wedding');
+  const [caption, setCaption] = useState('');
+  const [isCover, setIsCover] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -61,6 +71,8 @@ export default function UploadForm() {
       formData.append('file', selectedFile);
       formData.append('title', title.trim());
       formData.append('category', category);
+      formData.append('caption', caption.trim());
+      formData.append('isCover', isCover ? 'true' : 'false');
 
       // Invoke Server Action
       const result = await uploadPortfolioItem(formData);
@@ -77,6 +89,8 @@ export default function UploadForm() {
       // Reset form
       setTitle('');
       setCategory('wedding');
+      setCaption('');
+      setIsCover(false);
       handleClearFile();
     } catch (err: any) {
       console.error('Upload form error:', err);
@@ -105,7 +119,7 @@ export default function UploadForm() {
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-5">
         {/* Status Alerts */}
         <AnimatePresence mode="wait">
           {feedback && (
@@ -159,10 +173,10 @@ export default function UploadForm() {
           ) : (
             <div
               onClick={() => fileInputRef.current?.click()}
-              className="border-2 border-dashed border-gray-300 hover:border-tharika-blue rounded-2xl p-8 text-center cursor-pointer transition-colors bg-tharika-cream/50 hover:bg-tharika-blue/5 group flex flex-col items-center justify-center"
+              className="border-2 border-dashed border-gray-300 hover:border-tharika-blue rounded-2xl p-7 text-center cursor-pointer transition-colors bg-tharika-cream/50 hover:bg-tharika-blue/5 group flex flex-col items-center justify-center"
             >
-              <div className="w-12 h-12 rounded-full bg-white shadow-sm flex items-center justify-center text-gray-400 group-hover:text-tharika-blue group-hover:scale-110 transition-all mb-3">
-                <UploadCloud className="w-6 h-6" />
+              <div className="w-11 h-11 rounded-full bg-white shadow-sm flex items-center justify-center text-gray-400 group-hover:text-tharika-blue group-hover:scale-110 transition-all mb-2.5">
+                <UploadCloud className="w-5 h-5" />
               </div>
               <p className="text-sm font-medium text-gray-700 group-hover:text-tharika-blue">
                 Click or drag &amp; drop event photo
@@ -186,7 +200,7 @@ export default function UploadForm() {
         <div>
           <label
             htmlFor="item-title"
-            className="block text-xs font-semibold uppercase tracking-wider text-tharika-blue mb-2"
+            className="block text-xs font-semibold uppercase tracking-wider text-tharika-blue mb-1.5"
           >
             Title <span className="text-red-500">*</span>
           </label>
@@ -197,40 +211,78 @@ export default function UploadForm() {
             onChange={(e) => setTitle(e.target.value)}
             placeholder="e.g. Royal Crystal Mandap & Stage"
             required
-            className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-tharika-blue focus:ring-2 focus:ring-tharika-blue/20 outline-none text-sm transition-all bg-white text-gray-900"
+            className="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:border-tharika-blue focus:ring-2 focus:ring-tharika-blue/20 outline-none text-sm transition-all bg-white text-gray-900"
           />
         </div>
 
-        {/* 3. Select dropdown for 'Category' */}
-        <div>
-          <label
-            htmlFor="item-category"
-            className="block text-xs font-semibold uppercase tracking-wider text-tharika-blue mb-2"
-          >
-            Category <span className="text-red-500">*</span>
-          </label>
-          <select
-            id="item-category"
-            value={category}
-            onChange={(e) => setCategory(e.target.value as any)}
-            className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-tharika-blue focus:ring-2 focus:ring-tharika-blue/20 outline-none text-sm transition-all bg-white text-gray-900 cursor-pointer"
-          >
-            <option value="wedding">Wedding</option>
-            <option value="baby-shower">Baby Shower</option>
-            <option value="ear-piercing">Ear Piercing</option>
-          </select>
+        {/* 3. Category & Cover Checkbox Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label
+              htmlFor="item-category"
+              className="block text-xs font-semibold uppercase tracking-wider text-tharika-blue mb-1.5"
+            >
+              Category <span className="text-red-500">*</span>
+            </label>
+            <select
+              id="item-category"
+              value={category}
+              onChange={(e) => setCategory(e.target.value as any)}
+              className="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:border-tharika-blue focus:ring-2 focus:ring-tharika-blue/20 outline-none text-sm transition-all bg-white text-gray-900 cursor-pointer"
+            >
+              <option value="wedding">Wedding</option>
+              <option value="baby-shower">Baby Shower</option>
+              <option value="ear-piercing">Ear Piercing</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold uppercase tracking-wider text-tharika-blue mb-1.5">
+              Category Cover
+            </label>
+            <label className="flex items-center gap-2 px-3 py-2.5 rounded-xl border border-gray-300 bg-white hover:bg-gray-50 cursor-pointer transition-colors text-xs text-gray-700 font-medium">
+              <input
+                type="checkbox"
+                checked={isCover}
+                onChange={(e) => setIsCover(e.target.checked)}
+                className="w-4 h-4 rounded text-tharika-blue focus:ring-tharika-blue border-gray-300 cursor-pointer"
+              />
+              <span className="flex items-center gap-1">
+                <Star className={`w-3.5 h-3.5 ${isCover ? 'fill-amber-500 text-amber-500' : 'text-gray-400'}`} />
+                Make Cover Photo
+              </span>
+            </label>
+          </div>
         </div>
 
-        {/* 4. Submit button with a loading state */}
+        {/* 4. Caption Input */}
+        <div>
+          <label
+            htmlFor="item-caption"
+            className="block text-xs font-semibold uppercase tracking-wider text-tharika-blue mb-1.5"
+          >
+            Caption / Description <span className="text-gray-400 font-normal">(Optional)</span>
+          </label>
+          <textarea
+            id="item-caption"
+            value={caption}
+            onChange={(e) => setCaption(e.target.value)}
+            rows={2}
+            placeholder="e.g. Grand floral arrangement with brass diya accents..."
+            className="w-full px-4 py-2 rounded-xl border border-gray-300 focus:border-tharika-blue focus:ring-2 focus:ring-tharika-blue/20 outline-none text-sm transition-all bg-white text-gray-900"
+          />
+        </div>
+
+        {/* 5. Submit button with a loading state */}
         <button
           type="submit"
           disabled={isLoading}
-          className="w-full py-4 px-6 rounded-xl bg-tharika-blue hover:bg-[#072844] active:scale-[0.99] text-white font-medium text-sm tracking-wide shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-75 disabled:cursor-not-allowed cursor-pointer"
+          className="w-full py-3.5 px-6 rounded-xl bg-tharika-blue hover:bg-[#072844] active:scale-[0.99] text-white font-medium text-sm tracking-wide shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-75 disabled:cursor-not-allowed cursor-pointer"
         >
           {isLoading ? (
             <>
               <Loader2 className="w-4 h-4 animate-spin text-white" />
-              <span>Uploading to Supabase &amp; Saving...</span>
+              <span>Uploading &amp; Saving...</span>
             </>
           ) : (
             <span>Publish Showcase Item</span>
