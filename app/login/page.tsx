@@ -31,9 +31,9 @@ export default function LoginPage() {
       }
 
       if (data?.session || data?.user) {
-        // Step 3: Success Redirection
-        router.push('/admin');
+        // Refresh server component cache first so cookies are re-read, then navigate
         router.refresh();
+        router.push('/admin');
       }
     } catch (err: any) {
       console.error('Sign in error:', err);

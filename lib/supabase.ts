@@ -1,3 +1,4 @@
+import { createBrowserClient } from '@supabase/ssr';
 import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl =
@@ -11,7 +12,8 @@ const supabaseKey =
   process.env.SUPABASE_ANON_KEY ||
   'sb_publishable_dLW4P7RhNKJUOJvjMVvxfw_57quyFBH';
 
-export const supabase = createClient(supabaseUrl, supabaseKey);
+// Client-side Supabase client using @supabase/ssr for automatic cookie synchronization
+export const supabase = createBrowserClient(supabaseUrl, supabaseKey);
 
 export const getServiceSupabase = () => {
   const secretKey =

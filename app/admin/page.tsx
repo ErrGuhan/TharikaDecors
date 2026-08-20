@@ -6,10 +6,6 @@ import AdminRecordsList from '@/components/AdminRecordsList';
 import { ShieldCheck, Sparkles, Home } from 'lucide-react';
 import Link from 'next/link';
 
-const AUTHORIZED_ADMIN_EMAIL = (
-  process.env.ADMIN_EMAIL || 'admin@tharikadecors.com'
-).toLowerCase();
-
 export const dynamic = 'force-dynamic';
 
 export default async function AdminDashboardPage() {
@@ -17,13 +13,25 @@ export default async function AdminDashboardPage() {
   const supabase = createSupabaseServerClient();
   const {
     data: { user },
+    error: authError,
   } = await supabase.auth.getUser();
 
-  const isAuthorized =
-    (user && user.email?.toLowerCase() === AUTHORIZED_ADMIN_EMAIL) ||
-    process.env.NODE_ENV === 'development';
+  // Admin email resolution with safe fallback
+  const rawAdminEmail = process.env.ADMIN_EMAIL || 'admin@tharikadecors.com';
+  const authorizedAdminEmail = rawAdminEmail.trim().toLowerCase();
+
+  console.log('[Admin Auth Check] Current user:', user?.email, '| Configured Admin Email:', authorizedAdminEmail);
+
+  if (authError || !user) {
+    console.warn('[Admin Auth Check] No authenticated user found, redirecting to /login:', authError?.message);
+    redirect('/login');
+  }
+
+  const currentUserEmail = (user.email || '').trim().toLowerCase();
+  const isAuthorized = currentUserEmail === authorizedAdminEmail;
 
   if (!isAuthorized) {
+    console.warn(`[Admin Auth Check] Unauthorized access attempt by: ${currentUserEmail}`);
     redirect('/login');
   }
 
@@ -62,7 +70,7 @@ export default async function AdminDashboardPage() {
               Tharika Decors Dashboard
             </h1>
             <p className="text-xs sm:text-sm text-gray-500 mt-1">
-              Signed in as: <span className="font-semibold text-tharika-blue">{user?.email || AUTHORIZED_ADMIN_EMAIL}</span>
+              Signed in as: <span className="font-semibold text-tharika-blue">{user.email}</span>
             </p>
           </div>
 

@@ -1,32 +1,81 @@
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+import { createServerClient, type CookieOptions } from '@supabase/ssr';
+import { NextResponse, type NextRequest } from 'next/server';
 
-const AUTHORIZED_ADMIN_EMAILS = (
-  process.env.ADMIN_EMAILS ||
-  'admin@tharikadecor.com,owner@tharikadecor.com,tharika.decor@gmail.com'
-)
-  .split(',')
-  .map((e) => e.trim().toLowerCase());
+export async function middleware(request: NextRequest) {
+  let response = NextResponse.next({
+    request: {
+      headers: request.headers,
+    },
+  });
 
-export function middleware(request: NextRequest) {
-  const { pathname, searchParams } = request.nextUrl;
+  const supabaseUrl =
+    process.env.SUPABASE_URL ||
+    process.env.NEXT_PUBLIC_SUPABASE_URL ||
+    'https://msrhvfkdptfghslfxoqv.supabase.co';
 
-  // Protect /admin routes
-  if (pathname.startsWith('/admin')) {
-    // 1. Check userEmail from cookie / searchParam / header / session
-    const userEmail =
-      searchParams.get('userEmail')?.toLowerCase() ||
-      request.cookies.get('user_email')?.value?.toLowerCase();
+  const supabaseKey =
+    process.env.SUPABASE_PUBLISHABLE_KEY ||
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+    process.env.SUPABASE_ANON_KEY ||
+    'sb_publishable_dLW4P7RhNKJUOJvjMVvxfw_57quyFBH';
 
-    // If query parameter specifies unauthorized email explicitly, redirect to home
-    if (userEmail && !AUTHORIZED_ADMIN_EMAILS.includes(userEmail)) {
-      return NextResponse.redirect(new URL('/', request.url));
-    }
-  }
+  const supabase = createServerClient(supabaseUrl, supabaseKey, {
+    cookies: {
+      get(name: string) {
+        return request.cookies.get(name)?.value;
+      },
+      set(name: string, value: string, options: CookieOptions) {
+        request.cookies.set({
+          name,
+          value,
+          ...options,
+        });
+        response = NextResponse.next({
+          request: {
+            headers: request.headers,
+          },
+        });
+        response.cookies.set({
+          name,
+          value,
+          ...options,
+        });
+      },
+      remove(name: string, options: CookieOptions) {
+        request.cookies.set({
+          name,
+          value: '',
+          ...options,
+        });
+        response = NextResponse.next({
+          request: {
+            headers: request.headers,
+          },
+        });
+        response.cookies.set({
+          name,
+          value: '',
+          ...options,
+        });
+      },
+    },
+  });
 
-  return NextResponse.next();
+  // Refresh auth session token & update cookies
+  await supabase.auth.getSession();
+
+  return response;
 }
 
 export const config = {
-  matcher: ['/admin/:path*'],
+  matcher: [
+    /*
+     * Match all request paths except for the ones starting with:
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     * - Static asset extensions (.svg, .png, .jpg, .jpeg, .gif, .webp)
+     */
+    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+  ],
 };
