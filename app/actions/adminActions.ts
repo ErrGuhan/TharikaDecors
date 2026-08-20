@@ -84,12 +84,17 @@ export async function uploadPortfolioItem(formData: FormData): Promise<ActionRes
       imageUrl = publicUrlData.publicUrl;
     }
 
+    const caption = (formData.get('caption') as string | null)?.trim() || '';
+    const isCover = formData.get('isCover') === 'true';
+
     // 5. Use Prisma to save the new record to PostgreSQL database
     const newItem = await prisma.portfolioItem.create({
       data: {
         title,
+        caption,
         category,
         imageUrl,
+        isCover,
       },
     });
 

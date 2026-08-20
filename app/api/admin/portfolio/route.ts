@@ -86,12 +86,17 @@ export async function POST(req: NextRequest) {
       imageUrl = publicUrlData.publicUrl;
     }
 
+    const caption = (formData.get('caption') as string | null)?.trim() || '';
+    const isCover = formData.get('isCover') === 'true';
+
     // 3. Save PortfolioItem record to Database via Prisma
     const newItem = await prisma.portfolioItem.create({
       data: {
         title,
+        caption,
         category,
         imageUrl,
+        isCover,
       },
     });
 

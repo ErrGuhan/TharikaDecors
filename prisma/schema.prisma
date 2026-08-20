@@ -9,11 +9,14 @@ datasource db {
 }
 
 model PortfolioItem {
-  id        String   @id @default(uuid())
-  title     String
-  category  String
-  imageUrl  String
-  createdAt DateTime @default(now())
+  id          String   @id @default(uuid())
+  title       String
+  caption     String?  @default("")
+  category    String   // 'wedding' | 'baby-shower' | 'ear-piercing'
+  imageUrl    String
+  isCover     Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   @@map("portfolio_items")
 }
