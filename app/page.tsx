@@ -33,16 +33,21 @@ export default async function HomePage() {
       categoryCards = categoriesFromDb.map((cat) => {
         const coverItem = cat.items[0];
         let href = '/portfolio';
+        let defaultImage = '';
+
         if (cat.slug === 'wedding' || cat.slug === 'weddings') {
           href = '/weddings';
+          defaultImage = '/wedding-cover.png';
         } else if (cat.slug === 'baby-shower' || cat.slug === 'baby-showers') {
           href = '/baby-showers';
+          defaultImage =
+            'https://images.unsplash.com/photo-1530103862676-de8c9debad1d?auto=format&fit=crop&w=800&q=80';
         }
 
         return {
           title: cat.name,
           href,
-          imageUrl: coverItem?.imageUrl || '',
+          imageUrl: coverItem?.imageUrl || defaultImage || '/wedding-cover.png',
           itemCount: cat._count.items,
         };
       });
@@ -51,14 +56,13 @@ export default async function HomePage() {
     console.error('Error fetching categories for homepage:', error);
   }
 
-  // If no dynamic categories exist yet in database, provide standard showcase navigation
+  // If no dynamic categories exist yet in database, provide standard showcase navigation with the new wedding cover
   if (categoryCards.length === 0) {
     categoryCards = [
       {
         title: 'Weddings',
         href: '/weddings',
-        imageUrl:
-          'https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80',
+        imageUrl: '/wedding-cover.png',
         itemCount: 0,
       },
       {

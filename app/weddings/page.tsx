@@ -38,6 +38,19 @@ export default async function WeddingsPage() {
     console.error('Error fetching wedding portfolio items from database:', error);
   }
 
+  // Use uploaded traditional wedding showcase if no database records uploaded yet
+  if (items.length === 0) {
+    items = [
+      {
+        id: 'wedding-showcase-1',
+        title: 'Traditional Muhurtham & Mandap Decor',
+        imageUrl: '/wedding-cover.png',
+        caption: 'Sacred wedding thaali, fragrant jasmine garlands, and gold-hued traditional ritual decor.',
+        category: 'Weddings',
+      },
+    ];
+  }
+
   return (
     <main className="w-full min-h-screen bg-black">
       <PortfolioSlider
