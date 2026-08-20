@@ -40,8 +40,7 @@ export default async function HomePage() {
           defaultImage = '/wedding-cover.png';
         } else if (cat.slug === 'baby-shower' || cat.slug === 'baby-showers') {
           href = '/baby-showers';
-          defaultImage =
-            'https://images.unsplash.com/photo-1530103862676-de8c9debad1d?auto=format&fit=crop&w=800&q=80';
+          defaultImage = '/baby-shower-cover.jpg';
         }
 
         return {
@@ -56,7 +55,7 @@ export default async function HomePage() {
     console.error('Error fetching categories for homepage:', error);
   }
 
-  // If no dynamic categories exist yet in database, provide standard showcase navigation with the new wedding cover
+  // If no dynamic categories exist yet in database, provide standard showcase navigation
   if (categoryCards.length === 0) {
     categoryCards = [
       {
@@ -68,8 +67,7 @@ export default async function HomePage() {
       {
         title: 'Baby Showers',
         href: '/baby-showers',
-        imageUrl:
-          'https://images.unsplash.com/photo-1530103862676-de8c9debad1d?auto=format&fit=crop&w=800&q=80',
+        imageUrl: '/baby-shower-cover.jpg',
         itemCount: 0,
       },
       {

@@ -6,9 +6,9 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export const metadata: Metadata = {
-  title: 'Baby Showers Portfolio | Tharika Decors & Events',
+  title: 'Baby Showers & Seemantham Portfolio | Tharika Decors & Events',
   description:
-    'Enchanting baby shower themes, cradle ceremonies, balloon garlands, and bespoke milestone styling by Tharika Decors.',
+    'Enchanting baby shower themes, traditional Valaikappu ceremonies, cradle decor, and bespoke milestone styling by Tharika Decors.',
 };
 
 export default async function BabyShowersPage() {
@@ -19,8 +19,10 @@ export default async function BabyShowersPage() {
     const portfolioItems = await prisma.portfolioItem.findMany({
       where: {
         OR: [
-          { category: { slug: { in: ['baby-shower', 'baby-showers'] } } },
+          { category: { slug: { in: ['baby-shower', 'baby-showers', 'seemantham', 'valaikappu'] } } },
           { category: { name: { contains: 'baby', mode: 'insensitive' } } },
+          { category: { name: { contains: 'valaikappu', mode: 'insensitive' } } },
+          { category: { name: { contains: 'seemantham', mode: 'insensitive' } } },
         ],
       },
       include: { category: true },
@@ -36,6 +38,19 @@ export default async function BabyShowersPage() {
     }));
   } catch (error) {
     console.error('Error fetching baby shower portfolio items from database:', error);
+  }
+
+  // Use uploaded traditional Valaikappu/Seemantham showcase if no database records uploaded yet
+  if (items.length === 0) {
+    items = [
+      {
+        id: 'baby-shower-showcase-1',
+        title: 'Traditional Valaikappu & Seemantham Decor',
+        imageUrl: '/baby-shower-cover.jpg',
+        caption: 'Sacred bangle ceremony, vibrant auspicious florals, and bespoke celebratory stage styling.',
+        category: 'Baby Showers',
+      },
+    ];
   }
 
   return (
