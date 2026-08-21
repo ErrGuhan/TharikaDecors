@@ -85,6 +85,15 @@
   .font-heading {
     font-family: var(--font-playfair), serif;
   }
+  .font-serif {
+    font-family: var(--font-playfair), serif;
+  }
+  .bg-warm-cream {
+    background-color: #FAF7F2;
+  }
+  .text-deep-navy {
+    color: #0F172A;
+  }
   .bg-gold-brass {
     background-image: linear-gradient(
       to right,
