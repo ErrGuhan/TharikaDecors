@@ -25,11 +25,37 @@ CREATE TABLE IF NOT EXISTS public.portfolio_items (
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
--- 3. Create High-Performance Query Indexes
+-- 3. Column Alignment (Ensures Prisma camelCase identifiers match)
+DO $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='portfolio_items' AND column_name='imageurl') THEN
+        ALTER TABLE public.portfolio_items RENAME COLUMN imageurl TO "imageUrl";
+    END IF;
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='portfolio_items' AND column_name='iscover') THEN
+        ALTER TABLE public.portfolio_items RENAME COLUMN iscover TO "isCover";
+    END IF;
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='portfolio_items' AND column_name='categoryid') THEN
+        ALTER TABLE public.portfolio_items RENAME COLUMN categoryid TO "categoryId";
+    END IF;
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='portfolio_items' AND column_name='instagramurl') THEN
+        ALTER TABLE public.portfolio_items RENAME COLUMN instagramurl TO "instagramUrl";
+    END IF;
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='portfolio_items' AND column_name='createdat') THEN
+        ALTER TABLE public.portfolio_items RENAME COLUMN createdat TO "createdAt";
+    END IF;
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='portfolio_items' AND column_name='updatedat') THEN
+        ALTER TABLE public.portfolio_items RENAME COLUMN updatedat TO "updatedAt";
+    END IF;
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='categories' AND column_name='createdat') THEN
+        ALTER TABLE public.categories RENAME COLUMN createdat TO "createdAt";
+    END IF;
+END $$;
+
+-- 4. Create High-Performance Query Indexes
 CREATE INDEX IF NOT EXISTS "portfolio_items_categoryId_idx" ON public.portfolio_items("categoryId");
 CREATE INDEX IF NOT EXISTS "portfolio_items_createdAt_idx" ON public.portfolio_items("createdAt" DESC);
 
--- 4. Seed Default Categories
+-- 5. Seed Default Categories
 INSERT INTO public.categories (id, name, slug)
 VALUES 
     (gen_random_uuid()::text, 'Weddings', 'weddings'),
@@ -37,12 +63,12 @@ VALUES
     (gen_random_uuid()::text, 'Ear Piercing', 'ear-piercing')
 ON CONFLICT (slug) DO NOTHING;
 
--- 5. Ensure 'portfolio-images' Supabase Storage Bucket Exists and is Public
+-- 6. Ensure 'portfolio-images' Supabase Storage Bucket Exists and is Public
 INSERT INTO storage.buckets (id, name, public)
 VALUES ('portfolio-images', 'portfolio-images', true)
 ON CONFLICT (id) DO UPDATE SET public = true;
 
--- 6. Storage Security Policies for Public Display & Uploads
+-- 7. Storage Security Policies for Public Display & Uploads
 DO $$
 BEGIN
     IF NOT EXISTS (
