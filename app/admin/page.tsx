@@ -56,6 +56,8 @@ export default async function AdminDashboardPage() {
       id: item.id,
       title: item.title,
       caption: item.caption,
+      price: item.price,
+      instagramUrl: item.instagramUrl,
       category: item.category?.name || item.category?.slug || 'General',
       categoryId: item.categoryId,
       imageUrl: item.imageUrl,

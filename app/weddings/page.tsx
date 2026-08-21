@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import prisma from '@/lib/prisma';
-import PortfolioSlider from '@/components/PortfolioSlider';
+import PortfolioFeed from '@/components/PortfolioFeed';
+import { PortfolioCardItem } from '@/components/PortfolioCard';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -12,7 +13,7 @@ export const metadata: Metadata = {
 };
 
 export default async function WeddingsPage() {
-  let items: { id: string; title: string; imageUrl: string; caption?: string | null; category?: string }[] = [];
+  let items: PortfolioCardItem[] = [];
 
   try {
     // Strictly fetch dynamic data from PostgreSQL database via Prisma
@@ -32,32 +33,38 @@ export default async function WeddingsPage() {
       title: item.title,
       imageUrl: item.imageUrl,
       caption: item.caption,
+      price: item.price,
+      instagramUrl: item.instagramUrl,
       category: item.category?.name || 'Wedding',
+      isCover: item.isCover,
     }));
   } catch (error) {
     console.error('Error fetching wedding portfolio items from database:', error);
   }
 
-  // Use uploaded traditional wedding showcase if no database records uploaded yet
+  // Use authentic traditional wedding showcase if no database records uploaded yet
   if (items.length === 0) {
     items = [
       {
         id: 'wedding-showcase-1',
         title: 'Traditional Muhurtham & Mandap Decor',
         imageUrl: '/wedding-cover.png',
-        caption: 'Sacred wedding thaali, fragrant jasmine garlands, and gold-hued traditional ritual decor.',
+        caption: 'Sacred wedding thaali, fragrant jasmine garlands, gold brass pillars, and authentic traditional ritual stage backdrop.',
         category: 'Weddings',
+        price: 'Starts at ₹75,000',
+        instagramUrl: 'https://www.instagram.com/tharikadecors',
+        isCover: true,
       },
     ];
   }
 
   return (
-    <main className="w-full min-h-screen bg-black">
-      <PortfolioSlider
-        items={items}
-        categoryTitle="Wedding Decor"
-        emptyMessage="New wedding mandap and floral stage showcases will be available soon."
-      />
-    </main>
+    <PortfolioFeed
+      initialItems={items}
+      title="Wedding Decors"
+      subtitle="Bespoke mandaps, grand floral reception stages, and traditional muhurtham setups crafted with timeless elegance."
+      defaultCategory="Wedding"
+      hideFilterTabs={true}
+    />
   );
 }

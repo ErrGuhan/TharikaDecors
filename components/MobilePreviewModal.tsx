@@ -1,9 +1,18 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
-import { X, Smartphone, Sparkles, ChevronUp } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  X,
+  Smartphone,
+  Sparkles,
+  Instagram,
+  Share2,
+  Check,
+  Tag,
+  MessageCircle,
+} from 'lucide-react';
 
 interface MobilePreviewModalProps {
   isOpen: boolean;
@@ -11,6 +20,8 @@ interface MobilePreviewModalProps {
   title: string;
   category: string;
   caption?: string;
+  price?: string;
+  instagramUrl?: string;
   imageUrl: string;
 }
 
@@ -20,18 +31,27 @@ export default function MobilePreviewModal({
   title,
   category,
   caption,
+  price,
+  instagramUrl,
   imageUrl,
 }: MobilePreviewModalProps) {
+  const [copied, setCopied] = useState(false);
+
   if (!isOpen) return null;
+
+  const handleShareClick = () => {
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md overflow-y-auto">
-      <div className="relative flex flex-col items-center my-auto">
+      <div className="relative flex flex-col items-center my-auto py-6">
         {/* Top Floating Close / Info Bar */}
-        <div className="flex items-center justify-between w-full max-w-[375px] mb-3 text-white">
+        <div className="flex items-center justify-between w-full max-w-[385px] mb-3 text-white">
           <div className="flex items-center gap-2 text-xs text-gray-300 font-medium">
             <Smartphone className="w-4 h-4 text-tharika-gold" />
-            <span>Live Mobile Slider Preview</span>
+            <span>Mobile Card Feed Preview</span>
           </div>
           <button
             type="button"
@@ -43,95 +63,125 @@ export default function MobilePreviewModal({
           </button>
         </div>
 
-        {/* ── Simulated iPhone Frame (375px x 812px) ── */}
+        {/* ── Simulated iPhone Frame (375px x 760px) ── */}
         <motion.div
           initial={{ opacity: 0, scale: 0.9, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.9, y: 20 }}
           transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-          className="relative w-[375px] h-[812px] rounded-[52px] border-[10px] border-gray-900 shadow-2xl overflow-hidden bg-black flex flex-col select-none ring-1 ring-white/10"
+          className="relative w-[375px] h-[760px] rounded-[48px] border-[10px] border-gray-900 shadow-2xl overflow-hidden bg-[#FBF9F5] flex flex-col select-none ring-1 ring-white/10"
         >
           {/* Dynamic Island / Notch */}
-          <div className="absolute top-3 left-1/2 -translate-x-1/2 z-30 w-28 h-7 bg-gray-900 rounded-full flex items-center justify-between px-3">
+          <div className="absolute top-3 left-1/2 -translate-x-1/2 z-30 w-28 h-6 bg-gray-900 rounded-full flex items-center justify-between px-3">
             <div className="w-2.5 h-2.5 rounded-full bg-black ring-1 ring-gray-800" />
             <div className="w-2 h-2 rounded-full bg-blue-950/80" />
           </div>
 
           {/* Status Bar */}
-          <div className="absolute top-4 left-7 right-7 z-20 flex items-center justify-between text-[11px] font-semibold text-white/90">
+          <div className="pt-3 px-7 pb-2 flex items-center justify-between text-[11px] font-semibold text-gray-900 z-20">
             <span>9:41</span>
             <div className="flex items-center gap-1.5">
               <span className="text-[10px]">5G</span>
-              <div className="w-5 h-2.5 border border-white/80 rounded-sm p-0.5 flex items-center">
-                <div className="w-full h-full bg-white rounded-2xs" />
+              <div className="w-5 h-2.5 border border-gray-800 rounded-sm p-0.5 flex items-center">
+                <div className="w-full h-full bg-gray-900 rounded-2xs" />
               </div>
             </div>
           </div>
 
-          {/* Full Screen Image Slider Simulation */}
-          <div className="relative w-full h-full">
-            {imageUrl ? (
+          {/* Header Bar */}
+          <div className="px-5 py-3 border-b border-gray-200/80 bg-white flex items-center justify-between">
+            <div className="relative w-28 h-8">
               <Image
-                src={imageUrl}
-                alt={title || 'Showcase Preview'}
+                src="/logo.png"
+                alt="Tharika Decors"
                 fill
-                className="object-cover"
-                unoptimized
+                className="object-contain"
                 priority
+                unoptimized
               />
-            ) : (
-              <div className="w-full h-full bg-gray-900 flex items-center justify-center text-gray-500 text-sm">
-                No image selected
-              </div>
-            )}
-
-            {/* Gradient Overlays (exact match to public PortfolioSlider) */}
-            <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/90 pointer-events-none" />
-
-            {/* Top Logo Watermark */}
-            <div className="absolute top-14 left-6 z-20 pointer-events-none">
-              <div className="relative w-28 h-10 drop-shadow-lg">
-                <Image
-                  src="/logo.png"
-                  alt="Tharika Decors"
-                  fill
-                  className="object-contain"
-                  priority
-                  unoptimized
-                />
-              </div>
             </div>
+            <span className="text-[10px] font-bold uppercase tracking-wider text-tharika-gold px-2.5 py-0.5 rounded-full bg-tharika-gold/10">
+              Feed View
+            </span>
+          </div>
 
-            {/* Content Overlay */}
-            <div className="absolute inset-x-0 bottom-12 p-6 z-10 flex flex-col justify-end text-white pointer-events-none">
-              {/* Category Tag */}
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md border border-white/20 text-[11px] font-medium tracking-widest uppercase text-tharika-gold w-max mb-2">
-                <Sparkles className="w-3 h-3" />
-                <span>{category || 'Wedding'}</span>
+          {/* Scrollable Feed Container */}
+          <div className="flex-1 overflow-y-auto p-4 space-y-4">
+            {/* The Social Feed Card */}
+            <article className="bg-white border border-gray-200/80 shadow-sm rounded-xl overflow-hidden">
+              {/* Card Header: Title in Playfair Display (bold, top left) */}
+              <header className="p-4 pb-2.5">
+                <h3 className="font-heading font-serif text-base font-bold text-tharika-blue leading-snug">
+                  {title || 'Showcase Design Name'}
+                </h3>
+              </header>
+
+              {/* Card Image: Aspect-[4/3], object-cover, rounded-lg */}
+              <div className="px-4">
+                <div className="relative w-full aspect-[4/3] rounded-lg overflow-hidden bg-gray-100 border border-gray-100">
+                  {imageUrl ? (
+                    <Image
+                      src={imageUrl}
+                      alt={title || 'Preview'}
+                      fill
+                      className="object-cover"
+                      unoptimized
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">
+                      No Image Uploaded
+                    </div>
+                  )}
+                </div>
               </div>
 
-              {/* Title Overlay in Playfair Display */}
-              <h2 className="font-heading text-3xl font-normal text-white leading-tight tracking-tight drop-shadow-md">
-                {title || 'Showcase Title'}
-              </h2>
-
-              {/* Caption */}
-              {caption && (
-                <p className="text-xs text-white/80 font-light mt-2 line-clamp-3 leading-relaxed drop-shadow">
-                  {caption}
+              {/* Card Details: Category uppercase subtle gray + caption */}
+              <div className="p-4 pt-2.5 pb-3 space-y-1">
+                <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-500">
+                  {category || 'Wedding'}
                 </p>
-              )}
-
-              {/* Swipe Indicator */}
-              <div className="flex items-center justify-center gap-1 mt-6 text-white/50 text-[11px] font-medium animate-pulse">
-                <ChevronUp className="w-3.5 h-3.5" />
-                <span>Swipe to explore more</span>
+                {caption && (
+                  <p className="text-xs text-gray-700 leading-relaxed font-normal">
+                    {caption}
+                  </p>
+                )}
               </div>
-            </div>
+
+              {/* Action Footer: Instagram button, Share button, Price badge */}
+              <footer className="px-4 py-3 bg-gray-50/70 border-t border-gray-100 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div
+                    className="p-1.5 rounded-full text-gray-600 hover:text-pink-600 bg-white border border-gray-200/60 shadow-2xs"
+                    title={instagramUrl ? 'Instagram Link Attached' : 'Instagram Profile'}
+                  >
+                    <Instagram className="w-4 h-4" />
+                  </div>
+                  <div
+                    onClick={handleShareClick}
+                    className="p-1.5 rounded-full text-gray-600 hover:text-tharika-blue bg-white border border-gray-200/60 shadow-2xs cursor-pointer"
+                    title="Share Button"
+                  >
+                    {copied ? (
+                      <Check className="w-4 h-4 text-emerald-600" />
+                    ) : (
+                      <Share2 className="w-4 h-4" />
+                    )}
+                  </div>
+                </div>
+
+                {/* Price Pill Tag */}
+                <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-tharika-cream text-tharika-blue border border-tharika-gold/30 text-xs font-semibold shadow-2xs">
+                  <Tag className="w-3 h-3 text-tharika-gold" />
+                  <span>{price?.trim() || 'Price on Request'}</span>
+                </span>
+              </footer>
+            </article>
           </div>
 
           {/* Home Indicator Bar */}
-          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 z-30 w-32 h-1 bg-white/70 rounded-full" />
+          <div className="py-2 flex justify-center bg-white border-t border-gray-100">
+            <div className="w-32 h-1 bg-gray-900/40 rounded-full" />
+          </div>
         </motion.div>
       </div>
     </div>

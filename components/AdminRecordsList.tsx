@@ -29,11 +29,14 @@ import {
 } from '@/app/actions/adminActions';
 import MobilePreviewModal from '@/components/MobilePreviewModal';
 import ImageCropper from '@/components/ImageCropper';
+import { Instagram } from 'lucide-react';
 
 export interface PortfolioItemRecord {
   id: string;
   title: string;
   caption?: string | null;
+  price?: string | null;
+  instagramUrl?: string | null;
   category: string;
   categoryId?: string;
   imageUrl: string;
@@ -59,6 +62,8 @@ export default function AdminRecordsList({ initialItems }: AdminRecordsListProps
   const [editTitle, setEditTitle] = useState('');
   const [editCategory, setEditCategory] = useState('wedding');
   const [editCaption, setEditCaption] = useState('');
+  const [editPrice, setEditPrice] = useState('');
+  const [editInstagramUrl, setEditInstagramUrl] = useState('');
   const [editFile, setEditFile] = useState<File | null>(null);
   const [editPreviewUrl, setEditPreviewUrl] = useState<string | null>(null);
   const [isEditCropperOpen, setIsEditCropperOpen] = useState(false);
@@ -140,6 +145,8 @@ export default function AdminRecordsList({ initialItems }: AdminRecordsListProps
     setEditTitle(item.title);
     setEditCategory(item.categoryId || item.category);
     setEditCaption(item.caption || '');
+    setEditPrice(item.price || '');
+    setEditInstagramUrl(item.instagramUrl || '');
     setEditFile(null);
     setEditPreviewUrl(null);
   };
@@ -179,6 +186,8 @@ export default function AdminRecordsList({ initialItems }: AdminRecordsListProps
       formData.append('title', editTitle.trim());
       formData.append('category', editCategory);
       formData.append('caption', editCaption.trim());
+      formData.append('price', editPrice.trim());
+      formData.append('instagramUrl', editInstagramUrl.trim());
       if (editFile) {
         formData.append('file', editFile);
       }
@@ -196,6 +205,8 @@ export default function AdminRecordsList({ initialItems }: AdminRecordsListProps
                 ...i,
                 ...res.item,
                 category: res.item.category?.name || i.category,
+                price: res.item.price !== undefined ? res.item.price : editPrice.trim() || null,
+                instagramUrl: res.item.instagramUrl !== undefined ? res.item.instagramUrl : editInstagramUrl.trim() || null,
               }
             : i
         )
@@ -462,6 +473,25 @@ export default function AdminRecordsList({ initialItems }: AdminRecordsListProps
                               {item.caption}
                             </p>
                           )}
+                          <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+                            {item.price && (
+                              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-tharika-cream text-tharika-blue border border-tharika-gold/30">
+                                {item.price}
+                              </span>
+                            )}
+                            {item.instagramUrl && (
+                              <a
+                                href={item.instagramUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                title="Open Instagram Post"
+                                className="inline-flex items-center gap-1 text-[11px] text-pink-600 hover:text-pink-700 font-medium"
+                              >
+                                <Instagram className="w-3.5 h-3.5" />
+                                <span>Post</span>
+                              </a>
+                            )}
+                          </div>
                         </div>
                       </td>
 
@@ -591,6 +621,24 @@ export default function AdminRecordsList({ initialItems }: AdminRecordsListProps
                         {item.caption}
                       </p>
                     )}
+                    <div className="flex items-center gap-2 mt-2 flex-wrap">
+                      {item.price && (
+                        <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-tharika-cream text-tharika-blue border border-tharika-gold/30">
+                          {item.price}
+                        </span>
+                      )}
+                      {item.instagramUrl && (
+                        <a
+                          href={item.instagramUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-pink-600 hover:text-pink-700 text-xs flex items-center gap-1 font-medium"
+                        >
+                          <Instagram className="w-3.5 h-3.5" />
+                          <span>Instagram</span>
+                        </a>
+                      )}
+                    </div>
                   </div>
                   <div className="pt-4 mt-3 border-t border-gray-100 flex items-center justify-between">
                     <button
@@ -695,7 +743,7 @@ export default function AdminRecordsList({ initialItems }: AdminRecordsListProps
                 {/* Title */}
                 <div>
                   <label className="block text-xs font-semibold uppercase tracking-wider text-gray-700 mb-1.5">
-                    Title
+                    Title (Design Name)
                   </label>
                   <input
                     type="text"
@@ -718,6 +766,35 @@ export default function AdminRecordsList({ initialItems }: AdminRecordsListProps
                     placeholder="e.g. Wedding, Baby Shower, Corporate"
                     className="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:border-tharika-blue focus:ring-2 focus:ring-tharika-blue/20 outline-none text-sm text-gray-900"
                   />
+                </div>
+
+                {/* Starting Price & Instagram Post Link */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-semibold uppercase tracking-wider text-gray-700 mb-1.5">
+                      Starting Price <span className="text-gray-400 font-normal">(Optional)</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={editPrice}
+                      onChange={(e) => setEditPrice(e.target.value)}
+                      placeholder="e.g. Starts at ₹50,000"
+                      className="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:border-tharika-blue focus:ring-2 focus:ring-tharika-blue/20 outline-none text-sm text-gray-900 placeholder:text-gray-400"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold uppercase tracking-wider text-gray-700 mb-1.5">
+                      Instagram Post Link <span className="text-gray-400 font-normal">(Optional)</span>
+                    </label>
+                    <input
+                      type="url"
+                      value={editInstagramUrl}
+                      onChange={(e) => setEditInstagramUrl(e.target.value)}
+                      placeholder="https://www.instagram.com/p/..."
+                      className="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:border-tharika-blue focus:ring-2 focus:ring-tharika-blue/20 outline-none text-sm text-gray-900 placeholder:text-gray-400"
+                    />
+                  </div>
                 </div>
 
                 {/* Caption */}
@@ -835,6 +912,8 @@ export default function AdminRecordsList({ initialItems }: AdminRecordsListProps
           title={previewItem.title}
           category={previewItem.category}
           caption={previewItem.caption || ''}
+          price={previewItem.price || ''}
+          instagramUrl={previewItem.instagramUrl || ''}
           imageUrl={previewItem.imageUrl}
         />
       )}

@@ -14,6 +14,8 @@ import {
   Eye,
   Crop,
   Plus,
+  Tag,
+  Instagram,
 } from 'lucide-react';
 import { createPortfolioItem, createCategory } from '@/app/actions/adminActions';
 import ImageCropper from '@/components/ImageCropper';
@@ -35,6 +37,8 @@ export default function UploadForm({ categories = [] }: UploadFormProps) {
     categories[0]?.id || 'wedding'
   );
   const [caption, setCaption] = useState('');
+  const [price, setPrice] = useState('');
+  const [instagramUrl, setInstagramUrl] = useState('');
   const [isCover, setIsCover] = useState(false);
 
   // File & Crop States
@@ -137,6 +141,8 @@ export default function UploadForm({ categories = [] }: UploadFormProps) {
       formData.append('title', title.trim());
       formData.append('category', selectedCategory);
       formData.append('caption', caption.trim());
+      formData.append('price', price.trim());
+      formData.append('instagramUrl', instagramUrl.trim());
       formData.append('isCover', isCover ? 'true' : 'false');
 
       // Invoke Server Action
@@ -154,6 +160,8 @@ export default function UploadForm({ categories = [] }: UploadFormProps) {
       // Reset form
       setTitle('');
       setCaption('');
+      setPrice('');
+      setInstagramUrl('');
       setIsCover(false);
       handleClearFile();
     } catch (err: any) {
@@ -284,7 +292,7 @@ export default function UploadForm({ categories = [] }: UploadFormProps) {
               htmlFor="item-title"
               className="block text-xs font-semibold uppercase tracking-wider text-gray-700 mb-1.5"
             >
-              Title <span className="text-red-500">*</span>
+              Title (Design Name) <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
@@ -381,7 +389,50 @@ export default function UploadForm({ categories = [] }: UploadFormProps) {
             </div>
           </div>
 
-          {/* 4. Caption Input */}
+          {/* 4. Starting Price & Instagram Link Inputs */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label
+                htmlFor="item-price"
+                className="block text-xs font-semibold uppercase tracking-wider text-gray-700 mb-1.5"
+              >
+                Starting Price <span className="text-gray-400 font-normal">(Optional)</span>
+              </label>
+              <div className="relative">
+                <input
+                  type="text"
+                  id="item-price"
+                  value={price}
+                  onChange={(e) => setPrice(e.target.value)}
+                  placeholder="e.g. Starts at ₹50,000"
+                  className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-gray-300 focus:border-tharika-blue focus:ring-2 focus:ring-tharika-blue/20 outline-none text-sm transition-all bg-white text-gray-900 placeholder:text-gray-400"
+                />
+                <Tag className="absolute left-3 top-3 w-3.5 h-3.5 text-gray-400" />
+              </div>
+            </div>
+
+            <div>
+              <label
+                htmlFor="item-instagram"
+                className="block text-xs font-semibold uppercase tracking-wider text-gray-700 mb-1.5"
+              >
+                Instagram Post Link <span className="text-gray-400 font-normal">(Optional)</span>
+              </label>
+              <div className="relative">
+                <input
+                  type="url"
+                  id="item-instagram"
+                  value={instagramUrl}
+                  onChange={(e) => setInstagramUrl(e.target.value)}
+                  placeholder="https://www.instagram.com/p/..."
+                  className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-gray-300 focus:border-tharika-blue focus:ring-2 focus:ring-tharika-blue/20 outline-none text-sm transition-all bg-white text-gray-900 placeholder:text-gray-400"
+                />
+                <Instagram className="absolute left-3 top-3 w-3.5 h-3.5 text-gray-400" />
+              </div>
+            </div>
+          </div>
+
+          {/* 5. Caption Input */}
           <div>
             <label
               htmlFor="item-caption"
@@ -448,6 +499,8 @@ export default function UploadForm({ categories = [] }: UploadFormProps) {
         title={title}
         category={displayCategoryName}
         caption={caption}
+        price={price}
+        instagramUrl={instagramUrl}
         imageUrl={previewUrl || ''}
       />
     </>

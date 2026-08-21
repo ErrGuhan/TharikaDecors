@@ -109,6 +109,8 @@ export async function POST(req: NextRequest) {
     }
 
     const caption = (formData.get('caption') as string | null)?.trim() || '';
+    const price = (formData.get('price') as string | null)?.trim() || null;
+    const instagramUrl = (formData.get('instagramUrl') as string | null)?.trim() || null;
     const isCover = formData.get('isCover') === 'true';
 
     // 3. Save PortfolioItem record to Database via Prisma
@@ -116,6 +118,8 @@ export async function POST(req: NextRequest) {
       data: {
         title,
         caption,
+        price,
+        instagramUrl,
         categoryId: cat.id,
         imageUrl,
         isCover,

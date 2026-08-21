@@ -19,15 +19,18 @@ model Category {
 }
 
 model PortfolioItem {
-  id         String   @id @default(uuid())
-  title      String
-  caption    String?  @default("")
-  categoryId String
-  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  imageUrl   String
-  isCover    Boolean  @default(false)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id           String   @id @default(uuid())
+  title        String
+  caption      String?  @default("")
+  price        String?
+  instagramUrl String?
+  categoryId   String
+  category     Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  imageUrl     String
+  isCover      Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   @@map("portfolio_items")
 }
+

@@ -199,6 +199,8 @@ export async function createPortfolioItem(formData: FormData): Promise<ActionRes
     const title = (formData.get('title') as string | null)?.trim();
     const categoryRaw = (formData.get('category') as string | null)?.trim() || (formData.get('categoryId') as string | null)?.trim();
     const caption = (formData.get('caption') as string | null)?.trim() || '';
+    const price = (formData.get('price') as string | null)?.trim() || null;
+    const instagramUrl = (formData.get('instagramUrl') as string | null)?.trim() || null;
     const isCover = formData.get('isCover') === 'true' || formData.get('isCover') === 'on';
 
     if (!file || !(file instanceof File) || file.size === 0) {
@@ -256,6 +258,8 @@ export async function createPortfolioItem(formData: FormData): Promise<ActionRes
           data: {
             title,
             caption,
+            price,
+            instagramUrl,
             categoryId,
             imageUrl,
             isCover: true,
@@ -269,6 +273,8 @@ export async function createPortfolioItem(formData: FormData): Promise<ActionRes
         data: {
           title,
           caption,
+          price,
+          instagramUrl,
           categoryId,
           imageUrl,
           isCover: false,
@@ -320,6 +326,8 @@ export async function updatePortfolioItem(
     const caption = (formData.get('caption') as string | null)?.trim() || '';
     const isCoverRaw = formData.get('isCover');
     const isCover = isCoverRaw !== null ? isCoverRaw === 'true' || isCoverRaw === 'on' : undefined;
+    const priceRaw = formData.get('price') as string | null;
+    const instagramUrlRaw = formData.get('instagramUrl') as string | null;
     const file = formData.get('file') as File | null;
 
     if (!title) {
@@ -330,6 +338,13 @@ export async function updatePortfolioItem(
       title,
       caption,
     };
+
+    if (formData.has('price')) {
+      updateData.price = priceRaw?.trim() || null;
+    }
+    if (formData.has('instagramUrl')) {
+      updateData.instagramUrl = instagramUrlRaw?.trim() || null;
+    }
 
     let categoryId: string | undefined;
     if (categoryRaw) {

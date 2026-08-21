@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import prisma from '@/lib/prisma';
-import PortfolioSlider from '@/components/PortfolioSlider';
+import PortfolioFeed from '@/components/PortfolioFeed';
+import { PortfolioCardItem } from '@/components/PortfolioCard';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -12,7 +13,7 @@ export const metadata: Metadata = {
 };
 
 export default async function BabyShowersPage() {
-  let items: { id: string; title: string; imageUrl: string; caption?: string | null; category?: string }[] = [];
+  let items: PortfolioCardItem[] = [];
 
   try {
     // Strictly fetch dynamic data from PostgreSQL database via Prisma
@@ -34,32 +35,38 @@ export default async function BabyShowersPage() {
       title: item.title,
       imageUrl: item.imageUrl,
       caption: item.caption,
+      price: item.price,
+      instagramUrl: item.instagramUrl,
       category: item.category?.name || 'Baby Shower',
+      isCover: item.isCover,
     }));
   } catch (error) {
     console.error('Error fetching baby shower portfolio items from database:', error);
   }
 
-  // Use uploaded traditional Valaikappu/Seemantham showcase if no database records uploaded yet
+  // Use authentic traditional Valaikappu/Seemantham showcase if no database records uploaded yet
   if (items.length === 0) {
     items = [
       {
         id: 'baby-shower-showcase-1',
         title: 'Traditional Valaikappu & Seemantham Decor',
         imageUrl: '/baby-shower-cover.jpg',
-        caption: 'Sacred bangle ceremony, vibrant auspicious florals, and bespoke celebratory stage styling.',
+        caption: 'Sacred glass bangle ceremony backdrop, vibrant auspicious florals, brass lamps, and bespoke celebratory stage styling.',
         category: 'Baby Showers',
+        price: 'Starts at ₹45,000',
+        instagramUrl: 'https://www.instagram.com/tharikadecors',
+        isCover: true,
       },
     ];
   }
 
   return (
-    <main className="w-full min-h-screen bg-black">
-      <PortfolioSlider
-        items={items}
-        categoryTitle="Baby Shower Decor"
-        emptyMessage="New whimsical baby shower and cradle ceremony decor showcases will be published soon."
-      />
-    </main>
+    <PortfolioFeed
+      initialItems={items}
+      title="Baby Showers & Valaikappu"
+      subtitle="Celebrate motherhood and joyous new beginnings with enchanting floral setups and traditional stage designs."
+      defaultCategory="Baby Shower"
+      hideFilterTabs={true}
+    />
   );
 }

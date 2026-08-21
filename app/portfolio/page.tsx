@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import prisma from '@/lib/prisma';
-import PortfolioSlider from '@/components/PortfolioSlider';
+import PortfolioFeed from '@/components/PortfolioFeed';
+import { PortfolioCardItem } from '@/components/PortfolioCard';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -8,11 +9,11 @@ export const revalidate = 0;
 export const metadata: Metadata = {
   title: 'Full Portfolio Showcase | Tharika Decors & Events',
   description:
-    'View the complete luxury event styling and decor portfolio by Tharika Decors.',
+    'Explore bespoke wedding mandaps, floral stage decor, traditional valaikappu setups, and milestone celebrations curated by Tharika Decors.',
 };
 
 export default async function PortfolioPage() {
-  let items: { id: string; title: string; imageUrl: string; caption?: string | null; category?: string }[] = [];
+  let items: PortfolioCardItem[] = [];
 
   try {
     // Strictly fetch dynamic data from PostgreSQL database via Prisma
@@ -26,46 +27,55 @@ export default async function PortfolioPage() {
       title: item.title,
       imageUrl: item.imageUrl,
       caption: item.caption,
+      price: item.price,
+      instagramUrl: item.instagramUrl,
       category: item.category?.name || 'Showcase',
+      isCover: item.isCover,
     }));
   } catch (error) {
     console.error('Database query error in portfolio page:', error);
   }
 
-  // If no custom uploads are in database yet, showcase the user's 3 authentic event collections
+  // If no custom uploads are in database yet, showcase authentic event collections
   if (items.length === 0) {
     items = [
       {
-        id: 'showcase-wedding',
-        title: 'Traditional Muhurtham & Mandap Decor',
+        id: 'showcase-wedding-1',
+        title: 'Royal Floral Muhurtham Mandap',
         imageUrl: '/wedding-cover.png',
-        caption: 'Sacred wedding thaali, fragrant jasmine garlands, and gold-hued traditional ritual decor.',
+        caption: 'Sacred wedding thaali setup, fragrant jasmine & marigold floral garlands, gold brass bells, and royal ceremonial stage backdrop.',
         category: 'Weddings',
+        price: 'Starts at ₹75,000',
+        instagramUrl: 'https://www.instagram.com/tharikadecors',
+        isCover: true,
       },
       {
-        id: 'showcase-baby-shower',
-        title: 'Traditional Valaikappu & Seemantham Decor',
+        id: 'showcase-baby-shower-1',
+        title: 'Traditional Valaikappu & Seemantham Stage',
         imageUrl: '/baby-shower-cover.jpg',
-        caption: 'Auspicious glass bangles, vibrant florals, and bespoke celebratory stage styling.',
+        caption: 'Auspicious traditional glass bangle backdrops, lotus blooms, bespoke celebratory stage styling, and brass lamp arrangements.',
         category: 'Baby Showers',
+        price: 'Starts at ₹45,000',
+        instagramUrl: 'https://www.instagram.com/tharikadecors',
       },
       {
-        id: 'showcase-ear-piercing',
-        title: 'Ear Piercing Ceremony & Royal Gala Styling',
+        id: 'showcase-ear-piercing-1',
+        title: 'Royal Ear Piercing Ceremony & Gala Backdrop',
         imageUrl: '/ear-piercing-cover.jpg',
-        caption: 'Bespoke golden ear piercing decor, pearl stage elements, and festive family celebration backdrops.',
+        caption: 'Bespoke golden throne styling, handcrafted floral pillars, pearl hangings, and grand family celebration decor.',
         category: 'Ear Piercing',
+        price: 'Starts at ₹35,000',
+        instagramUrl: 'https://www.instagram.com/tharikadecors',
       },
     ];
   }
 
   return (
-    <main className="w-full min-h-screen bg-black">
-      <PortfolioSlider
-        items={items}
-        categoryTitle="Complete Portfolio"
-        emptyMessage="Explore our latest wedding and celebration decors. New items will be added shortly."
-      />
-    </main>
+    <PortfolioFeed
+      initialItems={items}
+      title="Complete Portfolio"
+      subtitle="Discover our hand-crafted wedding stages, intimate family ceremonies, and luxury event decors."
+      defaultCategory="all"
+    />
   );
 }
