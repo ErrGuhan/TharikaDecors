@@ -205,6 +205,7 @@ export default function AdminRecordsList({ initialItems }: AdminRecordsListProps
 
     try {
       const formData = new FormData();
+      formData.append('id', editingItem.id);
       formData.append('title', editTitle.trim());
       formData.append('category', editCategory);
       formData.append('caption', editCaption.trim());
@@ -214,10 +215,25 @@ export default function AdminRecordsList({ initialItems }: AdminRecordsListProps
         formData.append('file', editFile);
       }
 
-      const res = await updatePortfolioItem(editingItem.id, formData);
+      let res: any = null;
+      try {
+        const apiRes = await fetch('/api/admin/portfolio', {
+          method: 'PUT',
+          body: formData,
+        });
+        const resData = await apiRes.json().catch(() => null);
+        if (apiRes.ok && resData?.success) {
+          res = resData;
+        } else if (resData?.error) {
+          throw new Error(resData.error);
+        }
+      } catch (fetchErr: any) {
+        console.warn('API update note, using server action fallback:', fetchErr?.message);
+        res = await updatePortfolioItem(editingItem.id, formData);
+      }
 
-      if (!res.success) {
-        throw new Error(res.error || 'Failed to update item.');
+      if (!res || !res.success) {
+        throw new Error(res?.error || 'Failed to update item.');
       }
 
       setItems((prev) =>
@@ -240,7 +256,7 @@ export default function AdminRecordsList({ initialItems }: AdminRecordsListProps
       showToast('success', `Updated "${editTitle}" successfully!`);
       handleCloseEdit();
     } catch (err: any) {
-      console.error(err);
+      console.error('Update item error:', err);
       showToast('error', err.message || 'Failed to save changes.');
     } finally {
       setIsUpdating(false);
@@ -252,10 +268,30 @@ export default function AdminRecordsList({ initialItems }: AdminRecordsListProps
     setLoadingActionId(item.id);
 
     try {
-      const res = await setCoverPhoto(item.id, item.categoryId || item.category);
+      let res: any = null;
+      try {
+        const apiRes = await fetch('/api/admin/portfolio', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'setCover',
+            id: item.id,
+            category: item.categoryId || item.category,
+          }),
+        });
+        const resData = await apiRes.json().catch(() => null);
+        if (apiRes.ok && resData?.success) {
+          res = resData;
+        } else if (resData?.error) {
+          throw new Error(resData.error);
+        }
+      } catch (fetchErr: any) {
+        console.warn('API set cover note, using server action fallback:', fetchErr?.message);
+        res = await setCoverPhoto(item.id, item.categoryId || item.category);
+      }
 
-      if (!res.success) {
-        throw new Error(res.error || 'Failed to set cover photo.');
+      if (!res || !res.success) {
+        throw new Error(res?.error || 'Failed to set cover photo.');
       }
 
       setItems((prev) =>
@@ -272,7 +308,7 @@ export default function AdminRecordsList({ initialItems }: AdminRecordsListProps
 
       showToast('success', `"${item.title}" is now the primary cover photo!`);
     } catch (err: any) {
-      console.error(err);
+      console.error('Set cover error:', err);
       showToast('error', err.message || 'Failed to set cover photo.');
     } finally {
       setLoadingActionId(null);
@@ -286,10 +322,24 @@ export default function AdminRecordsList({ initialItems }: AdminRecordsListProps
     setIsDeleting(true);
 
     try {
-      const res = await deletePortfolioItem(itemToDelete.id);
+      let res: any = null;
+      try {
+        const apiRes = await fetch(`/api/admin/portfolio?id=${encodeURIComponent(itemToDelete.id)}`, {
+          method: 'DELETE',
+        });
+        const resData = await apiRes.json().catch(() => null);
+        if (apiRes.ok && resData?.success) {
+          res = resData;
+        } else if (resData?.error) {
+          throw new Error(resData.error);
+        }
+      } catch (fetchErr: any) {
+        console.warn('API delete note, using server action fallback:', fetchErr?.message);
+        res = await deletePortfolioItem(itemToDelete.id);
+      }
 
-      if (!res.success) {
-        throw new Error(res.error || 'Failed to delete item.');
+      if (!res || !res.success) {
+        throw new Error(res?.error || 'Failed to delete item.');
       }
 
       setItems((prev) => prev.filter((i) => i.id !== itemToDelete.id));
@@ -297,7 +347,7 @@ export default function AdminRecordsList({ initialItems }: AdminRecordsListProps
       showToast('success', `Deleted "${itemToDelete.title}" successfully.`);
       setItemToDelete(null);
     } catch (err: any) {
-      console.error(err);
+      console.error('Delete item error:', err);
       showToast('error', err.message || 'Failed to delete record.');
     } finally {
       setIsDeleting(false);

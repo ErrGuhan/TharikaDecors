@@ -67,10 +67,26 @@ export default function CategoryManager({ initialCategories }: CategoryManagerPr
     setIsSubmitting(true);
 
     try {
-      const res = await createCategory(name.trim(), slug.trim());
+      let res: any = null;
+      try {
+        const apiRes = await fetch('/api/admin/categories', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: name.trim(), slug: slug.trim() }),
+        });
+        const resData = await apiRes.json().catch(() => null);
+        if (apiRes.ok && resData?.success) {
+          res = resData;
+        } else if (resData?.error) {
+          throw new Error(resData.error);
+        }
+      } catch (fetchErr: any) {
+        console.warn('API category create note, using server action fallback:', fetchErr?.message);
+        res = await createCategory(name.trim(), slug.trim());
+      }
 
-      if (!res.success) {
-        throw new Error(res.error || 'Failed to create category.');
+      if (!res || !res.success) {
+        throw new Error(res?.error || 'Failed to create category.');
       }
 
       if (res.category) {
@@ -83,7 +99,7 @@ export default function CategoryManager({ initialCategories }: CategoryManagerPr
         setSlug('');
       }
     } catch (err: any) {
-      console.error(err);
+      console.error('Create category error:', err);
       showToast('error', err.message || 'Failed to create category.');
     } finally {
       setIsSubmitting(false);
@@ -98,16 +114,30 @@ export default function CategoryManager({ initialCategories }: CategoryManagerPr
     setDeletingId(id);
 
     try {
-      const res = await deleteCategory(id);
+      let res: any = null;
+      try {
+        const apiRes = await fetch(`/api/admin/categories?id=${encodeURIComponent(id)}`, {
+          method: 'DELETE',
+        });
+        const resData = await apiRes.json().catch(() => null);
+        if (apiRes.ok && resData?.success) {
+          res = resData;
+        } else if (resData?.error) {
+          throw new Error(resData.error);
+        }
+      } catch (fetchErr: any) {
+        console.warn('API category delete note, using server action fallback:', fetchErr?.message);
+        res = await deleteCategory(id);
+      }
 
-      if (!res.success) {
-        throw new Error(res.error || 'Failed to delete category.');
+      if (!res || !res.success) {
+        throw new Error(res?.error || 'Failed to delete category.');
       }
 
       setCategories((prev) => prev.filter((c) => c.id !== id));
       showToast('success', `Deleted category "${catName}".`);
     } catch (err: any) {
-      console.error(err);
+      console.error('Delete category error:', err);
       showToast('error', err.message || 'Failed to delete category.');
     } finally {
       setDeletingId(null);
