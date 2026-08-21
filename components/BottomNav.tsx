@@ -1,8 +1,10 @@
 'use client';
 
+import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
+import { MessageCircle, Sparkles } from 'lucide-react';
 
 type NavItem = {
   label: string;
@@ -100,7 +102,7 @@ function BookIcon({ className }: { className?: string }) {
 const navItems: NavItem[] = [
   { label: 'Home', href: '/', icon: HomeIcon },
   { label: 'Portfolio', href: '/portfolio', icon: PortfolioIcon },
-  { label: 'Process', href: '/process', icon: ProcessIcon },
+  { label: 'Process', href: '/book', icon: ProcessIcon },
   {
     label: 'Book',
     href: WHATSAPP_BOOKING_URL,
@@ -112,18 +114,18 @@ const navItems: NavItem[] = [
 export default function BottomNav() {
   const pathname = usePathname();
 
-  // Hide BottomNav on admin and login pages
+  // Hide BottomNav on admin and login studio pages
   if (pathname.startsWith('/admin') || pathname.startsWith('/login')) {
     return null;
   }
 
   return (
-    <nav className="fixed bottom-0 left-0 z-50 w-full border-t border-tharika-peacock-blue/10 bg-white shadow-md">
-      <div className="mx-auto flex max-w-md items-center justify-around py-3">
+    <nav className="fixed bottom-0 left-0 z-50 w-full border-t border-slate-200/80 bg-white/95 backdrop-blur-lg shadow-[0_-4px_24px_rgba(0,0,0,0.06)]">
+      <div className="mx-auto flex max-w-md items-center justify-around py-2 sm:py-2.5">
         {navItems.map(({ label, href, isExternal, icon: Icon }) => {
           const active =
             !isExternal &&
-            (pathname === href || pathname.startsWith(`${href}/`));
+            (pathname === href || (href !== '/' && pathname.startsWith(href)));
 
           if (isExternal) {
             return (
@@ -132,28 +134,40 @@ export default function BottomNav() {
                 href={href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex min-w-[64px] flex-col items-center gap-1 px-3 py-2 text-xs font-medium text-tharika-peacock-blue/80 hover:text-tharika-peacock-blue hover:scale-105 transition-all"
+                className="flex min-w-[64px] flex-col items-center gap-0.5 px-3 py-1.5 text-xs font-semibold text-[#0F172A] hover:text-[#D4AF37] hover:scale-105 active:scale-95 transition-all group"
               >
-                <Icon className="h-6 w-6 text-tharika-gold" />
-                <span className="font-semibold text-tharika-peacock-blue">{label}</span>
+                <div className="p-1 rounded-xl bg-[#D4AF37]/15 text-[#D4AF37] group-hover:bg-[#D4AF37] group-hover:text-[#0F172A] transition-colors">
+                  <Icon className="h-5 w-5" />
+                </div>
+                <span className="text-[11px] font-bold text-[#0F172A]">{label}</span>
               </a>
             );
           }
 
           return (
             <Link
-              key={href}
+              key={label}
               href={href}
               aria-current={active ? 'page' : undefined}
               className={cn(
-                'flex min-w-[64px] flex-col items-center gap-1 px-3 py-2 text-xs font-medium transition-colors',
+                'flex min-w-[64px] flex-col items-center gap-0.5 px-3 py-1.5 text-xs font-medium transition-all relative',
                 active
-                  ? 'text-tharika-peacock-blue font-semibold'
-                  : 'text-gray-400 hover:text-tharika-peacock-blue',
+                  ? 'text-[#0F172A] font-bold'
+                  : 'text-slate-400 hover:text-[#0F172A]'
               )}
             >
-              <Icon className="h-6 w-6" />
-              <span>{label}</span>
+              <div
+                className={cn(
+                  'p-1 rounded-xl transition-colors',
+                  active ? 'bg-[#0F172A]/10 text-[#0F172A]' : 'text-slate-400'
+                )}
+              >
+                <Icon className="h-5 w-5" />
+              </div>
+              <span className="text-[11px]">{label}</span>
+              {active && (
+                <span className="w-1 h-1 rounded-full bg-[#D4AF37] absolute bottom-0.5" />
+              )}
             </Link>
           );
         })}

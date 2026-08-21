@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { Sparkles } from 'lucide-react';
+import { Sparkles, ArrowUpRight, Tag, Instagram } from 'lucide-react';
 
 export interface PortfolioCardItem {
   id: string;
@@ -40,52 +40,82 @@ export default function PortfolioCard({
         }
       }}
       aria-label={`View details for ${item.title}`}
-      className="relative overflow-hidden rounded-3xl shadow-lg aspect-[4/5] cursor-pointer transition-transform duration-300 hover:shadow-xl active:scale-[0.98] group bg-slate-900 w-full select-none"
+      className="group relative overflow-hidden rounded-3xl bg-slate-900 border border-amber-900/10 shadow-md hover:shadow-2xl transition-all duration-500 cursor-pointer w-full select-none flex flex-col"
     >
-      {/* ── Image ── */}
-      {item.imageUrl ? (
-        <Image
-          src={item.imageUrl}
-          alt={item.title}
-          fill
-          priority={priority}
-          sizes="(max-width: 640px) 100vw, 448px"
-          className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-          unoptimized={item.imageUrl.startsWith('http')}
-        />
-      ) : (
-        <div className="w-full h-full flex flex-col items-center justify-center bg-slate-800 text-amber-200/60 p-4 text-center">
-          <Sparkles className="w-8 h-8 mb-2 opacity-50" />
-          <span className="text-xs uppercase tracking-widest">Tharika Decors</span>
-        </div>
-      )}
-
-      {/* ── Top Badge ── */}
-      <div className="absolute top-4 left-4 z-10 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-semibold tracking-wider text-amber-800 uppercase shadow-xs flex items-center gap-1.5 border border-amber-900/10">
-        <span>{categoryLabel}</span>
-      </div>
-
-      {/* ── Optional Featured Indicator for Cover Items ── */}
-      {item.isCover && (
-        <div className="absolute top-4 right-4 z-10 bg-amber-500/90 text-white backdrop-blur-sm px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase shadow-xs flex items-center gap-1">
-          <Sparkles className="w-3 h-3 fill-white" />
-          <span>Featured</span>
-        </div>
-      )}
-
-      {/* ── Bottom Gradient Overlay ── */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none transition-opacity duration-300 group-hover:opacity-90" />
-
-      {/* ── Bottom Content ── */}
-      <div className="absolute bottom-5 left-5 right-5 text-white pointer-events-none z-10">
-        <h3 className="font-heading font-serif text-lg sm:text-xl font-bold leading-tight tracking-tight drop-shadow-sm group-hover:text-amber-200 transition-colors line-clamp-1">
-          {item.title}
-        </h3>
-        {item.caption && (
-          <p className="mt-1 text-xs sm:text-sm text-slate-200/90 font-sans leading-relaxed line-clamp-1 drop-shadow-xs">
-            {item.caption}
-          </p>
+      {/* ── Image Container (4:5 Portrait Feed Card) ── */}
+      <div className="relative w-full aspect-[4/5] bg-slate-950 overflow-hidden">
+        {item.imageUrl ? (
+          <Image
+            src={item.imageUrl}
+            alt={item.title}
+            fill
+            priority={priority}
+            sizes="(max-width: 640px) 100vw, 448px"
+            className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+            unoptimized={item.imageUrl.startsWith('http')}
+          />
+        ) : (
+          <div className="w-full h-full flex flex-col items-center justify-center bg-slate-900 text-amber-200/60 p-4 text-center">
+            <Sparkles className="w-8 h-8 mb-2 opacity-50 text-[#D4AF37]" />
+            <span className="text-xs uppercase tracking-widest">Tharika Decors</span>
+          </div>
         )}
+
+        {/* Top Badges */}
+        <div className="absolute top-3.5 inset-x-3.5 z-10 flex items-center justify-between pointer-events-none">
+          {/* Category Pill */}
+          <div className="bg-white/95 backdrop-blur-md px-3 py-1 rounded-full text-[11px] font-bold tracking-wider text-[#0F172A] uppercase shadow-md border border-white/60 flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37]" />
+            <span>{categoryLabel}</span>
+          </div>
+
+          {/* Featured Badge */}
+          {item.isCover && (
+            <div className="bg-[#D4AF37] text-[#0F172A] px-2.5 py-1 rounded-full text-[10px] font-extrabold tracking-wider uppercase shadow-md flex items-center gap-1">
+              <Sparkles className="w-3 h-3 fill-[#0F172A]" />
+              <span>Featured</span>
+            </div>
+          )}
+        </div>
+
+        {/* Refined Bottom Gradient Overlay */}
+        <div className="absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-slate-950 via-slate-950/70 to-transparent pointer-events-none" />
+
+        {/* Content Details (Bottom Overlay) */}
+        <div className="absolute inset-x-0 bottom-0 p-5 text-white z-10 pointer-events-none flex flex-col justify-end">
+          {/* Title & Arrow */}
+          <div className="flex items-start justify-between gap-3">
+            <h3 className="font-heading font-serif text-lg sm:text-xl font-bold leading-snug tracking-tight text-white group-hover:text-[#D4AF37] transition-colors line-clamp-1 drop-shadow-md">
+              {item.title}
+            </h3>
+            <div className="w-7 h-7 rounded-full bg-white/15 backdrop-blur-md flex items-center justify-center flex-shrink-0 group-hover:bg-[#D4AF37] group-hover:text-[#0F172A] transition-all text-white shadow-xs">
+              <ArrowUpRight className="w-4 h-4" />
+            </div>
+          </div>
+
+          {/* Caption */}
+          {item.caption && (
+            <p className="mt-1 text-xs text-slate-300 font-sans leading-relaxed line-clamp-2 drop-shadow-xs">
+              {item.caption}
+            </p>
+          )}
+
+          {/* Meta: Price & Tap to view */}
+          <div className="mt-3 flex items-center justify-between pt-2 border-t border-white/10 text-xs">
+            {item.price?.trim() ? (
+              <span className="inline-flex items-center gap-1 text-[#D4AF37] font-bold text-[11px] bg-white/10 backdrop-blur-md px-2.5 py-0.5 rounded-full border border-[#D4AF37]/30">
+                <Tag className="w-3 h-3 text-[#D4AF37]" />
+                <span>{item.price.trim()}</span>
+              </span>
+            ) : (
+              <span className="text-[11px] text-slate-300 font-medium">Custom Package</span>
+            )}
+
+            <span className="text-[11px] text-amber-200/90 font-semibold group-hover:underline">
+              View Showcase &rarr;
+            </span>
+          </div>
+        </div>
       </div>
     </article>
   );

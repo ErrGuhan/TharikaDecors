@@ -45,7 +45,7 @@ export default function RootLayout({
         className={`${inter.className} bg-tharika-cream text-gray-900 antialiased min-h-screen flex flex-col`}
       >
         <Header />
-        <main className="flex-1 w-full pb-16 md:pb-0">{children}</main>
+        <main className="flex-1 w-full pb-28 md:pb-12">{children}</main>
         <BottomNav />
       </body>
     </html>
