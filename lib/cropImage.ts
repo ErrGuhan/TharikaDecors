@@ -14,12 +14,17 @@ export const createImage = (url: string): Promise<HTMLImageElement> =>
     image.src = url;
   });
 
+function getRadianAngle(degreeValue: number) {
+  return (degreeValue * Math.PI) / 180;
+}
+
 /**
- * Returns a cropped Blob from an image source and pixel crop coordinates.
+ * Returns a cropped File from an image source, dynamic pixel crop coordinates, and rotation.
  */
 export default async function getCroppedImg(
   imageSrc: string,
   pixelCrop: Area,
+  rotation = 0,
   fileName = 'cropped-portfolio-image.jpg',
   mimeType = 'image/jpeg'
 ): Promise<File> {
@@ -31,26 +36,51 @@ export default async function getCroppedImg(
     throw new Error('No 2d context could be created for canvas cropping');
   }
 
-  // Set canvas size to the cropped area dimensions
-  canvas.width = pixelCrop.width;
-  canvas.height = pixelCrop.height;
+  const rotRad = getRadianAngle(rotation);
 
-  // Draw the cropped image onto the canvas
-  ctx.drawImage(
-    image,
+  // Calculate bounding box of the rotated image
+  const bBoxWidth = Math.abs(Math.cos(rotRad) * image.width) + Math.abs(Math.sin(rotRad) * image.height);
+  const bBoxHeight = Math.abs(Math.sin(rotRad) * image.width) + Math.abs(Math.cos(rotRad) * image.height);
+
+  // Set intermediate canvas size to match the bounding box
+  canvas.width = bBoxWidth;
+  canvas.height = bBoxHeight;
+
+  // Translate canvas center to pivot point
+  ctx.translate(bBoxWidth / 2, bBoxHeight / 2);
+  ctx.rotate(rotRad);
+  ctx.translate(-image.width / 2, -image.height / 2);
+
+  // Draw rotated image
+  ctx.drawImage(image, 0, 0);
+
+  // Create output canvas for the dynamically selected cropped area
+  const croppedCanvas = document.createElement('canvas');
+  const croppedCtx = croppedCanvas.getContext('2d');
+
+  if (!croppedCtx) {
+    throw new Error('No 2d context for cropped output canvas');
+  }
+
+  croppedCanvas.width = Math.max(1, Math.round(pixelCrop.width));
+  croppedCanvas.height = Math.max(1, Math.round(pixelCrop.height));
+
+  // Draw the cropped slice from the intermediate canvas
+  croppedCtx.drawImage(
+    canvas,
     pixelCrop.x,
     pixelCrop.y,
     pixelCrop.width,
     pixelCrop.height,
     0,
     0,
-    pixelCrop.width,
-    pixelCrop.height
+    croppedCanvas.width,
+    croppedCanvas.height
   );
 
-  // Return as File
+  // Return as File with specified mimeType
   return new Promise((resolve, reject) => {
-    canvas.toBlob(
+    croppedCanvas.toBlob(
       (blob) => {
         if (!blob) {
           reject(new Error('Canvas is empty'));

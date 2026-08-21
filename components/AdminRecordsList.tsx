@@ -888,13 +888,14 @@ export default function AdminRecordsList({ initialItems }: AdminRecordsListProps
         )}
       </AnimatePresence>
 
-      {/* ── 9:16 Edit Cropper Modal ── */}
+      {/* ── Flexible Edit Cropper Modal ── */}
       {isEditCropperOpen && rawEditImageSrc && (
         <ImageCropper
           imageSrc={rawEditImageSrc}
+          rawFile={editFile}
           originalFileName={editFile?.name}
           mimeType={editFile?.type}
-          aspect={9 / 16}
+          aspect={4 / 5}
           onCropComplete={handleEditCropComplete}
           onCancel={() => setIsEditCropperOpen(false)}
         />

@@ -263,7 +263,7 @@ export default function UploadForm({
               )}
             </AnimatePresence>
 
-            {/* 1. Image Cropper Trigger with Collapsible 9:16 Preview */}
+            {/* 1. Image Cropper Trigger with Collapsible Multi-Ratio Preview */}
             <div>
               <div className="flex items-center justify-between mb-1.5">
                 <label className="text-[11px] font-bold uppercase tracking-wider text-slate-600">
@@ -276,24 +276,22 @@ export default function UploadForm({
                     className="text-xs text-[#0F172A] hover:text-[#D4AF37] font-semibold flex items-center gap-1 cursor-pointer transition-colors"
                   >
                     <Crop className="w-3.5 h-3.5" />
-                    <span>Adjust Crop</span>
+                    <span>Adjust Crop &amp; Ratio</span>
                   </button>
                 )}
               </div>
 
               {previewUrl ? (
-                /* Collapsed Neat 9:16 Preview Card */
+                /* Collapsed Neat Dynamic Ratio Preview Card */
                 <motion.div
                   initial={{ opacity: 0, scale: 0.96 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="relative rounded-2xl overflow-hidden border border-slate-200 bg-slate-900 flex items-center justify-center max-w-[170px] mx-auto aspect-[9/16] shadow-md group"
+                  className="relative rounded-2xl overflow-hidden border border-slate-200 bg-slate-950 flex items-center justify-center max-w-[240px] max-h-56 min-h-[140px] mx-auto shadow-md group"
                 >
-                  <Image
+                  <img
                     src={previewUrl}
-                    alt="Cropped 9:16 Portrait"
-                    fill
-                    className="object-cover"
-                    unoptimized
+                    alt="Cropped Preview"
+                    className="w-full h-full max-h-56 object-contain"
                   />
                   <button
                     type="button"
@@ -304,13 +302,13 @@ export default function UploadForm({
                     <X className="w-3.5 h-3.5" />
                   </button>
                   <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent p-2.5 text-white text-[10px] flex items-center justify-between">
-                    <span className="font-semibold text-[#D4AF37]">9:16 Ready</span>
+                    <span className="font-semibold text-[#D4AF37]">Ready</span>
                     <button
                       type="button"
                       onClick={() => setIsCropperOpen(true)}
                       className="underline text-slate-200 hover:text-white cursor-pointer"
                     >
-                      Re-crop
+                      Change Ratio
                     </button>
                   </div>
                 </motion.div>
@@ -599,13 +597,14 @@ export default function UploadForm({
         )}
       </AnimatePresence>
 
-      {/* ── 9:16 Image Cropper Modal ── */}
+      {/* ── Flexible Image Cropper Modal ── */}
       {isCropperOpen && rawImageSrc && (
         <ImageCropper
           imageSrc={rawImageSrc}
+          rawFile={rawFile}
           originalFileName={rawFile?.name}
           mimeType={rawFile?.type}
-          aspect={9 / 16}
+          aspect={4 / 5}
           onCropComplete={handleCropComplete}
           onCancel={() => setIsCropperOpen(false)}
         />
