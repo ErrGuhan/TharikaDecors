@@ -180,11 +180,28 @@ export default function UploadForm({
       formData.append('instagramUrl', instagramUrl.trim());
       formData.append('isCover', isCover ? 'true' : 'false');
 
-      // Invoke Server Action
-      const result = await createPortfolioItem(formData);
+      let result: any = null;
 
-      if (!result.success) {
-        throw new Error(result.error || 'Failed to upload and save showcase item.');
+      // 1. Primary: Use dedicated Next.js API route handler for standard multipart upload
+      try {
+        const res = await fetch('/api/admin/portfolio', {
+          method: 'POST',
+          body: formData,
+        });
+        const resData = await res.json().catch(() => null);
+        if (res.ok && resData?.success) {
+          result = resData;
+        } else if (resData?.error) {
+          throw new Error(resData.error);
+        }
+      } catch (fetchErr: any) {
+        console.warn('API route note, trying server action fallback:', fetchErr?.message);
+        // 2. Fallback to Server Action if needed
+        result = await createPortfolioItem(formData);
+      }
+
+      if (!result || !result.success) {
+        throw new Error(result?.error || 'Failed to upload and save showcase item.');
       }
 
       setFeedback({
@@ -207,7 +224,7 @@ export default function UploadForm({
       console.error('Upload form error:', err);
       setFeedback({
         type: 'error',
-        message: err.message || 'An error occurred during submission.',
+        message: err.message || 'An unexpected error occurred while saving the showcase.',
       });
     } finally {
       setIsLoading(false);
