@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import prisma from '@/lib/prisma';
 import PortfolioFeed from '@/components/PortfolioFeed';
 import { PortfolioCardItem } from '@/components/PortfolioCard';
+import { ensureDatabaseSchema } from '@/lib/dbInit';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -16,6 +17,8 @@ export default async function BabyShowersPage() {
   let items: PortfolioCardItem[] = [];
 
   try {
+    await ensureDatabaseSchema().catch(() => null);
+
     // Strictly fetch dynamic data from PostgreSQL database via Prisma
     const portfolioItems = await prisma.portfolioItem
       .findMany({

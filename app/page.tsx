@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import prisma from '@/lib/prisma';
 import HomeHeroAndCategories, { DynamicCategoryCard } from '@/components/HomeHeroAndCategories';
+import { ensureDatabaseSchema } from '@/lib/dbInit';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -15,6 +16,8 @@ export default async function HomePage() {
   let categoryCards: DynamicCategoryCard[] = [];
 
   try {
+    await ensureDatabaseSchema().catch(() => null);
+
     // Fetch categories with their latest cover or item from database
     const categoriesFromDb = await prisma.category
       .findMany({

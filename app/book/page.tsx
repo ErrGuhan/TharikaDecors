@@ -152,7 +152,17 @@ export default function BookingPage() {
                 <p className="text-sm text-gray-600 max-w-sm">
                   We have received your booking inquiry for your {formData.eventType || 'event'}. Our team will review the details and get in touch with you shortly.
                 </p>
-                <div className="pt-4 w-full">
+                <div className="pt-4 w-full flex flex-col gap-2.5">
+                  <a
+                    href={`https://wa.me/916384947914?text=${encodeURIComponent(
+                      `Hello Tharika Decors! I just submitted a booking inquiry for ${formData.fullName} (${formData.eventType || 'Event'} on ${formData.eventDate || 'upcoming date'}, Budget: ${formData.estimatedBudget || 'Standard'}). Would love to connect!`
+                    )}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full py-3.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
+                  >
+                    <span>Connect on WhatsApp</span>
+                  </a>
                   <button
                     type="button"
                     onClick={handleReset}
