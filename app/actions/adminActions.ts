@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/prisma';
 import { createSupabaseServerClient } from '@/lib/supabaseServer';
 import { getServiceSupabase } from '@/lib/supabase';
+import { ensureDatabaseSchema } from '@/lib/dbInit';
 
 const ADMIN_EMAILS = (
   process.env.ADMIN_EMAILS ||
@@ -119,6 +120,8 @@ function serializeItem(item: any) {
  */
 export async function createCategory(name: string, slug?: string): Promise<ActionResponse> {
   try {
+    await ensureDatabaseSchema();
+
     const isAuthorized = await verifyAdminAuth();
     if (!isAuthorized) {
       return {
@@ -293,6 +296,8 @@ async function resolveCategoryId(categoryIdentifier: string): Promise<string | n
  */
 export async function createPortfolioItem(formData: FormData): Promise<ActionResponse> {
   try {
+    await ensureDatabaseSchema();
+
     const isAuthorized = await verifyAdminAuth();
     if (!isAuthorized) {
       return {

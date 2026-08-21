@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation';
 import { createSupabaseServerClient } from '@/lib/supabaseServer';
 import { prisma } from '@/lib/prisma';
 import AdminDashboardShell from '@/components/AdminDashboardShell';
+import { ensureDatabaseSchema } from '@/lib/dbInit';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -31,7 +32,9 @@ export default async function AdminDashboardPage() {
     redirect('/login');
   }
 
-  // Step 2: Fetch dynamic items & categories with safe fallbacks and try...catch
+  // Step 2: Ensure database schema is initialized, then fetch dynamic items & categories
+  await ensureDatabaseSchema().catch(() => null);
+
   let existingItems: any[] = [];
   let availableCategories: any[] = [
     { id: 'default', name: 'Wedding', slug: 'wedding', createdAt: new Date().toISOString() },

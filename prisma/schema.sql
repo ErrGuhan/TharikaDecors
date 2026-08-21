@@ -1,0 +1,79 @@
+-- =================================================================
+-- Tharika Decors: Supabase PostgreSQL Schema & Storage Setup
+-- Run this in your Supabase Project > SQL Editor
+-- =================================================================
+
+-- 1. Create Categories Table
+CREATE TABLE IF NOT EXISTS public.categories (
+    id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+    name TEXT NOT NULL,
+    slug TEXT NOT NULL UNIQUE,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 2. Create Portfolio Items Table
+CREATE TABLE IF NOT EXISTS public.portfolio_items (
+    id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+    title TEXT NOT NULL,
+    caption TEXT DEFAULT '',
+    price TEXT,
+    "instagramUrl" TEXT,
+    "categoryId" TEXT REFERENCES public.categories(id) ON DELETE CASCADE,
+    "imageUrl" TEXT NOT NULL,
+    "isCover" BOOLEAN NOT NULL DEFAULT false,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 3. Create High-Performance Query Indexes
+CREATE INDEX IF NOT EXISTS "portfolio_items_categoryId_idx" ON public.portfolio_items("categoryId");
+CREATE INDEX IF NOT EXISTS "portfolio_items_createdAt_idx" ON public.portfolio_items("createdAt" DESC);
+
+-- 4. Seed Default Categories
+INSERT INTO public.categories (id, name, slug)
+VALUES 
+    (gen_random_uuid()::text, 'Weddings', 'weddings'),
+    (gen_random_uuid()::text, 'Baby Showers', 'baby-showers'),
+    (gen_random_uuid()::text, 'Ear Piercing', 'ear-piercing')
+ON CONFLICT (slug) DO NOTHING;
+
+-- 5. Ensure 'portfolio-images' Supabase Storage Bucket Exists and is Public
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('portfolio-images', 'portfolio-images', true)
+ON CONFLICT (id) DO UPDATE SET public = true;
+
+-- 6. Storage Security Policies for Public Display & Uploads
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_policies WHERE tablename = 'objects' AND policyname = 'Public Access to Portfolio Images'
+    ) THEN
+        CREATE POLICY "Public Access to Portfolio Images"
+        ON storage.objects FOR SELECT
+        USING (bucket_id = 'portfolio-images');
+    END IF;
+
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_policies WHERE tablename = 'objects' AND policyname = 'Allow Uploads to Portfolio Images'
+    ) THEN
+        CREATE POLICY "Allow Uploads to Portfolio Images"
+        ON storage.objects FOR INSERT
+        WITH CHECK (bucket_id = 'portfolio-images');
+    END IF;
+
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_policies WHERE tablename = 'objects' AND policyname = 'Allow Updates to Portfolio Images'
+    ) THEN
+        CREATE POLICY "Allow Updates to Portfolio Images"
+        ON storage.objects FOR UPDATE
+        USING (bucket_id = 'portfolio-images');
+    END IF;
+
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_policies WHERE tablename = 'objects' AND policyname = 'Allow Deletions from Portfolio Images'
+    ) THEN
+        CREATE POLICY "Allow Deletions from Portfolio Images"
+        ON storage.objects FOR DELETE
+        USING (bucket_id = 'portfolio-images');
+    END IF;
+END $$;

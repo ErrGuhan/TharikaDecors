@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getServiceSupabase } from '@/lib/supabase';
+import { ensureDatabaseSchema } from '@/lib/dbInit';
 
 // Authorized admin emails check helper
 const AUTHORIZED_ADMIN_EMAILS = (
@@ -23,6 +24,8 @@ function slugify(text: string): string {
 
 export async function GET(req: NextRequest) {
   try {
+    await ensureDatabaseSchema();
+
     const items = await prisma.portfolioItem
       .findMany({
         include: { category: true },
@@ -69,6 +72,8 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
+    await ensureDatabaseSchema();
+
     const formData = await req.formData();
     const file = formData.get('file') as File | null;
     const title = (formData.get('title') as string | null)?.trim();
