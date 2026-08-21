@@ -131,8 +131,13 @@ export async function POST(req: NextRequest) {
       console.warn('Category resolve error in API route:', catErr);
     }
 
-    // 3. Upload file to Supabase Storage
+    // 3. Upload file to Supabase Storage with Base64 exact data preservation fallback
     let imageUrl = '';
+    const arrayBuffer = await file.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+    const mimeType = file.type || 'image/jpeg';
+    const base64DataUrl = `data:${mimeType};base64,${buffer.toString('base64')}`;
+
     try {
       const supabase = getServiceSupabase();
       const bucketName = 'portfolio-images';
@@ -140,28 +145,28 @@ export async function POST(req: NextRequest) {
       const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 9)}.${fileExt}`;
       const filePath = `uploads/${slugify(categoryRaw)}/${fileName}`;
 
-      const arrayBuffer = await file.arrayBuffer();
-      const buffer = Buffer.from(arrayBuffer);
+      // Ensure bucket exists
+      await supabase.storage.createBucket(bucketName, { public: true }).catch(() => null);
 
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from(bucketName)
         .upload(filePath, buffer, {
-          contentType: file.type || 'image/jpeg',
-          upsert: false,
+          contentType: mimeType,
+          upsert: true,
         });
 
       if (uploadError || !uploadData || !uploadData.path) {
-        console.warn('Supabase storage warning:', uploadError?.message);
-        imageUrl = `https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1200&q=80`;
+        console.warn('Supabase storage notice, preserving full uploaded image directly:', uploadError?.message);
+        imageUrl = base64DataUrl;
       } else {
         const { data: publicUrlData } = supabase.storage
           .from(bucketName)
           .getPublicUrl(uploadData.path);
-        imageUrl = publicUrlData?.publicUrl || '';
+        imageUrl = publicUrlData?.publicUrl || base64DataUrl;
       }
     } catch (storageErr) {
-      console.warn('Storage error in API route:', storageErr);
-      imageUrl = `https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1200&q=80`;
+      console.warn('Storage notice, saving uploaded image directly in DB:', storageErr);
+      imageUrl = base64DataUrl;
     }
 
     const caption = (formData.get('caption') as string | null)?.trim() || '';

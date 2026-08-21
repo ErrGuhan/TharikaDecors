@@ -327,43 +327,49 @@ export async function createPortfolioItem(formData: FormData): Promise<ActionRes
 
     const categoryId = await resolveCategoryId(categoryRaw);
 
-    // Upload to Supabase Storage bucket 'portfolio-images'
+    // Upload to Supabase Storage bucket 'portfolio-images' with exact base64 data preservation
     let imageUrl = '';
+    let fileBuffer: Buffer;
+    if (typeof (file as any).arrayBuffer === 'function') {
+      const arrayBuffer = await file.arrayBuffer();
+      fileBuffer = Buffer.from(arrayBuffer);
+    } else {
+      fileBuffer = Buffer.from(await (file as any).text());
+    }
+    const mimeType = file.type || 'image/jpeg';
+    const base64DataUrl = `data:${mimeType};base64,${fileBuffer.toString('base64')}`;
+
     try {
       const supabase = getServiceSupabase();
+      const bucketName = 'portfolio-images';
       const fileExt = file.name ? file.name.split('.').pop() || 'jpg' : 'jpg';
       const sanitizedTitle = title.replace(/[^a-zA-Z0-9_-]/g, '_').toLowerCase();
       const uniqueFileName = `${Date.now()}-${sanitizedTitle}.${fileExt}`;
       const filePath = `uploads/${slugify(categoryRaw)}/${uniqueFileName}`;
 
-      let fileBuffer: Buffer;
-      if (typeof (file as any).arrayBuffer === 'function') {
-        const arrayBuffer = await file.arrayBuffer();
-        fileBuffer = Buffer.from(arrayBuffer);
-      } else {
-        fileBuffer = Buffer.from(await (file as any).text());
-      }
+      // Ensure bucket exists
+      await supabase.storage.createBucket(bucketName, { public: true }).catch(() => null);
 
       const { data: uploadData, error: uploadError } = await supabase.storage
-        .from('portfolio-images')
+        .from(bucketName)
         .upload(filePath, fileBuffer, {
-          contentType: file.type || 'image/jpeg',
+          contentType: mimeType,
           cacheControl: '3600',
-          upsert: false,
+          upsert: true,
         });
 
       if (uploadError || !uploadData || !uploadData.path) {
-        console.warn('Supabase storage upload fallback:', uploadError?.message);
-        imageUrl = `https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1200&q=80`;
+        console.warn('Supabase storage notice, preserving full uploaded image directly:', uploadError?.message);
+        imageUrl = base64DataUrl;
       } else {
         const { data: publicUrlData } = supabase.storage
-          .from('portfolio-images')
+          .from(bucketName)
           .getPublicUrl(uploadData.path);
-        imageUrl = publicUrlData?.publicUrl || '';
+        imageUrl = publicUrlData?.publicUrl || base64DataUrl;
       }
     } catch (storageErr) {
-      console.warn('Storage upload error, using fallback image:', storageErr);
-      imageUrl = `https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1200&q=80`;
+      console.warn('Storage notice, saving uploaded image directly in DB:', storageErr);
+      imageUrl = base64DataUrl;
     }
 
     // Save PortfolioItem record to Database via Prisma
@@ -486,30 +492,36 @@ export async function updatePortfolioItem(
 
     if (file && typeof (file as any).arrayBuffer === 'function' && file.size > 0) {
       try {
+        const arrayBuffer = await file.arrayBuffer();
+        const fileBuffer = Buffer.from(arrayBuffer);
+        const mimeType = file.type || 'image/jpeg';
+        const base64DataUrl = `data:${mimeType};base64,${fileBuffer.toString('base64')}`;
+
         const supabase = getServiceSupabase();
+        const bucketName = 'portfolio-images';
         const fileExt = file.name ? file.name.split('.').pop() || 'jpg' : 'jpg';
         const sanitizedTitle = title.replace(/[^a-zA-Z0-9_-]/g, '_').toLowerCase();
         const uniqueFileName = `${Date.now()}-${sanitizedTitle}.${fileExt}`;
         const filePath = `uploads/${uniqueFileName}`;
 
-        const arrayBuffer = await file.arrayBuffer();
-        const fileBuffer = Buffer.from(arrayBuffer);
+        // Ensure bucket exists
+        await supabase.storage.createBucket(bucketName, { public: true }).catch(() => null);
 
         const { data: uploadData, error: uploadError } = await supabase.storage
-          .from('portfolio-images')
+          .from(bucketName)
           .upload(filePath, fileBuffer, {
-            contentType: file.type || 'image/jpeg',
+            contentType: mimeType,
             cacheControl: '3600',
-            upsert: false,
+            upsert: true,
           });
 
         if (!uploadError && uploadData && uploadData.path) {
           const { data: publicUrlData } = supabase.storage
-            .from('portfolio-images')
+            .from(bucketName)
             .getPublicUrl(uploadData.path);
-          if (publicUrlData?.publicUrl) {
-            updateData.imageUrl = publicUrlData.publicUrl;
-          }
+          updateData.imageUrl = publicUrlData?.publicUrl || base64DataUrl;
+        } else {
+          updateData.imageUrl = base64DataUrl;
         }
       } catch (err) {
         console.warn('Storage update warning:', err);

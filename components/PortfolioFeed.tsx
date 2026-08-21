@@ -306,7 +306,7 @@ export default function PortfolioFeed({
                     sizes="(max-width: 640px) 100vw, 448px"
                     className="object-cover"
                     priority
-                    unoptimized={activeModalItem.imageUrl.startsWith('http')}
+                    unoptimized={true}
                   />
                 ) : (
                   <div className="w-full h-full flex flex-col items-center justify-center text-amber-200/60 bg-slate-900">
