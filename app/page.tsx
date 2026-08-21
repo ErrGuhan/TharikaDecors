@@ -16,22 +16,27 @@ export default async function HomePage() {
 
   try {
     // Fetch categories with their latest cover or item from database
-    const categoriesFromDb = await prisma.category.findMany({
-      include: {
-        items: {
-          orderBy: [{ isCover: 'desc' }, { createdAt: 'desc' }],
-          take: 1,
+    const categoriesFromDb = await prisma.category
+      .findMany({
+        include: {
+          items: {
+            orderBy: [{ isCover: 'desc' }, { createdAt: 'desc' }],
+            take: 1,
+          },
+          _count: {
+            select: { items: true },
+          },
         },
-        _count: {
-          select: { items: true },
-        },
-      },
-      orderBy: { name: 'asc' },
-    });
+        orderBy: { name: 'asc' },
+      })
+      .catch((err) => {
+        console.warn('[Prisma Category Query Fallback in HomePage]:', err);
+        return [];
+      });
 
-    if (categoriesFromDb.length > 0) {
+    if (categoriesFromDb && Array.isArray(categoriesFromDb) && categoriesFromDb.length > 0) {
       categoryCards = categoriesFromDb.map((cat) => {
-        const coverItem = cat.items[0];
+        const coverItem = cat.items?.[0];
         let href = '/portfolio';
         let defaultImage = '';
 
@@ -53,7 +58,7 @@ export default async function HomePage() {
             coverItem?.imageUrl ||
             defaultImage ||
             '/ear-piercing-cover.jpg',
-          itemCount: cat._count.items,
+          itemCount: cat._count?.items ?? 0,
         };
       });
     }

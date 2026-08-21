@@ -21,15 +21,33 @@ function slugify(text: string): string {
 
 export async function GET(req: NextRequest) {
   try {
-    const items = await prisma.portfolioItem.findMany({
-      include: { category: true },
-      orderBy: { createdAt: 'desc' },
-    });
-    return NextResponse.json({ success: true, items });
+    const items = await prisma.portfolioItem
+      .findMany({
+        include: { category: true },
+        orderBy: { createdAt: 'desc' },
+      })
+      .catch((err) => {
+        console.warn('GET /api/admin/portfolio fallback:', err);
+        return [];
+      });
+
+    const safeItems = (items || []).map((item) => ({
+      ...item,
+      createdAt: item.createdAt instanceof Date ? item.createdAt.toISOString() : (item.createdAt ? new Date(item.createdAt).toISOString() : new Date().toISOString()),
+      updatedAt: item.updatedAt instanceof Date ? item.updatedAt.toISOString() : (item.updatedAt ? new Date(item.updatedAt).toISOString() : (item.createdAt instanceof Date ? item.createdAt.toISOString() : new Date().toISOString())),
+      category: item.category
+        ? {
+            ...item.category,
+            createdAt: item.category.createdAt instanceof Date ? item.category.createdAt.toISOString() : (item.category.createdAt ? new Date(item.category.createdAt).toISOString() : new Date().toISOString()),
+          }
+        : null,
+    }));
+
+    return NextResponse.json({ success: true, items: safeItems });
   } catch (error) {
     console.error('Error fetching portfolio items:', error);
     return NextResponse.json(
-      { success: false, error: 'Failed to fetch portfolio items' },
+      { success: false, items: [], error: 'Failed to fetch portfolio items' },
       { status: 500 }
     );
   }

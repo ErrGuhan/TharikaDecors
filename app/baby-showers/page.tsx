@@ -17,31 +17,39 @@ export default async function BabyShowersPage() {
 
   try {
     // Strictly fetch dynamic data from PostgreSQL database via Prisma
-    const portfolioItems = await prisma.portfolioItem.findMany({
-      where: {
-        OR: [
-          { category: { slug: { in: ['baby-shower', 'baby-showers', 'seemantham', 'valaikappu'] } } },
-          { category: { name: { contains: 'baby', mode: 'insensitive' } } },
-          { category: { name: { contains: 'valaikappu', mode: 'insensitive' } } },
-          { category: { name: { contains: 'seemantham', mode: 'insensitive' } } },
-        ],
-      },
-      include: { category: true },
-      orderBy: [{ isCover: 'desc' }, { createdAt: 'desc' }],
-    });
+    const portfolioItems = await prisma.portfolioItem
+      .findMany({
+        where: {
+          OR: [
+            { category: { slug: { in: ['baby-shower', 'baby-showers', 'seemantham', 'valaikappu'] } } },
+            { category: { name: { contains: 'baby', mode: 'insensitive' } } },
+            { category: { name: { contains: 'valaikappu', mode: 'insensitive' } } },
+            { category: { name: { contains: 'seemantham', mode: 'insensitive' } } },
+          ],
+        },
+        include: { category: true },
+        orderBy: [{ isCover: 'desc' }, { createdAt: 'desc' }],
+      })
+      .catch((err) => {
+        console.warn('[Prisma Portfolio Query Fallback in Baby Showers Page]:', err);
+        return [];
+      });
 
-    items = portfolioItems.map((item) => ({
-      id: item.id,
-      title: item.title,
-      imageUrl: item.imageUrl,
-      caption: item.caption,
-      price: item.price,
-      instagramUrl: item.instagramUrl,
-      category: item.category?.name || 'Baby Shower',
-      isCover: item.isCover,
-    }));
+    if (portfolioItems && Array.isArray(portfolioItems) && portfolioItems.length > 0) {
+      items = portfolioItems.map((item) => ({
+        id: item.id,
+        title: item.title,
+        imageUrl: item.imageUrl,
+        caption: item.caption,
+        price: item.price,
+        instagramUrl: item.instagramUrl,
+        category: item.category?.name || 'Baby Shower',
+        isCover: item.isCover,
+      }));
+    }
   } catch (error) {
     console.error('Error fetching baby shower portfolio items from database:', error);
+    items = [];
   }
 
   // Use authentic traditional Valaikappu/Seemantham showcase if no database records uploaded yet

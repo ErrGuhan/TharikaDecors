@@ -17,23 +17,31 @@ export default async function PortfolioPage() {
 
   try {
     // Strictly fetch dynamic data from PostgreSQL database via Prisma
-    const dbItems = await prisma.portfolioItem.findMany({
-      include: { category: true },
-      orderBy: [{ isCover: 'desc' }, { createdAt: 'desc' }],
-    });
+    const dbItems = await prisma.portfolioItem
+      .findMany({
+        include: { category: true },
+        orderBy: [{ isCover: 'desc' }, { createdAt: 'desc' }],
+      })
+      .catch((err) => {
+        console.warn('[Prisma Portfolio Query Fallback in Portfolio Page]:', err);
+        return [];
+      });
 
-    items = dbItems.map((item) => ({
-      id: item.id,
-      title: item.title,
-      imageUrl: item.imageUrl,
-      caption: item.caption,
-      price: item.price,
-      instagramUrl: item.instagramUrl,
-      category: item.category?.name || 'Showcase',
-      isCover: item.isCover,
-    }));
+    if (dbItems && Array.isArray(dbItems) && dbItems.length > 0) {
+      items = dbItems.map((item) => ({
+        id: item.id,
+        title: item.title,
+        imageUrl: item.imageUrl,
+        caption: item.caption,
+        price: item.price,
+        instagramUrl: item.instagramUrl,
+        category: item.category?.name || 'Showcase',
+        isCover: item.isCover,
+      }));
+    }
   } catch (error) {
     console.error('Database query error in portfolio page:', error);
+    items = [];
   }
 
   // If no custom uploads are in database yet, showcase authentic event collections

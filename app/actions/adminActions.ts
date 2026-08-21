@@ -52,6 +52,24 @@ function slugify(text: string): string {
     .replace(/\-\-+/g, '-');
 }
 
+function serializeCategory(cat: any) {
+  if (!cat) return cat;
+  return {
+    ...cat,
+    createdAt: cat.createdAt instanceof Date ? cat.createdAt.toISOString() : (cat.createdAt ? new Date(cat.createdAt).toISOString() : new Date().toISOString()),
+  };
+}
+
+function serializeItem(item: any) {
+  if (!item) return item;
+  return {
+    ...item,
+    createdAt: item.createdAt instanceof Date ? item.createdAt.toISOString() : (item.createdAt ? new Date(item.createdAt).toISOString() : new Date().toISOString()),
+    updatedAt: item.updatedAt instanceof Date ? item.updatedAt.toISOString() : (item.updatedAt ? new Date(item.updatedAt).toISOString() : (item.createdAt instanceof Date ? item.createdAt.toISOString() : new Date().toISOString())),
+    category: item.category ? serializeCategory(item.category) : item.category,
+  };
+}
+
 /**
  * 1. createCategory(name: string, slug?: string)
  */
@@ -81,7 +99,7 @@ export async function createCategory(name: string, slug?: string): Promise<Actio
       return {
         success: true,
         message: `Category "${existing.name}" already exists.`,
-        category: existing,
+        category: serializeCategory(existing),
       };
     }
 
@@ -97,7 +115,7 @@ export async function createCategory(name: string, slug?: string): Promise<Actio
     return {
       success: true,
       message: `Category "${newCategory.name}" created successfully!`,
-      category: newCategory,
+      category: serializeCategory(newCategory),
     };
   } catch (error: any) {
     console.error('Error in createCategory action:', error);
@@ -134,7 +152,7 @@ export async function deleteCategory(id: string): Promise<ActionResponse> {
     return {
       success: true,
       message: `Deleted category "${deletedCategory.name}" successfully.`,
-      category: deletedCategory,
+      category: serializeCategory(deletedCategory),
     };
   } catch (error: any) {
     console.error('Error in deleteCategory action:', error);
@@ -288,7 +306,7 @@ export async function createPortfolioItem(formData: FormData): Promise<ActionRes
     return {
       success: true,
       message: 'Portfolio item created and saved successfully!',
-      item: newItem,
+      item: serializeItem(newItem),
     };
   } catch (error: any) {
     console.error('Error in createPortfolioItem:', error);
@@ -409,7 +427,7 @@ export async function updatePortfolioItem(
     return {
       success: true,
       message: 'Showcase item updated successfully!',
-      item: updatedItem,
+      item: serializeItem(updatedItem),
     };
   } catch (error: any) {
     console.error('Error in updatePortfolioItem:', error);
@@ -446,7 +464,7 @@ export async function deletePortfolioItem(id: string): Promise<ActionResponse> {
     return {
       success: true,
       message: `Deleted "${deletedItem.title}" successfully.`,
-      item: deletedItem,
+      item: serializeItem(deletedItem),
     };
   } catch (error: any) {
     console.error('Error in deletePortfolioItem:', error);
@@ -496,7 +514,7 @@ export async function setCoverPhoto(
     return {
       success: true,
       message: `"${updatedItem.title}" set as primary cover photo!`,
-      item: updatedItem,
+      item: serializeItem(updatedItem),
     };
   } catch (error: any) {
     console.error('Error in setCoverPhoto:', error);

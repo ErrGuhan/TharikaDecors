@@ -16,6 +16,10 @@ import {
   Plus,
   Tag,
   Instagram,
+  Sparkles,
+  DollarSign,
+  Type,
+  FolderPlus,
 } from 'lucide-react';
 import { createPortfolioItem, createCategory } from '@/app/actions/adminActions';
 import ImageCropper from '@/components/ImageCropper';
@@ -29,9 +33,13 @@ export interface CategoryOption {
 
 interface UploadFormProps {
   categories?: CategoryOption[];
+  onItemCreated?: (newItem: any) => void;
 }
 
-export default function UploadForm({ categories = [] }: UploadFormProps) {
+export default function UploadForm({
+  categories = [],
+  onItemCreated,
+}: UploadFormProps) {
   const [title, setTitle] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>(
     categories[0]?.id || 'wedding'
@@ -51,9 +59,10 @@ export default function UploadForm({ categories = [] }: UploadFormProps) {
   // Live Mobile Preview Modal
   const [isPreviewModalOpen, setIsPreviewModalOpen] = useState(false);
 
-  // New Category inline creation
+  // Inline Category Creator Modal State
   const [isAddingCategory, setIsAddingCategory] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState('');
+  const [isCreatingCategory, setIsCreatingCategory] = useState(false);
   const [categoryList, setCategoryList] = useState<CategoryOption[]>(categories);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -63,6 +72,16 @@ export default function UploadForm({ categories = [] }: UploadFormProps) {
   } | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Sync categoryList if prop changes
+  React.useEffect(() => {
+    if (categories && categories.length > 0) {
+      setCategoryList(categories);
+      if (!categories.some((c) => c.id === selectedCategory)) {
+        setSelectedCategory(categories[0].id);
+      }
+    }
+  }, [categories]);
 
   // When user selects a raw image file, launch the 9:16 Cropper
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -96,25 +115,38 @@ export default function UploadForm({ categories = [] }: UploadFormProps) {
   };
 
   // Inline Category Creator
-  const handleCreateNewCategory = async () => {
+  const handleCreateNewCategory = async (e: React.FormEvent) => {
+    e.preventDefault();
     if (!newCategoryName.trim()) return;
+
+    setIsCreatingCategory(true);
     try {
       const res = await createCategory(newCategoryName.trim());
       if (res.success && res.category) {
-        setCategoryList((prev) => [...prev, res.category]);
-        setSelectedCategory(res.category.id);
+        const addedCat = {
+          id: res.category.id,
+          name: res.category.name,
+          slug: res.category.slug,
+        };
+        setCategoryList((prev) => [...prev, addedCat]);
+        setSelectedCategory(addedCat.id);
         setNewCategoryName('');
         setIsAddingCategory(false);
+      } else {
+        alert(res.error || 'Failed to create category.');
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error('Error creating category:', err);
+      alert(err.message || 'Failed to create category.');
+    } finally {
+      setIsCreatingCategory(false);
     }
   };
 
   const selectedCategoryObj = categoryList.find(
     (c) => c.id === selectedCategory || c.slug === selectedCategory
   );
-  const displayCategoryName = selectedCategoryObj?.name || selectedCategory;
+  const displayCategoryName = selectedCategoryObj?.name || 'Showcase';
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -128,7 +160,10 @@ export default function UploadForm({ categories = [] }: UploadFormProps) {
     }
 
     if (!title.trim()) {
-      setFeedback({ type: 'error', message: 'Please enter a title for this portfolio showcase.' });
+      setFeedback({
+        type: 'error',
+        message: 'Please enter a title (design name) for this portfolio showcase.',
+      });
       return;
     }
 
@@ -149,13 +184,17 @@ export default function UploadForm({ categories = [] }: UploadFormProps) {
       const result = await createPortfolioItem(formData);
 
       if (!result.success) {
-        throw new Error(result.error || 'Failed to upload and save portfolio item.');
+        throw new Error(result.error || 'Failed to upload and save showcase item.');
       }
 
       setFeedback({
         type: 'success',
-        message: result.message || `Showcase "${title}" published successfully!`,
+        message: result.message || `Showcase "${title}" published to live site!`,
       });
+
+      if (onItemCreated && result.item) {
+        onItemCreated(result.item);
+      }
 
       // Reset form
       setTitle('');
@@ -177,308 +216,388 @@ export default function UploadForm({ categories = [] }: UploadFormProps) {
 
   return (
     <>
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-200/80 p-6 sm:p-8">
-        <div className="flex items-center justify-between pb-4 mb-6 border-b border-gray-100">
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-xl bg-tharika-blue/10 text-tharika-blue">
-              <PlusCircle className="w-5 h-5" />
+      <div className="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-6 sm:p-7 flex flex-col justify-between">
+        <div>
+          {/* Card Header */}
+          <div className="flex items-center justify-between pb-4 mb-5 border-b border-slate-100">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-xl bg-[#0F172A]/5 text-[#0F172A] border border-[#0F172A]/10">
+                <PlusCircle className="w-5 h-5 text-[#0F172A]" />
+              </div>
+              <div>
+                <h2 className="font-heading text-lg sm:text-xl font-bold text-[#0F172A] tracking-tight">
+                  Upload Showcase
+                </h2>
+                <p className="text-xs text-slate-500">
+                  Mobile-first 9:16 portrait photography &amp; design details.
+                </p>
+              </div>
             </div>
-            <div>
-              <h2 className="font-heading text-xl text-tharika-blue font-semibold">
-                Upload New Showcase
-              </h2>
-              <p className="text-xs text-gray-500">
-                Upload 9:16 mobile-first photography directly to Supabase &amp; Prisma database.
-              </p>
-            </div>
+            <span className="hidden sm:inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-[#D4AF37]/10 text-[#0F172A] border border-[#D4AF37]/30">
+              <Sparkles className="w-3 h-3 text-[#D4AF37]" />
+              <span>9:16 Portrait</span>
+            </span>
           </div>
-        </div>
 
-        <form onSubmit={handleSubmit} className="space-y-5">
-          {/* Status Alerts */}
-          <AnimatePresence mode="wait">
-            {feedback && (
-              <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                className={`p-4 rounded-xl flex items-start gap-3 text-sm ${
-                  feedback.type === 'success'
-                    ? 'bg-emerald-50 text-emerald-900 border border-emerald-200'
-                    : 'bg-red-50 text-red-900 border border-red-200'
-                }`}
-              >
-                {feedback.type === 'success' ? (
-                  <CheckCircle2 className="w-5 h-5 flex-shrink-0 text-emerald-600 mt-0.5" />
-                ) : (
-                  <AlertCircle className="w-5 h-5 flex-shrink-0 text-red-600 mt-0.5" />
-                )}
-                <span className="leading-snug">{feedback.message}</span>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          {/* 1. File Input with 9:16 Cropped Preview */}
-          <div>
-            <div className="flex items-center justify-between mb-2">
-              <label className="text-xs font-semibold uppercase tracking-wider text-gray-700">
-                9:16 Portrait Image <span className="text-red-500">*</span>
-              </label>
-              {previewUrl && (
-                <button
-                  type="button"
-                  onClick={() => setIsCropperOpen(true)}
-                  className="text-xs text-tharika-blue hover:text-tharika-green font-medium flex items-center gap-1 cursor-pointer"
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Status Alert Notification */}
+            <AnimatePresence mode="wait">
+              {feedback && (
+                <motion.div
+                  initial={{ opacity: 0, y: -8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  className={`p-3.5 rounded-xl flex items-start gap-2.5 text-xs font-medium ${
+                    feedback.type === 'success'
+                      ? 'bg-emerald-50 text-emerald-900 border border-emerald-200'
+                      : 'bg-red-50 text-red-900 border border-red-200'
+                  }`}
                 >
-                  <Crop className="w-3.5 h-3.5" />
-                  <span>Adjust Crop</span>
-                </button>
+                  {feedback.type === 'success' ? (
+                    <CheckCircle2 className="w-4 h-4 flex-shrink-0 text-emerald-600 mt-0.5" />
+                  ) : (
+                    <AlertCircle className="w-4 h-4 flex-shrink-0 text-red-600 mt-0.5" />
+                  )}
+                  <span className="leading-relaxed">{feedback.message}</span>
+                </motion.div>
               )}
-            </div>
+            </AnimatePresence>
 
-            {previewUrl ? (
-              <div className="relative rounded-2xl overflow-hidden border border-gray-200 bg-black flex items-center justify-center max-w-[240px] mx-auto aspect-[9/16] shadow-md group">
-                <Image
-                  src={previewUrl}
-                  alt="Cropped 9:16 Preview"
-                  fill
-                  className="object-cover"
-                  unoptimized
-                />
-                <button
-                  type="button"
-                  onClick={handleClearFile}
-                  className="absolute top-3 right-3 p-1.5 rounded-full bg-black/70 text-white hover:bg-black transition-colors shadow-md z-10"
-                  aria-label="Remove image"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-3 text-white text-[11px] font-mono flex items-center justify-between">
-                  <span>9:16 Cropped</span>
-                  <span className="text-[10px] text-gray-300 truncate max-w-[120px]">
-                    {croppedFile?.name}
-                  </span>
-                </div>
-              </div>
-            ) : (
-              <div
-                onClick={() => fileInputRef.current?.click()}
-                className="border-2 border-dashed border-gray-300 hover:border-tharika-blue rounded-2xl p-8 text-center cursor-pointer transition-colors bg-gray-50/50 hover:bg-tharika-blue/5 group flex flex-col items-center justify-center"
-              >
-                <div className="w-12 h-12 rounded-full bg-white shadow-sm flex items-center justify-center text-gray-400 group-hover:text-tharika-blue group-hover:scale-110 transition-all mb-2.5">
-                  <UploadCloud className="w-6 h-6" />
-                </div>
-                <p className="text-sm font-semibold text-gray-700 group-hover:text-tharika-blue">
-                  Click or drag &amp; drop event photo
-                </p>
-                <p className="text-xs text-gray-400 mt-1">
-                  You will be prompted to crop to 9:16 portrait aspect ratio
-                </p>
-              </div>
-            )}
-
-            <input
-              type="file"
-              ref={fileInputRef}
-              onChange={handleFileChange}
-              accept="image/*"
-              className="hidden"
-            />
-          </div>
-
-          {/* 2. Text input for 'Title' */}
-          <div>
-            <label
-              htmlFor="item-title"
-              className="block text-xs font-semibold uppercase tracking-wider text-gray-700 mb-1.5"
-            >
-              Title (Design Name) <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="text"
-              id="item-title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="e.g. Royal Grand Floral Mandap"
-              required
-              className="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:border-tharika-blue focus:ring-2 focus:ring-tharika-blue/20 outline-none text-sm transition-all bg-white text-gray-900"
-            />
-          </div>
-
-          {/* 3. Category & Cover Checkbox Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {/* 1. Image Cropper Trigger with Collapsible 9:16 Preview */}
             <div>
               <div className="flex items-center justify-between mb-1.5">
-                <label
-                  htmlFor="item-category"
-                  className="text-xs font-semibold uppercase tracking-wider text-gray-700"
-                >
-                  Category <span className="text-red-500">*</span>
+                <label className="text-[11px] font-bold uppercase tracking-wider text-slate-600">
+                  Showcase Photo <span className="text-red-500">*</span>
                 </label>
-                <button
-                  type="button"
-                  onClick={() => setIsAddingCategory(!isAddingCategory)}
-                  className="text-[11px] text-tharika-blue hover:text-tharika-green font-medium flex items-center gap-0.5 cursor-pointer"
-                >
-                  <Plus className="w-3 h-3" />
-                  <span>{isAddingCategory ? 'Cancel' : 'New'}</span>
-                </button>
+                {previewUrl && (
+                  <button
+                    type="button"
+                    onClick={() => setIsCropperOpen(true)}
+                    className="text-xs text-[#0F172A] hover:text-[#D4AF37] font-semibold flex items-center gap-1 cursor-pointer transition-colors"
+                  >
+                    <Crop className="w-3.5 h-3.5" />
+                    <span>Adjust Crop</span>
+                  </button>
+                )}
               </div>
 
-              {isAddingCategory ? (
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    value={newCategoryName}
-                    onChange={(e) => setNewCategoryName(e.target.value)}
-                    placeholder="New category name..."
-                    className="w-full px-3 py-2 text-xs rounded-xl border border-gray-300 focus:border-tharika-blue outline-none"
+              {previewUrl ? (
+                /* Collapsed Neat 9:16 Preview Card */
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.96 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="relative rounded-2xl overflow-hidden border border-slate-200 bg-slate-900 flex items-center justify-center max-w-[170px] mx-auto aspect-[9/16] shadow-md group"
+                >
+                  <Image
+                    src={previewUrl}
+                    alt="Cropped 9:16 Portrait"
+                    fill
+                    className="object-cover"
+                    unoptimized
                   />
                   <button
                     type="button"
-                    onClick={handleCreateNewCategory}
-                    className="px-3 py-2 text-xs rounded-xl bg-tharika-blue text-white font-medium hover:bg-[#072844]"
+                    onClick={handleClearFile}
+                    className="absolute top-2.5 right-2.5 p-1.5 rounded-full bg-black/70 text-white hover:bg-red-600 transition-colors shadow-md z-10 cursor-pointer"
+                    title="Remove Photo"
                   >
-                    Add
+                    <X className="w-3.5 h-3.5" />
                   </button>
-                </div>
+                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent p-2.5 text-white text-[10px] flex items-center justify-between">
+                    <span className="font-semibold text-[#D4AF37]">9:16 Ready</span>
+                    <button
+                      type="button"
+                      onClick={() => setIsCropperOpen(true)}
+                      className="underline text-slate-200 hover:text-white cursor-pointer"
+                    >
+                      Re-crop
+                    </button>
+                  </div>
+                </motion.div>
               ) : (
-                <select
-                  id="item-category"
-                  value={selectedCategory}
-                  onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:border-tharika-blue focus:ring-2 focus:ring-tharika-blue/20 outline-none text-sm transition-all bg-white text-gray-900 cursor-pointer"
+                /* Empty Upload Dropzone */
+                <div
+                  onClick={() => fileInputRef.current?.click()}
+                  className="border-2 border-dashed border-slate-300 hover:border-[#0F172A] rounded-2xl p-6 text-center cursor-pointer transition-all bg-[#FAF7F2]/60 hover:bg-[#FAF7F2] group flex flex-col items-center justify-center"
                 >
-                  {categoryList.length > 0 ? (
-                    categoryList.map((cat) => (
-                      <option key={cat.id} value={cat.id}>
-                        {cat.name}
-                      </option>
-                    ))
-                  ) : (
-                    <>
-                      <option value="wedding">Wedding</option>
-                      <option value="baby-shower">Baby Shower</option>
-                      <option value="ear-piercing">Ear Piercing</option>
-                    </>
-                  )}
-                </select>
+                  <div className="w-10 h-10 rounded-full bg-white shadow-xs border border-slate-200 flex items-center justify-center text-slate-500 group-hover:text-[#0F172A] group-hover:scale-110 transition-all mb-2">
+                    <UploadCloud className="w-5 h-5" />
+                  </div>
+                  <p className="text-xs font-semibold text-slate-800 group-hover:text-[#0F172A]">
+                    Click or drag image here
+                  </p>
+                  <p className="text-[11px] text-slate-400 mt-0.5">
+                    Cropped automatically to 9:16 mobile portrait
+                  </p>
+                </div>
               )}
+
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleFileChange}
+                accept="image/*"
+                className="hidden"
+              />
             </div>
 
-            <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-gray-700 mb-1.5">
-                Category Cover
-              </label>
-              <label className="flex items-center gap-2 px-3 py-2.5 rounded-xl border border-gray-300 bg-white hover:bg-gray-50 cursor-pointer transition-colors text-xs text-gray-700 font-medium">
-                <input
-                  type="checkbox"
-                  checked={isCover}
-                  onChange={(e) => setIsCover(e.target.checked)}
-                  className="w-4 h-4 rounded text-tharika-blue focus:ring-tharika-blue border-gray-300 cursor-pointer"
-                />
-                <span className="flex items-center gap-1">
-                  <Star
-                    className={`w-3.5 h-3.5 ${
-                      isCover ? 'fill-amber-500 text-amber-500' : 'text-gray-400'
-                    }`}
-                  />
-                  Make Category Cover Photo
-                </span>
-              </label>
-            </div>
-          </div>
-
-          {/* 4. Starting Price & Instagram Link Inputs */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
+            {/* 2. Floating / Border-Bottom Input: Title (Design Name) */}
+            <div className="relative z-0 w-full group pt-1">
+              <input
+                type="text"
+                id="item-title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                required
+                placeholder=" "
+                className="peer block w-full appearance-none border-0 border-b border-slate-300 bg-transparent py-2.5 px-0 text-sm text-slate-900 font-medium focus:border-[#0F172A] focus:outline-none focus:ring-0 transition-colors"
+              />
               <label
-                htmlFor="item-price"
-                className="block text-xs font-semibold uppercase tracking-wider text-gray-700 mb-1.5"
+                htmlFor="item-title"
+                className={`absolute top-3 -z-10 origin-[0] text-xs duration-300 transform cursor-text flex items-center gap-1.5 ${
+                  title
+                    ? '-translate-y-5 scale-90 text-[#0F172A] font-bold'
+                    : 'translate-y-0 scale-100 text-slate-400 font-normal'
+                } peer-focus:-translate-y-5 peer-focus:scale-90 peer-focus:text-[#0F172A] peer-focus:font-bold`}
               >
-                Starting Price <span className="text-gray-400 font-normal">(Optional)</span>
+                <Type className="w-3.5 h-3.5 text-slate-400 peer-focus:text-[#0F172A]" />
+                <span>Title (Design Name)</span>
+                <span className="text-red-500">*</span>
               </label>
-              <div className="relative">
+            </div>
+
+            {/* 3. Category Dropdown with Inline Category Modal Trigger */}
+            <div>
+              <div className="flex items-center justify-between mb-1">
+                <label
+                  htmlFor="item-category"
+                  className="text-[11px] font-bold uppercase tracking-wider text-slate-600 flex items-center gap-1"
+                >
+                  <Tag className="w-3 h-3 text-[#D4AF37]" />
+                  <span>Category</span>
+                  <span className="text-red-500">*</span>
+                </label>
+                <button
+                  type="button"
+                  onClick={() => setIsAddingCategory(true)}
+                  className="text-[11px] text-[#0F172A] hover:text-[#D4AF37] font-semibold flex items-center gap-1 cursor-pointer transition-colors"
+                >
+                  <Plus className="w-3 h-3 text-[#D4AF37]" />
+                  <span>+ Add New Category</span>
+                </button>
+              </div>
+
+              <select
+                id="item-category"
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:border-[#0F172A] focus:ring-1 focus:ring-[#0F172A] outline-none text-xs font-medium transition-all bg-white text-slate-900 cursor-pointer"
+              >
+                {categoryList.length > 0 ? (
+                  categoryList.map((cat) => (
+                    <option key={cat.id} value={cat.id}>
+                      {cat.name}
+                    </option>
+                  ))
+                ) : (
+                  <>
+                    <option value="wedding">Wedding</option>
+                    <option value="baby-shower">Baby Shower</option>
+                    <option value="ear-piercing">Ear Piercing</option>
+                  </>
+                )}
+              </select>
+            </div>
+
+            {/* 4. Starting Price & Instagram URL Grid (Border-bottom inputs) */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+              {/* Starting Price */}
+              <div className="relative z-0 w-full group">
                 <input
                   type="text"
                   id="item-price"
                   value={price}
                   onChange={(e) => setPrice(e.target.value)}
-                  placeholder="e.g. Starts at ₹50,000"
-                  className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-gray-300 focus:border-tharika-blue focus:ring-2 focus:ring-tharika-blue/20 outline-none text-sm transition-all bg-white text-gray-900 placeholder:text-gray-400"
+                  placeholder=" "
+                  className="peer block w-full appearance-none border-0 border-b border-slate-300 bg-transparent py-2 px-0 text-xs text-slate-900 font-medium focus:border-[#0F172A] focus:outline-none focus:ring-0 transition-colors"
                 />
-                <Tag className="absolute left-3 top-3 w-3.5 h-3.5 text-gray-400" />
+                <label
+                  htmlFor="item-price"
+                  className={`absolute top-2.5 -z-10 origin-[0] text-xs duration-300 transform cursor-text flex items-center gap-1 ${
+                    price
+                      ? '-translate-y-4 scale-90 text-[#0F172A] font-bold'
+                      : 'translate-y-0 scale-100 text-slate-400 font-normal'
+                  } peer-focus:-translate-y-4 peer-focus:scale-90 peer-focus:text-[#0F172A] peer-focus:font-bold`}
+                >
+                  <DollarSign className="w-3 h-3 text-slate-400" />
+                  <span>Starting Price (e.g. ₹45,000)</span>
+                </label>
               </div>
-            </div>
 
-            <div>
-              <label
-                htmlFor="item-instagram"
-                className="block text-xs font-semibold uppercase tracking-wider text-gray-700 mb-1.5"
-              >
-                Instagram Post Link <span className="text-gray-400 font-normal">(Optional)</span>
-              </label>
-              <div className="relative">
+              {/* Instagram URL */}
+              <div className="relative z-0 w-full group">
                 <input
                   type="url"
                   id="item-instagram"
                   value={instagramUrl}
                   onChange={(e) => setInstagramUrl(e.target.value)}
-                  placeholder="https://www.instagram.com/p/..."
-                  className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-gray-300 focus:border-tharika-blue focus:ring-2 focus:ring-tharika-blue/20 outline-none text-sm transition-all bg-white text-gray-900 placeholder:text-gray-400"
+                  placeholder=" "
+                  className="peer block w-full appearance-none border-0 border-b border-slate-300 bg-transparent py-2 px-0 text-xs text-slate-900 font-medium focus:border-[#0F172A] focus:outline-none focus:ring-0 transition-colors"
                 />
-                <Instagram className="absolute left-3 top-3 w-3.5 h-3.5 text-gray-400" />
+                <label
+                  htmlFor="item-instagram"
+                  className={`absolute top-2.5 -z-10 origin-[0] text-xs duration-300 transform cursor-text flex items-center gap-1 ${
+                    instagramUrl
+                      ? '-translate-y-4 scale-90 text-[#0F172A] font-bold'
+                      : 'translate-y-0 scale-100 text-slate-400 font-normal'
+                  } peer-focus:-translate-y-4 peer-focus:scale-90 peer-focus:text-[#0F172A] peer-focus:font-bold`}
+                >
+                  <Instagram className="w-3 h-3 text-pink-500" />
+                  <span>Instagram Post Link</span>
+                </label>
               </div>
             </div>
-          </div>
 
-          {/* 5. Caption Input */}
-          <div>
-            <label
-              htmlFor="item-caption"
-              className="block text-xs font-semibold uppercase tracking-wider text-gray-700 mb-1.5"
-            >
-              Caption / Description <span className="text-gray-400 font-normal">(Optional)</span>
-            </label>
-            <textarea
-              id="item-caption"
-              value={caption}
-              onChange={(e) => setCaption(e.target.value)}
-              rows={2}
-              placeholder="Add description or styling highlights..."
-              className="w-full px-4 py-2 rounded-xl border border-gray-300 focus:border-tharika-blue focus:ring-2 focus:ring-tharika-blue/20 outline-none text-sm transition-all bg-white text-gray-900"
-            />
-          </div>
+            {/* 5. Description / Caption (textarea with 2-line max initial height) */}
+            <div>
+              <label
+                htmlFor="item-caption"
+                className="block text-[11px] font-bold uppercase tracking-wider text-slate-600 mb-1"
+              >
+                Description / Caption <span className="text-slate-400 font-normal">(Optional)</span>
+              </label>
+              <textarea
+                id="item-caption"
+                value={caption}
+                onChange={(e) => setCaption(e.target.value)}
+                rows={2}
+                placeholder="Highlight design elements, floral details, or themes..."
+                className="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:border-[#0F172A] focus:ring-1 focus:ring-[#0F172A] outline-none text-xs transition-all bg-white text-slate-900 resize-none max-h-20 placeholder:text-slate-400"
+              />
+            </div>
 
-          {/* 5. Buttons: Live Mobile Preview & Publish */}
-          <div className="flex items-center gap-3 pt-2">
-            <button
-              type="button"
-              onClick={() => setIsPreviewModalOpen(true)}
-              disabled={!previewUrl}
-              className="flex-1 py-3.5 px-4 rounded-xl border border-gray-300 hover:border-tharika-blue bg-white hover:bg-gray-50 text-gray-700 font-medium text-sm transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
-            >
-              <Eye className="w-4 h-4 text-tharika-blue" />
-              <span>Preview on Mobile</span>
-            </button>
+            {/* 6. Category Cover Checkbox */}
+            <div className="pt-0.5">
+              <label className="flex items-center gap-2 px-3 py-2 rounded-xl border border-slate-200 bg-[#FAF7F2]/60 hover:bg-[#FAF7F2] cursor-pointer transition-colors text-xs text-slate-700 font-medium">
+                <input
+                  type="checkbox"
+                  checked={isCover}
+                  onChange={(e) => setIsCover(e.target.checked)}
+                  className="w-4 h-4 rounded text-[#0F172A] focus:ring-[#0F172A] border-slate-300 cursor-pointer"
+                />
+                <span className="flex items-center gap-1.5">
+                  <Star
+                    className={`w-3.5 h-3.5 ${
+                      isCover ? 'fill-[#D4AF37] text-[#D4AF37]' : 'text-slate-400'
+                    }`}
+                  />
+                  <span>Feature as Primary Category Cover Photo</span>
+                </span>
+              </label>
+            </div>
 
-            <button
-              type="submit"
-              disabled={isLoading || !croppedFile}
-              className="flex-1 py-3.5 px-6 rounded-xl bg-tharika-blue hover:bg-[#072844] active:scale-[0.99] text-white font-semibold text-sm tracking-wide shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
-            >
-              {isLoading ? (
-                <>
-                  <Loader2 className="w-4 h-4 animate-spin text-white" />
-                  <span>Publishing...</span>
-                </>
-              ) : (
-                <span>Publish Showcase Item</span>
-              )}
-            </button>
-          </div>
-        </form>
+            {/* 7. Action Bar: Side-by-side Preview Showcase & Publish */}
+            <div className="flex items-center gap-3 pt-3 border-t border-slate-100">
+              <button
+                type="button"
+                onClick={() => setIsPreviewModalOpen(true)}
+                disabled={!previewUrl}
+                className="flex-1 py-3 px-3.5 rounded-xl border border-slate-300 hover:border-[#0F172A] bg-white hover:bg-slate-50 text-slate-700 font-semibold text-xs transition-all flex items-center justify-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer shadow-2xs"
+              >
+                <Eye className="w-3.5 h-3.5 text-[#0F172A]" />
+                <span>Preview Showcase</span>
+              </button>
+
+              <button
+                type="submit"
+                disabled={isLoading || !croppedFile}
+                className="flex-1 py-3 px-4 rounded-xl bg-[#0F172A] hover:bg-[#1E293B] active:scale-[0.99] text-white font-bold text-xs tracking-wide shadow-sm hover:shadow-md transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer border border-[#0F172A]"
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 className="w-3.5 h-3.5 animate-spin text-[#D4AF37]" />
+                    <span>Publishing...</span>
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="w-3.5 h-3.5 text-[#D4AF37]" />
+                    <span>Publish to Live Site</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
+
+      {/* ── Quick Inline Add Category Modal ── */}
+      <AnimatePresence>
+        {isAddingCategory && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="w-full max-w-sm bg-white rounded-2xl shadow-xl p-6 border border-slate-200"
+            >
+              <div className="flex items-center justify-between pb-3 mb-4 border-b border-slate-100">
+                <div className="flex items-center gap-2">
+                  <FolderPlus className="w-4 h-4 text-[#0F172A]" />
+                  <h3 className="font-heading text-base font-bold text-[#0F172A]">
+                    Add New Category
+                  </h3>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsAddingCategory(false)}
+                  className="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 cursor-pointer"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              <form onSubmit={handleCreateNewCategory} className="space-y-4">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">
+                    Category Name
+                  </label>
+                  <input
+                    type="text"
+                    value={newCategoryName}
+                    onChange={(e) => setNewCategoryName(e.target.value)}
+                    placeholder="e.g. Corporate Galas, Haldi Decor"
+                    required
+                    autoFocus
+                    className="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:border-[#0F172A] focus:ring-1 focus:ring-[#0F172A] outline-none text-xs text-slate-900"
+                  />
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setIsAddingCategory(false)}
+                    className="px-3.5 py-2 rounded-xl border border-slate-200 text-xs font-medium text-slate-600 hover:bg-slate-50 cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isCreatingCategory || !newCategoryName.trim()}
+                    className="px-4 py-2 rounded-xl bg-[#0F172A] text-white text-xs font-bold hover:bg-[#1E293B] transition-colors flex items-center gap-1.5 disabled:opacity-50 cursor-pointer"
+                  >
+                    {isCreatingCategory ? (
+                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    ) : (
+                      <Plus className="w-3.5 h-3.5 text-[#D4AF37]" />
+                    )}
+                    <span>Save Category</span>
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
       {/* ── 9:16 Image Cropper Modal ── */}
       {isCropperOpen && rawImageSrc && (
@@ -496,7 +615,7 @@ export default function UploadForm({ categories = [] }: UploadFormProps) {
       <MobilePreviewModal
         isOpen={isPreviewModalOpen}
         onClose={() => setIsPreviewModalOpen(false)}
-        title={title}
+        title={title || 'Showcase Design Name'}
         category={displayCategoryName}
         caption={caption}
         price={price}

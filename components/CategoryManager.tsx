@@ -40,9 +40,13 @@ export default function CategoryManager({ initialCategories }: CategoryManagerPr
     text: string;
   } | null>(null);
 
+  React.useEffect(() => {
+    setCategories(initialCategories);
+  }, [initialCategories]);
+
   const showToast = (type: 'success' | 'error', text: string) => {
     setToastMessage({ type, text });
-    setTimeout(() => setToastMessage(null), 4000);
+    setTimeout(() => setToastMessage(null), 3500);
   };
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -74,7 +78,7 @@ export default function CategoryManager({ initialCategories }: CategoryManagerPr
           if (prev.some((c) => c.id === res.category.id)) return prev;
           return [...prev, res.category];
         });
-        showToast('success', `Category "${res.category.name}" ready!`);
+        showToast('success', `Category "${res.category.name}" created!`);
         setName('');
         setSlug('');
       }
@@ -111,7 +115,7 @@ export default function CategoryManager({ initialCategories }: CategoryManagerPr
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-200/80 p-6 sm:p-8 space-y-6">
+    <div className="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-6 sm:p-8 space-y-6">
       {/* Toast Notification */}
       <AnimatePresence>
         {toastMessage && (
@@ -120,29 +124,29 @@ export default function CategoryManager({ initialCategories }: CategoryManagerPr
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             className={`fixed top-6 right-6 z-50 p-4 rounded-xl shadow-2xl flex items-center gap-3 text-sm font-medium text-white ${
-              toastMessage.type === 'success' ? 'bg-emerald-600' : 'bg-red-600'
+              toastMessage.type === 'success' ? 'bg-[#0F172A]' : 'bg-red-600'
             }`}
           >
             {toastMessage.type === 'success' ? (
-              <CheckCircle className="w-5 h-5" />
+              <CheckCircle className="w-5 h-5 text-[#D4AF37]" />
             ) : (
-              <AlertCircle className="w-5 h-5" />
+              <AlertCircle className="w-5 h-5 text-white" />
             )}
             <span>{toastMessage.text}</span>
           </motion.div>
         )}
       </AnimatePresence>
 
-      <div className="flex items-center justify-between pb-4 border-b border-gray-100">
+      <div className="flex items-center justify-between pb-4 border-b border-slate-100">
         <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-tharika-blue/10 text-tharika-blue">
-            <Tag className="w-5 h-5" />
+          <div className="p-2.5 rounded-xl bg-[#0F172A]/5 text-[#0F172A] border border-[#0F172A]/10">
+            <Tag className="w-5 h-5 text-[#0F172A]" />
           </div>
           <div>
-            <h2 className="font-heading text-xl text-tharika-blue font-semibold">
+            <h2 className="font-heading text-xl text-[#0F172A] font-bold">
               Manage Dynamic Categories
             </h2>
-            <p className="text-xs text-gray-500">
+            <p className="text-xs text-slate-500">
               Create, inspect, and organize bespoke event decor categories.
             </p>
           </div>
@@ -150,27 +154,27 @@ export default function CategoryManager({ initialCategories }: CategoryManagerPr
       </div>
 
       {/* Create New Category Form */}
-      <form onSubmit={handleCreate} className="p-5 rounded-2xl bg-gray-50/70 border border-gray-200/70 space-y-4">
-        <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-700 flex items-center gap-1.5">
-          <Plus className="w-3.5 h-3.5 text-tharika-blue" />
+      <form onSubmit={handleCreate} className="p-5 rounded-2xl bg-[#FAF7F2]/60 border border-slate-200 space-y-4">
+        <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
+          <Plus className="w-3.5 h-3.5 text-[#D4AF37]" />
           <span>Add New Category</span>
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">
+            <label className="block text-xs font-semibold text-slate-700 mb-1">
               Category Name
             </label>
             <input
               type="text"
               value={name}
               onChange={handleNameChange}
-              placeholder="e.g. Corporate Galas &amp; Conferences"
+              placeholder="e.g. Corporate Galas, Haldi Decor"
               required
-              className="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:border-tharika-blue focus:ring-2 focus:ring-tharika-blue/20 outline-none text-sm bg-white text-gray-900"
+              className="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:border-[#0F172A] focus:ring-1 focus:ring-[#0F172A] outline-none text-xs bg-white text-slate-900"
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">
+            <label className="block text-xs font-semibold text-slate-700 mb-1">
               URL Slug
             </label>
             <input
@@ -179,7 +183,7 @@ export default function CategoryManager({ initialCategories }: CategoryManagerPr
               onChange={(e) => setSlug(e.target.value)}
               placeholder="e.g. corporate-galas"
               required
-              className="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:border-tharika-blue focus:ring-2 focus:ring-tharika-blue/20 outline-none text-sm bg-white text-gray-900 font-mono text-xs"
+              className="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:border-[#0F172A] focus:ring-1 focus:ring-[#0F172A] outline-none text-xs bg-white text-slate-900 font-mono"
             />
           </div>
         </div>
@@ -187,16 +191,16 @@ export default function CategoryManager({ initialCategories }: CategoryManagerPr
           <button
             type="submit"
             disabled={isSubmitting || !name.trim()}
-            className="px-5 py-2.5 rounded-xl bg-tharika-blue hover:bg-[#072844] text-white text-xs font-semibold shadow-sm hover:shadow transition-all flex items-center gap-1.5 disabled:opacity-60 cursor-pointer"
+            className="px-5 py-2.5 rounded-xl bg-[#0F172A] hover:bg-[#1E293B] text-white text-xs font-bold shadow-xs hover:shadow transition-all flex items-center gap-1.5 disabled:opacity-50 cursor-pointer"
           >
             {isSubmitting ? (
               <>
-                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                <Loader2 className="w-3.5 h-3.5 animate-spin text-[#D4AF37]" />
                 <span>Creating...</span>
               </>
             ) : (
               <>
-                <Plus className="w-3.5 h-3.5" />
+                <Plus className="w-3.5 h-3.5 text-[#D4AF37]" />
                 <span>Save Category</span>
               </>
             )}
@@ -206,12 +210,12 @@ export default function CategoryManager({ initialCategories }: CategoryManagerPr
 
       {/* Categories List */}
       <div className="space-y-3">
-        <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-700">
+        <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700">
           Existing Categories ({categories.length})
         </h3>
         {categories.length === 0 ? (
-          <div className="p-8 text-center text-gray-400">
-            <FolderOpen className="w-8 h-8 mx-auto mb-2 opacity-50" />
+          <div className="p-8 text-center text-slate-400">
+            <FolderOpen className="w-8 h-8 mx-auto mb-2 opacity-50 text-slate-300" />
             <p className="text-xs">No categories created yet.</p>
           </div>
         ) : (
@@ -219,13 +223,13 @@ export default function CategoryManager({ initialCategories }: CategoryManagerPr
             {categories.map((cat) => (
               <div
                 key={cat.id}
-                className="p-4 rounded-xl border border-gray-200 bg-white hover:border-tharika-blue/40 shadow-2xs flex items-center justify-between transition-all"
+                className="p-4 rounded-xl border border-slate-200 bg-white hover:border-slate-300 shadow-2xs flex items-center justify-between transition-all"
               >
                 <div>
-                  <h4 className="font-medium text-sm text-tharika-blue">
+                  <h4 className="font-bold text-xs text-[#0F172A]">
                     {cat.name}
                   </h4>
-                  <p className="text-[11px] font-mono text-gray-400 mt-0.5">
+                  <p className="text-[11px] font-mono text-slate-400 mt-0.5">
                     /{cat.slug}
                   </p>
                 </div>
@@ -233,7 +237,7 @@ export default function CategoryManager({ initialCategories }: CategoryManagerPr
                   type="button"
                   onClick={() => handleDelete(cat.id, cat.name)}
                   disabled={deletingId === cat.id}
-                  className="p-1.5 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
+                  className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
                   title="Delete category"
                 >
                   {deletingId === cat.id ? (
