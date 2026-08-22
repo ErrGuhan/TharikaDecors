@@ -145,9 +145,10 @@ async function verifyAdminAuth(): Promise<boolean> {
   }
 }
 
-/** Instant cache clearance across all dynamic app routes. */
+/** Instant cache clearance across all dynamic app routes and root layout. */
 function revalidateAllRoutes() {
   try {
+    revalidatePath('/', 'layout');
     revalidatePath('/');
     revalidatePath('/about');
     revalidatePath('/book');

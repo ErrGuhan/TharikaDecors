@@ -43,8 +43,8 @@ export default function LoginPage() {
       }
 
       if (data?.session || data?.user) {
-        // Full page reload navigation to ensure Supabase SSR session cookies
-        // are 100% committed to the request headers for /admin
+        // Force Next.js server components to read the newly set auth session cookie
+        router.refresh();
         window.location.href = '/admin';
       } else {
         throw new Error('Authentication succeeded but no active session was established.');

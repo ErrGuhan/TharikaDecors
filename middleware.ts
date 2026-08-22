@@ -61,8 +61,28 @@ export async function middleware(request: NextRequest) {
     },
   });
 
-  // Refresh auth session token & update cookies
-  await supabase.auth.getSession();
+  // Strict server-side session validation and cookie refreshing via getUser()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const pathname = request.nextUrl.pathname;
+
+  // Protect /admin routes — redirect unauthenticated users to /login
+  if (pathname.startsWith('/admin')) {
+    if (!user) {
+      const loginUrl = new URL('/login', request.url);
+      loginUrl.searchParams.set('redirectTo', pathname);
+      return NextResponse.redirect(loginUrl);
+    }
+  }
+
+  // Redirect authenticated users away from /login straight to /admin
+  if (pathname === '/login') {
+    if (user) {
+      return NextResponse.redirect(new URL('/admin', request.url));
+    }
+  }
 
   return response;
 }
@@ -70,12 +90,12 @@ export async function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     /*
-     * Match all request paths except for the ones starting with:
+     * Match all request paths except:
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
-     * - Static asset extensions (.svg, .png, .jpg, .jpeg, .gif, .webp)
+     * - Static media extensions (.svg, .png, .jpg, .jpeg, .gif, .webp, .mp4)
      */
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|mp4)$).*)',
   ],
 };

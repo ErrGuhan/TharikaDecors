@@ -28,6 +28,7 @@ import AdminRecordsList, { PortfolioItemRecord } from '@/components/AdminRecords
 import CategoryManager, { CategoryData } from '@/components/CategoryManager';
 import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
+import { useRealtimeSync } from '@/hooks/useRealtimeSync';
 
 interface AdminDashboardShellProps {
   userEmail: string;
@@ -47,6 +48,11 @@ export default function AdminDashboardShell({
   const [categories, setCategories] = useState<CategoryData[]>(initialCategories);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const router = useRouter();
+
+  // Instant real-time synchronization with Supabase Realtime across multiple admins
+  useRealtimeSync({
+    tables: ['portfolio_items', 'categories'],
+  });
 
   React.useEffect(() => { setItems(initialItems); }, [initialItems]);
   React.useEffect(() => { setCategories(initialCategories); }, [initialCategories]);
