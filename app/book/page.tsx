@@ -90,6 +90,7 @@ export default function BookingPage() {
             alt="Tharika Decors Luxury Stage Consultation"
             fill
             priority={true}
+            fetchPriority="high"
             sizes="100vw"
             quality={75}
             className="object-cover object-center scale-105"

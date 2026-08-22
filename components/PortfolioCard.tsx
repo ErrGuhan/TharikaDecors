@@ -18,12 +18,14 @@ export interface PortfolioCardItem {
 export interface PortfolioCardProps {
   item: PortfolioCardItem;
   priority?: boolean;
+  fetchPriority?: 'high' | 'low' | 'auto';
   onClick?: () => void;
 }
 
 export default function PortfolioCard({
   item,
   priority = false,
+  fetchPriority,
   onClick,
 }: PortfolioCardProps) {
   const categoryLabel = item.category?.trim() || 'Exclusive';
@@ -50,7 +52,9 @@ export default function PortfolioCard({
             alt={item.title}
             fill
             priority={priority}
+            fetchPriority={priority ? 'high' : fetchPriority}
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            quality={75}
             className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
           />
         ) : (

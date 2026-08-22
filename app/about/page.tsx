@@ -56,8 +56,10 @@ export default function AboutPage() {
             src="https://images.pexels.com/photos/21926656/pexels-photo-21926656.jpeg?auto=compress&cs=tinysrgb&h=1080&w=1920"
             alt="Tharika Decors Luxury Stage Scenography"
             fill
-            priority
+            priority={true}
+            fetchPriority="high"
             sizes="100vw"
+            quality={75}
             className="object-cover object-center scale-105"
           />
         </div>

@@ -23,12 +23,37 @@ import {
   X,
   TrendingUp,
 } from 'lucide-react';
-import UploadForm, { CategoryOption } from '@/components/UploadForm';
-import AdminRecordsList, { PortfolioItemRecord } from '@/components/AdminRecordsList';
-import CategoryManager, { CategoryData } from '@/components/CategoryManager';
+import dynamic from 'next/dynamic';
+import { type CategoryOption } from '@/components/UploadForm';
+import { type PortfolioItemRecord } from '@/components/AdminRecordsList';
+import { type CategoryData } from '@/components/CategoryManager';
 import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
 import { useRealtimeSync } from '@/hooks/useRealtimeSync';
+
+const UploadForm = dynamic(() => import('@/components/UploadForm'), {
+  loading: () => (
+    <div className="flex items-center justify-center p-12">
+      <div className="w-8 h-8 rounded-full border-2 border-[#D4AF37]/30 border-t-[#D4AF37] animate-spin" />
+    </div>
+  ),
+});
+
+const AdminRecordsList = dynamic(() => import('@/components/AdminRecordsList'), {
+  loading: () => (
+    <div className="flex items-center justify-center p-12">
+      <div className="w-8 h-8 rounded-full border-2 border-[#D4AF37]/30 border-t-[#D4AF37] animate-spin" />
+    </div>
+  ),
+});
+
+const CategoryManager = dynamic(() => import('@/components/CategoryManager'), {
+  loading: () => (
+    <div className="flex items-center justify-center p-12">
+      <div className="w-8 h-8 rounded-full border-2 border-[#D4AF37]/30 border-t-[#D4AF37] animate-spin" />
+    </div>
+  ),
+});
 
 interface AdminDashboardShellProps {
   userEmail: string;

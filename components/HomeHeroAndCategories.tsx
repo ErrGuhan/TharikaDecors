@@ -44,7 +44,8 @@ export default function HomeHeroAndCategories({ categories }: HomeHeroAndCategor
           src={heroImage}
           alt="Tharika Decors Luxury Stage Scenography"
           fill
-          priority
+          priority={true}
+          fetchPriority="high"
           sizes="100vw"
           quality={75}
           className="object-cover object-center scale-105 transition-transform duration-1000 ease-out"

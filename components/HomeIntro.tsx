@@ -69,6 +69,7 @@ export default function HomeIntro() {
             muted
             playsInline
             preload="auto"
+            poster="/wedding-cover.jpg"
             onEnded={handleEnd}
             onError={handleEnd}
             className="w-full h-full object-cover"
