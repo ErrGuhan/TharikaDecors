@@ -29,6 +29,7 @@ export interface CategoryOption {
   id: string;
   name: string;
   slug: string;
+  imageUrl?: string | null;
 }
 
 interface UploadFormProps {

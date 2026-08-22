@@ -157,7 +157,7 @@ export default function BookingPage() {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.35 }}
-            className="flex flex-wrap items-center justify-center gap-4"
+            className="flex flex-wrap items-center justify-center gap-4 mb-10"
           >
             {stats.map(({ icon: Icon, label, sub }) => (
               <div
@@ -171,6 +171,97 @@ export default function BookingPage() {
                 <span className="text-[11px] font-semibold uppercase tracking-widest text-[#0A3659]/50">{sub}</span>
               </div>
             ))}
+          </motion.div>
+
+          {/* ── Direct Contact & Inquiries Cards ── */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.42 }}
+            className="mx-auto max-w-2xl rounded-3xl border border-[#D4AF37]/30 bg-white/95 p-6 sm:p-8 shadow-lg backdrop-blur-md"
+          >
+            <div className="mb-5 text-center">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-[#0A3659]/5 px-3 py-1 text-xs font-bold uppercase tracking-widest text-[#0A3659]">
+                <Phone className="h-3.5 w-3.5 text-[#D4AF37]" />
+                Get In Touch With Us
+              </span>
+              <h3 className="mt-2 font-heading text-xl sm:text-2xl font-bold text-[#0A3659]">
+                Direct Contact &amp; Consultations
+              </h3>
+              <p className="mt-1 text-xs sm:text-sm text-[#0A3659]/70">
+                Reach out to our event styling team directly for immediate assistance, bespoke quotes, and date checks.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left">
+              {/* Phone Card */}
+              <div className="flex flex-col justify-between rounded-2xl border border-[#0A3659]/10 bg-[#FAF7F2]/80 p-4 hover:border-[#D4AF37]/50 hover:bg-white transition-all shadow-2xs">
+                <div className="flex items-start gap-3">
+                  <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-[#0A3659] text-[#D4AF37] shadow-xs">
+                    <Phone className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <span className="block text-[11px] font-bold uppercase tracking-wider text-[#0A3659]/60">
+                      Mobile / WhatsApp
+                    </span>
+                    <a
+                      href="tel:6384947914"
+                      className="text-base font-bold text-[#0A3659] hover:text-[#D4AF37] transition-colors"
+                    >
+                      +91 6384947914
+                    </a>
+                    <p className="text-[11px] text-[#0A3659]/50 mt-0.5">Available Mon – Sun (9 AM – 9 PM)</p>
+                  </div>
+                </div>
+
+                <div className="mt-4 pt-3 border-t border-[#0A3659]/10 flex items-center gap-2">
+                  <a
+                    href="tel:6384947914"
+                    className="flex-1 text-center py-2 px-3 rounded-xl bg-[#0A3659] hover:bg-[#1E293B] text-white text-xs font-bold shadow-xs hover:shadow transition-all"
+                  >
+                    Call Now
+                  </a>
+                  <a
+                    href="https://wa.me/916384947914?text=Hello%20Tharika%20Decors!%20I%20would%20like%20to%20inquire%20about%20event%20decor%20services."
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 text-center py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-xs hover:shadow transition-all"
+                  >
+                    WhatsApp
+                  </a>
+                </div>
+              </div>
+
+              {/* Email Card */}
+              <div className="flex flex-col justify-between rounded-2xl border border-[#0A3659]/10 bg-[#FAF7F2]/80 p-4 hover:border-[#D4AF37]/50 hover:bg-white transition-all shadow-2xs">
+                <div className="flex items-start gap-3">
+                  <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-[#0A3659] text-[#D4AF37] shadow-xs">
+                    <Mail className="h-5 w-5" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <span className="block text-[11px] font-bold uppercase tracking-wider text-[#0A3659]/60">
+                      Official Email
+                    </span>
+                    <a
+                      href="mailto:campuscartsvcet@gmail.com"
+                      className="text-sm sm:text-base font-bold text-[#0A3659] hover:text-[#D4AF37] transition-colors break-all"
+                    >
+                      campuscartsvcet@gmail.com
+                    </a>
+                    <p className="text-[11px] text-[#0A3659]/50 mt-0.5">Prompt responses within 24 hours</p>
+                  </div>
+                </div>
+
+                <div className="mt-4 pt-3 border-t border-[#0A3659]/10">
+                  <a
+                    href="mailto:campuscartsvcet@gmail.com?subject=Event%20Decor%20Inquiry%20-%20Tharika%20Decors"
+                    className="block w-full text-center py-2 px-3 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#c4a030] hover:opacity-95 text-[#0A3659] text-xs font-bold shadow-xs hover:shadow transition-all"
+                  >
+                    Send Email
+                  </a>
+                </div>
+              </div>
+            </div>
           </motion.div>
         </div>
       </section>

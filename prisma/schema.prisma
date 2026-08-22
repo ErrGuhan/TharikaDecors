@@ -12,6 +12,7 @@ model Category {
   id        String          @id @default(uuid())
   name      String
   slug      String          @unique
+  imageUrl  String?
   createdAt DateTime        @default(now())
   items     PortfolioItem[]
 

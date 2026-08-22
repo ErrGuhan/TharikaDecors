@@ -58,6 +58,7 @@ export default async function HomePage() {
           title: cat.name,
           href,
           imageUrl:
+            cat.imageUrl ||
             coverItem?.imageUrl ||
             defaultImage ||
             '/ear-piercing-cover.jpg',

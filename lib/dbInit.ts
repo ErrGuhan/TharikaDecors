@@ -19,6 +19,7 @@ export async function ensureDatabaseSchema(): Promise<boolean> {
         id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
         name TEXT NOT NULL,
         slug TEXT NOT NULL UNIQUE,
+        "imageUrl" TEXT,
         "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP
       );
     `);
@@ -63,6 +64,12 @@ export async function ensureDatabaseSchema(): Promise<boolean> {
         END IF;
         IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='categories' AND column_name='createdat') THEN
           ALTER TABLE public.categories RENAME COLUMN createdat TO "createdAt";
+        END IF;
+        IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='categories' AND column_name='imageurl') THEN
+          ALTER TABLE public.categories RENAME COLUMN imageurl TO "imageUrl";
+        END IF;
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='categories' AND column_name='imageUrl') THEN
+          ALTER TABLE public.categories ADD COLUMN IF NOT EXISTS "imageUrl" TEXT;
         END IF;
       END $$;
     `).catch(() => null);

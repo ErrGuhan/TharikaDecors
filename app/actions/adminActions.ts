@@ -128,6 +128,7 @@ function serializeCategory(cat: any) {
     id: cat.id,
     name: cat.name,
     slug: cat.slug,
+    imageUrl: cat.imageUrl || null,
     createdAt:
       cat.createdAt instanceof Date
         ? cat.createdAt.toISOString()
@@ -167,9 +168,13 @@ function serializeItem(item: any) {
 }
 
 /**
- * 1. createCategory(name: string, slug?: string)
+ * 1. createCategory(nameOrFormData: string | FormData, slug?: string, imageUrl?: string)
  */
-export async function createCategory(name: string, slug?: string): Promise<ActionResponse> {
+export async function createCategory(
+  nameOrFormData: string | FormData,
+  slugArg?: string,
+  imageUrlArg?: string
+): Promise<ActionResponse> {
   try {
     await ensureDatabaseSchema();
 
@@ -181,21 +186,86 @@ export async function createCategory(name: string, slug?: string): Promise<Actio
       };
     }
 
-    const trimmedName = name.trim();
-    if (!trimmedName) {
+    let name = '';
+    let slug = '';
+    let imageUrl: string | null = null;
+
+    if (typeof nameOrFormData === 'object' && nameOrFormData !== null && 'get' in nameOrFormData) {
+      const formData = nameOrFormData as FormData;
+      name = (formData.get('name') as string | null)?.trim() || '';
+      slug = (formData.get('slug') as string | null)?.trim() || '';
+      imageUrl = (formData.get('imageUrl') as string | null)?.trim() || null;
+
+      const file = formData.get('file') as File | null;
+      if (file && typeof (file as any).arrayBuffer === 'function' && file.size > 0) {
+        const arrayBuffer = await file.arrayBuffer();
+        const fileBuffer = Buffer.from(arrayBuffer);
+        const mimeType = file.type || 'image/jpeg';
+        const base64DataUrl = `data:${mimeType};base64,${fileBuffer.toString('base64')}`;
+
+        try {
+          const supabase = getServiceSupabase();
+          const bucketName = 'portfolio-images';
+          const fileExt = file.name ? file.name.split('.').pop() || 'jpg' : 'jpg';
+          const finalSlug = (slug || slugify(name)).toLowerCase();
+          const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 9)}.${fileExt}`;
+          const filePath = `uploads/categories/${slugify(finalSlug)}/${fileName}`;
+
+          await supabase.storage.createBucket(bucketName, { public: true }).catch(() => null);
+
+          const { data: uploadData, error: uploadError } = await supabase.storage
+            .from(bucketName)
+            .upload(filePath, fileBuffer, {
+              contentType: mimeType,
+              cacheControl: '3600',
+              upsert: true,
+            });
+
+          if (!uploadError && uploadData?.path) {
+            const { data: publicUrlData } = supabase.storage
+              .from(bucketName)
+              .getPublicUrl(uploadData.path);
+            imageUrl = publicUrlData?.publicUrl || base64DataUrl;
+          } else {
+            imageUrl = base64DataUrl;
+          }
+        } catch {
+          imageUrl = base64DataUrl;
+        }
+      }
+    } else {
+      name = (nameOrFormData || '').trim();
+      slug = (slugArg || '').trim();
+      imageUrl = (imageUrlArg || '').trim() || null;
+    }
+
+    if (!name) {
       return { success: false, error: 'Category name is required.' };
     }
 
-    const generatedSlug = (slug?.trim() || slugify(trimmedName)).toLowerCase();
+    const generatedSlug = (slug || slugify(name)).toLowerCase();
 
     // Check if category or slug already exists
     const existing = await prisma.category
       .findFirst({
-        where: { OR: [{ slug: generatedSlug }, { name: trimmedName }] },
+        where: { OR: [{ slug: generatedSlug }, { name }] },
       })
       .catch(() => null);
 
     if (existing) {
+      if (imageUrl && imageUrl !== existing.imageUrl) {
+        const updated = await prisma.category.update({
+          where: { id: existing.id },
+          data: { imageUrl },
+        });
+        revalidateAllRoutes();
+        return {
+          success: true,
+          message: `Category "${updated.name}" updated with image!`,
+          category: serializeCategory(updated),
+        };
+      }
+
       return {
         success: true,
         message: `Category "${existing.name}" already exists.`,
@@ -205,8 +275,9 @@ export async function createCategory(name: string, slug?: string): Promise<Actio
 
     const newCategory = await prisma.category.create({
       data: {
-        name: trimmedName,
+        name,
         slug: generatedSlug,
+        imageUrl,
       },
     });
 
@@ -218,7 +289,7 @@ export async function createCategory(name: string, slug?: string): Promise<Actio
       category: serializeCategory(newCategory),
     };
   } catch (error: any) {
-    logActionError('createCategory', error, { name });
+    logActionError('createCategory', error, { name: typeof nameOrFormData === 'string' ? nameOrFormData : 'FormData' });
     return {
       success: false,
       error: prismaErrorMessage(error),
@@ -227,7 +298,131 @@ export async function createCategory(name: string, slug?: string): Promise<Actio
 }
 
 /**
- * 2. deleteCategory(id: string)
+ * 2. updateCategory
+ */
+export async function updateCategory(
+  idOrFormData: string | FormData,
+  nameArg?: string,
+  slugArg?: string,
+  imageUrlArg?: string | null,
+  removeImageArg?: boolean
+): Promise<ActionResponse> {
+  try {
+    await ensureDatabaseSchema();
+
+    const isAuthorized = await verifyAdminAuth();
+    if (!isAuthorized) {
+      return {
+        success: false,
+        error: 'Unauthorized: Only authorized admin accounts can perform this action.',
+      };
+    }
+
+    let id = '';
+    let name = '';
+    let slug = '';
+    let imageUrl: string | null = null;
+    let removeImage = false;
+
+    if (typeof idOrFormData === 'object' && idOrFormData !== null && 'get' in idOrFormData) {
+      const formData = idOrFormData as FormData;
+      id = (formData.get('id') as string | null)?.trim() || '';
+      name = (formData.get('name') as string | null)?.trim() || '';
+      slug = (formData.get('slug') as string | null)?.trim() || '';
+      imageUrl = (formData.get('imageUrl') as string | null)?.trim() || null;
+      removeImage = formData.get('removeImage') === 'true';
+
+      const file = formData.get('file') as File | null;
+      if (file && typeof (file as any).arrayBuffer === 'function' && file.size > 0) {
+        const arrayBuffer = await file.arrayBuffer();
+        const fileBuffer = Buffer.from(arrayBuffer);
+        const mimeType = file.type || 'image/jpeg';
+        const base64DataUrl = `data:${mimeType};base64,${fileBuffer.toString('base64')}`;
+
+        try {
+          const supabase = getServiceSupabase();
+          const bucketName = 'portfolio-images';
+          const fileExt = file.name ? file.name.split('.').pop() || 'jpg' : 'jpg';
+          const finalSlug = (slug || slugify(name || id)).toLowerCase();
+          const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 9)}.${fileExt}`;
+          const filePath = `uploads/categories/${slugify(finalSlug)}/${fileName}`;
+
+          await supabase.storage.createBucket(bucketName, { public: true }).catch(() => null);
+
+          const { data: uploadData, error: uploadError } = await supabase.storage
+            .from(bucketName)
+            .upload(filePath, fileBuffer, {
+              contentType: mimeType,
+              cacheControl: '3600',
+              upsert: true,
+            });
+
+          if (!uploadError && uploadData?.path) {
+            const { data: publicUrlData } = supabase.storage
+              .from(bucketName)
+              .getPublicUrl(uploadData.path);
+            imageUrl = publicUrlData?.publicUrl || base64DataUrl;
+          } else {
+            imageUrl = base64DataUrl;
+          }
+        } catch {
+          imageUrl = base64DataUrl;
+        }
+      }
+    } else {
+      id = (idOrFormData || '').trim();
+      name = (nameArg || '').trim();
+      slug = (slugArg || '').trim();
+      imageUrl = imageUrlArg ?? null;
+      removeImage = removeImageArg === true;
+    }
+
+    if (!id) {
+      return { success: false, error: 'Category ID is required.' };
+    }
+
+    const existing = await prisma.category.findUnique({ where: { id } });
+    if (!existing) {
+      return { success: false, error: 'Category not found.' };
+    }
+
+    const finalName = name || existing.name;
+    const finalSlug = slug ? slugify(slug) : (name ? slugify(name) : existing.slug);
+
+    const updateData: { name: string; slug: string; imageUrl?: string | null } = {
+      name: finalName,
+      slug: finalSlug,
+    };
+
+    if (removeImage) {
+      updateData.imageUrl = null;
+    } else if (imageUrl !== null) {
+      updateData.imageUrl = imageUrl;
+    }
+
+    const updated = await prisma.category.update({
+      where: { id },
+      data: updateData,
+    });
+
+    revalidateAllRoutes();
+
+    return {
+      success: true,
+      message: `Category "${updated.name}" updated successfully!`,
+      category: serializeCategory(updated),
+    };
+  } catch (error: any) {
+    logActionError('updateCategory', error, { id: typeof idOrFormData === 'string' ? idOrFormData : 'FormData' });
+    return {
+      success: false,
+      error: prismaErrorMessage(error),
+    };
+  }
+}
+
+/**
+ * 3. deleteCategory(id: string)
  */
 export async function deleteCategory(id: string): Promise<ActionResponse> {
   try {

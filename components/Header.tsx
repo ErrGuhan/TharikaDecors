@@ -66,7 +66,7 @@ export default function Header() {
               pathname === '/book' ? 'text-tharika-blue font-bold border-b-2 border-tharika-blue pb-0.5' : ''
             }`}
           >
-            Our Story
+            About Us
           </Link>
         </nav>
 

@@ -77,6 +77,7 @@ export default async function AdminDashboardPage() {
         id: c.id,
         name: c.name,
         slug: c.slug,
+        imageUrl: c.imageUrl || null,
         createdAt:
           c.createdAt instanceof Date
             ? c.createdAt.toISOString()
