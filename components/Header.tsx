@@ -19,10 +19,10 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-40 w-full bg-white/90 backdrop-blur-md border-b border-tharika-blue/10 shadow-2xs transition-all">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
         {/* Brand Logo & Title */}
         <Link href="/" className="flex items-center gap-3 group">
-          <div className="relative h-14 w-28 sm:w-36 transition-transform group-hover:scale-105 duration-300">
+          <div className="relative h-11 w-28 sm:h-14 sm:w-36 transition-transform group-hover:scale-105 duration-300">
             <Image
               src="/logo.png"
               alt="Tharika Decors & Events Logo"

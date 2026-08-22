@@ -40,6 +40,18 @@ export default function PortfolioFeed({
   const [activeModalItem, setActiveModalItem] = useState<PortfolioCardItem | null>(null);
   const [shareCopied, setShareCopied] = useState(false);
 
+  // Lock body scroll when detail modal is active
+  useEffect(() => {
+    if (activeModalItem) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [activeModalItem]);
+
   // Extract unique categories from items
   const categoryOptions = useMemo(() => {
     const set = new Set<string>();
@@ -272,7 +284,7 @@ export default function PortfolioFeed({
       <AnimatePresence>
         {activeModalItem && (
           <div
-            className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-5 overflow-y-auto"
+            className="fixed inset-0 z-[70] bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-5 pb-20 sm:pb-5 overflow-y-auto"
             onClick={closeModal}
             role="dialog"
             aria-modal="true"
@@ -284,20 +296,20 @@ export default function PortfolioFeed({
               exit={{ opacity: 0, scale: 0.95, y: 15 }}
               transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
               onClick={(e) => e.stopPropagation()}
-              className="relative w-full max-w-sm sm:max-w-md overflow-hidden rounded-3xl shadow-2xl bg-white my-auto max-h-[92vh] flex flex-col border border-slate-100"
+              className="relative w-full max-w-sm sm:max-w-md overflow-hidden rounded-3xl shadow-2xl bg-white my-auto max-h-[85dvh] sm:max-h-[90vh] flex flex-col border border-slate-100"
             >
               {/* Floating Close Button */}
               <button
                 type="button"
                 onClick={closeModal}
-                className="absolute top-3.5 right-3.5 z-20 w-8 h-8 rounded-full bg-black/60 text-white flex items-center justify-center backdrop-blur-md hover:bg-black/80 transition-colors cursor-pointer shadow-md"
+                className="absolute top-3.5 right-3.5 z-30 w-9 h-9 rounded-full bg-black/60 text-white flex items-center justify-center backdrop-blur-md hover:bg-black/80 transition-colors cursor-pointer shadow-md"
                 aria-label="Close modal"
               >
                 <X className="w-4 h-4" />
               </button>
 
               {/* Full Event Image Container */}
-              <div className="relative w-full aspect-[4/5] max-h-[420px] bg-slate-950 overflow-hidden flex-shrink-0">
+              <div className="relative w-full aspect-[4/3] sm:aspect-[4/5] max-h-[260px] sm:max-h-[380px] bg-slate-950 overflow-hidden flex-shrink-0">
                 {activeModalItem.imageUrl ? (
                   <Image
                     src={activeModalItem.imageUrl}
@@ -326,7 +338,7 @@ export default function PortfolioFeed({
                 <div className="flex items-start justify-between gap-3 mb-2">
                   <h2
                     id="modal-title"
-                    className="text-xl sm:text-2xl font-bold font-serif text-slate-900 leading-tight"
+                    className="text-lg sm:text-2xl font-bold font-serif text-slate-900 leading-tight"
                   >
                     {activeModalItem.title}
                   </h2>
@@ -337,7 +349,7 @@ export default function PortfolioFeed({
                   )}
                 </div>
 
-                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed mb-6">
+                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed mb-5">
                   {activeModalItem.caption?.trim() ||
                     'Handcrafted with meticulous detail, floral artistry, and luxury styling to make your celebration memorable.'}
                 </p>
@@ -352,7 +364,7 @@ export default function PortfolioFeed({
                     className="flex-1 inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl bg-[#0F172A] hover:bg-[#1E293B] text-white text-xs font-bold tracking-wide transition-all shadow-md active:scale-[0.98] cursor-pointer"
                   >
                     <MessageCircle className="w-4 h-4 text-[#D4AF37] fill-[#D4AF37]" />
-                    <span>Inquire / Book on WhatsApp</span>
+                    <span>Inquire on WhatsApp</span>
                   </a>
 
                   {/* Instagram Button */}

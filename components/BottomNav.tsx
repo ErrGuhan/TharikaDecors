@@ -4,7 +4,6 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
-import { MessageCircle, Sparkles } from 'lucide-react';
 
 type NavItem = {
   label: string;
@@ -85,10 +84,7 @@ function BookIcon({ className }: { className?: string }) {
       strokeLinejoin="round"
       aria-hidden="true"
     >
-      <path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z" />
-      <path d="M4 5v14" />
-      <path d="M9 7h6" />
-      <path d="M9 11h6" />
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
     </svg>
   );
 }
@@ -114,8 +110,8 @@ export default function BottomNav() {
   }
 
   return (
-    <nav className="fixed bottom-0 left-0 z-50 w-full border-t border-slate-200/80 bg-white/95 backdrop-blur-lg shadow-[0_-4px_24px_rgba(0,0,0,0.06)]">
-      <div className="mx-auto flex max-w-md items-center justify-around py-2 sm:py-2.5">
+    <nav className="fixed bottom-0 left-0 z-50 w-full border-t border-slate-200/80 bg-white/95 backdrop-blur-lg shadow-[0_-4px_24px_rgba(0,0,0,0.06)] pb-[env(safe-area-inset-bottom,0px)]">
+      <div className="mx-auto flex max-w-md items-center justify-around py-1.5 sm:py-2">
         {navItems.map(({ label, href, isExternal, icon: Icon }) => {
           const active =
             !isExternal &&
@@ -128,12 +124,12 @@ export default function BottomNav() {
                 href={href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex min-w-[64px] flex-col items-center gap-0.5 px-3 py-1.5 text-xs font-semibold text-[#0F172A] hover:text-[#D4AF37] hover:scale-105 active:scale-95 transition-all group"
+                className="flex min-w-[64px] flex-col items-center gap-0.5 px-3 py-1 text-xs font-medium text-slate-500 hover:text-[#0F172A] active:scale-95 transition-all group"
               >
-                <div className="p-1 rounded-xl bg-[#D4AF37]/15 text-[#D4AF37] group-hover:bg-[#D4AF37] group-hover:text-[#0F172A] transition-colors">
+                <div className="p-1 rounded-xl text-slate-400 group-hover:text-[#0F172A] group-hover:bg-[#0F172A]/5 transition-colors">
                   <Icon className="h-5 w-5" />
                 </div>
-                <span className="text-[11px] font-bold text-[#0F172A]">{label}</span>
+                <span className="text-[11px] text-slate-500 group-hover:text-[#0F172A] transition-colors">{label}</span>
               </a>
             );
           }
@@ -144,23 +140,23 @@ export default function BottomNav() {
               href={href}
               aria-current={active ? 'page' : undefined}
               className={cn(
-                'flex min-w-[64px] flex-col items-center gap-0.5 px-3 py-1.5 text-xs font-medium transition-all relative',
+                'flex min-w-[64px] flex-col items-center gap-0.5 px-3 py-1 text-xs transition-all relative group',
                 active
                   ? 'text-[#0F172A] font-bold'
-                  : 'text-slate-400 hover:text-[#0F172A]'
+                  : 'text-slate-500 font-medium hover:text-[#0F172A]'
               )}
             >
               <div
                 className={cn(
                   'p-1 rounded-xl transition-colors',
-                  active ? 'bg-[#0F172A]/10 text-[#0F172A]' : 'text-slate-400'
+                  active ? 'bg-[#0F172A]/10 text-[#0F172A]' : 'text-slate-400 group-hover:text-[#0F172A]'
                 )}
               >
                 <Icon className="h-5 w-5" />
               </div>
               <span className="text-[11px]">{label}</span>
               {active && (
-                <span className="w-1 h-1 rounded-full bg-[#D4AF37] absolute bottom-0.5" />
+                <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37] absolute -bottom-0.5" />
               )}
             </Link>
           );

@@ -36,9 +36,9 @@ const fadeUpVariants = {
 
 export default function HomeHeroAndCategories({ categories }: HomeHeroAndCategoriesProps) {
   return (
-    <div className="w-full bg-tharika-cream">
+    <div className="w-full bg-[#FAF7F2]">
       {/* ── 1. The Hero Section ── */}
-      <section className="relative flex min-h-[90vh] w-full items-center justify-center overflow-hidden">
+      <section className="relative flex min-h-[calc(100dvh-4rem)] sm:min-h-[85vh] w-full items-center justify-center overflow-hidden">
         {/* Background Image */}
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat scale-105 transition-transform duration-1000 ease-out"
@@ -48,19 +48,19 @@ export default function HomeHeroAndCategories({ categories }: HomeHeroAndCategor
 
         {/* Luxurious Dark Overlay */}
         <div
-          className="absolute inset-0 bg-gradient-to-b from-black/65 via-black/55 to-black/85"
+          className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/55 to-black/85"
           aria-hidden="true"
         />
 
         {/* Hero Content */}
-        <div className="relative z-10 mx-auto max-w-4xl px-6 py-16 text-center flex flex-col items-center justify-center">
+        <div className="relative z-10 mx-auto max-w-4xl px-5 py-10 sm:py-16 text-center flex flex-col items-center justify-center">
           {/* Official Tharika Decors Logo Emblem */}
           <motion.div
             variants={fadeUpVariants}
             custom={0}
             initial="hidden"
             animate="visible"
-            className="relative w-64 sm:w-80 md:w-96 h-32 sm:h-40 md:h-48 mb-6 drop-shadow-2xl hover:scale-105 transition-transform duration-500"
+            className="relative w-56 sm:w-80 md:w-96 h-28 sm:h-40 md:h-48 mb-4 sm:mb-6 drop-shadow-2xl hover:scale-105 transition-transform duration-500"
           >
             <Image
               src="/logo.png"
@@ -126,7 +126,7 @@ export default function HomeHeroAndCategories({ categories }: HomeHeroAndCategor
       </section>
 
       {/* ── 3. The Category Grid (High-Contrast Theme-Aligned Typography) ── */}
-      <section className="py-20 sm:py-28 px-6 sm:px-8 lg:px-12 bg-tharika-cream">
+      <section className="py-16 sm:py-24 px-5 sm:px-8 lg:px-12 bg-[#FAF7F2]">
         <div className="mx-auto max-w-6xl">
           {/* Section Header */}
           <motion.div
