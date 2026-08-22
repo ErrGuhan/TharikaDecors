@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import prisma from '@/lib/prisma';
 import HomeHeroAndCategories, { DynamicCategoryCard } from '@/components/HomeHeroAndCategories';
+import HomeIntro from '@/components/HomeIntro';
 import { ensureDatabaseSchema } from '@/lib/dbInit';
 
 export const revalidate = 3600; // ISR: serve from cache, rebuild every hour
@@ -92,5 +93,11 @@ export default async function HomePage() {
     ];
   }
 
-  return <HomeHeroAndCategories categories={categoryCards} />;
+  return (
+    <>
+      {/* Splash screen — plays tharika-intro.mp4 once per session, then fades out */}
+      <HomeIntro />
+      <HomeHeroAndCategories categories={categoryCards} />
+    </>
+  );
 }
