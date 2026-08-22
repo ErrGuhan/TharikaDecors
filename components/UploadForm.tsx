@@ -21,9 +21,21 @@ import {
   Type,
   FolderPlus,
 } from 'lucide-react';
+import dynamic from 'next/dynamic';
 import { createPortfolioItem, createCategory } from '@/app/actions/adminActions';
-import ImageCropper from '@/components/ImageCropper';
-import MobilePreviewModal from '@/components/MobilePreviewModal';
+
+const ImageCropper = dynamic(() => import('@/components/ImageCropper'), {
+  ssr: false,
+  loading: () => (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
+      <div className="w-8 h-8 rounded-full border-2 border-white/20 border-t-white animate-spin" />
+    </div>
+  ),
+});
+
+const MobilePreviewModal = dynamic(() => import('@/components/MobilePreviewModal'), {
+  ssr: false,
+});
 
 export interface CategoryOption {
   id: string;

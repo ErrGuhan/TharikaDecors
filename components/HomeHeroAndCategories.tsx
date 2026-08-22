@@ -39,16 +39,20 @@ export default function HomeHeroAndCategories({ categories }: HomeHeroAndCategor
     <div className="w-full bg-[#FAF7F2]">
       {/* ── 1. The Hero Section ── */}
       <section className="relative flex min-h-[calc(100dvh-4rem)] sm:min-h-[85vh] w-full items-center justify-center overflow-hidden">
-        {/* Background Image */}
-        <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat scale-105 transition-transform duration-1000 ease-out"
-          style={{ backgroundImage: `url(${heroImage})` }}
-          aria-hidden="true"
+        {/* Optimized Next.js Hero Background Image */}
+        <Image
+          src={heroImage}
+          alt="Tharika Decors Luxury Stage Scenography"
+          fill
+          priority
+          sizes="100vw"
+          quality={75}
+          className="object-cover object-center scale-105 transition-transform duration-1000 ease-out"
         />
 
         {/* Luxurious Dark Overlay */}
         <div
-          className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/55 to-black/85"
+          className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/55 to-black/85 pointer-events-none"
           aria-hidden="true"
         />
 
@@ -66,9 +70,9 @@ export default function HomeHeroAndCategories({ categories }: HomeHeroAndCategor
               src="/logo.png"
               alt="Tharika Decors & Events"
               fill
-              className="object-contain"
               priority
-              unoptimized
+              sizes="(max-width: 640px) 224px, (max-width: 768px) 320px, 384px"
+              className="object-contain"
             />
           </motion.div>
 
@@ -172,14 +176,17 @@ export default function HomeHeroAndCategories({ categories }: HomeHeroAndCategor
               >
                 <Link
                   href={cat.href}
-                  className="group relative block aspect-square overflow-hidden rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer border border-tharika-blue/10"
+                  className="group relative block aspect-square overflow-hidden rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer border border-tharika-blue/10 bg-slate-950"
                 >
-                  {/* Image */}
+                  {/* Optimized Category Card Image */}
                   {cat.imageUrl ? (
-                    <div
-                      className="absolute inset-0 bg-cover bg-center transition-transform duration-700 ease-out group-hover:scale-108"
-                      style={{ backgroundImage: `url(${cat.imageUrl})` }}
-                      aria-hidden="true"
+                    <Image
+                      src={cat.imageUrl}
+                      alt={cat.title}
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      quality={75}
+                      className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-108"
                     />
                   ) : (
                     <div className="absolute inset-0 bg-gray-900 flex items-center justify-center text-gray-500">
@@ -189,7 +196,7 @@ export default function HomeHeroAndCategories({ categories }: HomeHeroAndCategor
 
                   {/* Dark Gradient Overlay at bottom for maximum legibility */}
                   <div
-                    className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"
+                    className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent pointer-events-none"
                     aria-hidden="true"
                   />
 
