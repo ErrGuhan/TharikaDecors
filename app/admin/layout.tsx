@@ -1,8 +1,21 @@
+import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { createSupabaseServerClient } from '@/lib/supabaseServer';
+import AdminServiceWorkerRegister from '@/components/AdminServiceWorkerRegister';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
+
+export const metadata: Metadata = {
+  title: 'Admin Studio | Tharika Decors',
+  description: 'Tharika Decors & Events Management Studio',
+  manifest: '/admin/manifest.webmanifest',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: 'Tharika Admin',
+  },
+};
 
 export default async function AdminLayout({
   children,
@@ -40,5 +53,10 @@ export default async function AdminLayout({
     redirect('/login');
   }
 
-  return <>{children}</>;
+  return (
+    <>
+      <AdminServiceWorkerRegister />
+      {children}
+    </>
+  );
 }
