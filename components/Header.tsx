@@ -61,27 +61,25 @@ export default function Header() {
             Our Works
           </Link>
           <Link
-            href="/book"
+            href="/about"
             className={`hover:text-tharika-blue transition-colors ${
-              pathname === '/book' ? 'text-tharika-blue font-bold border-b-2 border-tharika-blue pb-0.5' : ''
+              pathname === '/about' ? 'text-tharika-blue font-bold border-b-2 border-tharika-blue pb-0.5' : ''
             }`}
           >
             About Us
           </Link>
         </nav>
 
-        {/* Action Button (WhatsApp / Book) */}
+        {/* Action Button (Book Consultation) */}
         <div className="flex items-center gap-3">
-          <a
-            href={WHATSAPP_URL}
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            href="/book"
             className="inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-full bg-tharika-gold-gradient text-tharika-blue font-bold text-xs tracking-wider uppercase shadow-sm hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all"
           >
-            <MessageCircle className="w-4 h-4 fill-tharika-blue text-transparent" />
+            <Calendar className="w-4 h-4 text-tharika-blue" />
             <span className="hidden sm:inline">Book Consultation</span>
             <span className="sm:hidden">Book</span>
-          </a>
+          </Link>
         </div>
       </div>
     </header>

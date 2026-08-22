@@ -92,11 +92,11 @@ function BookIcon({ className }: { className?: string }) {
 const navItems: NavItem[] = [
   { label: 'Home', href: '/', icon: HomeIcon },
   { label: 'Our Works', href: '/portfolio', icon: PortfolioIcon },
-  { label: 'About Us', href: '/book', icon: StoryIcon },
+  { label: 'About Us', href: '/about', icon: StoryIcon },
   {
     label: 'Book',
-    href: WHATSAPP_BOOKING_URL,
-    isExternal: true,
+    href: '/book',
+    isExternal: false,
     icon: BookIcon,
   },
 ];

@@ -42,6 +42,19 @@ function formatInstagramUrl(url?: string | null): string {
   return `https://www.instagram.com/${handle}`;
 }
 
+/**
+ * Formats raw price input (e.g. 30000, 75000, Starts at 75000) into ₹30,000 Indian currency format.
+ */
+function formatPrice(rawPrice?: string | null): string {
+  if (!rawPrice || !rawPrice.trim()) return 'Custom Quote';
+  const trimmed = rawPrice.trim();
+  const digits = trimmed.replace(/[^\d]/g, '');
+  if (digits && !isNaN(Number(digits))) {
+    return `₹${Number(digits).toLocaleString('en-IN')}`;
+  }
+  return trimmed.startsWith('₹') ? trimmed : `₹${trimmed}`;
+}
+
 export default function PortfolioFeed({
   initialItems = [],
   title = 'Our Works',
@@ -172,7 +185,8 @@ export default function PortfolioFeed({
 
   // WhatsApp prefilled message
   const getWhatsAppUrl = (item: PortfolioCardItem) => {
-    const priceText = item.price?.trim() ? ` (${item.price.trim()})` : '';
+    const formattedPrice = formatPrice(item.price);
+    const priceText = item.price?.trim() ? ` (Budget: ${formattedPrice})` : '';
     const msg = `Hello Tharika Decors! I am interested in the "${item.title}" ${item.category || 'decor'}${priceText} and would like to check availability and package details.`;
     return `${WHATSAPP_BOOKING_BASE_URL}?text=${encodeURIComponent(msg)}`;
   };
@@ -349,78 +363,101 @@ export default function PortfolioFeed({
 
               {/* Details & Actions Section */}
               <div className="p-5 sm:p-6 bg-white flex flex-col overflow-y-auto">
-                <div className="flex items-start justify-between gap-3 mb-2">
-                  <h2
-                    id="modal-title"
-                    className="text-lg sm:text-2xl font-bold font-serif text-slate-900 leading-tight"
-                  >
-                    {activeModalItem.title}
-                  </h2>
-                  {activeModalItem.price?.trim() && (
-                    <span className="bg-[#D4AF37]/15 text-[#0F172A] border border-[#D4AF37]/30 px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap shadow-2xs">
-                      {activeModalItem.price.trim()}
-                    </span>
-                  )}
+                {/* Category & Badge Row */}
+                <div className="flex flex-wrap items-center gap-2 mb-3">
+                  <span className="bg-[#0A3659]/5 text-[#0A3659] border border-[#0A3659]/10 px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase">
+                    {activeModalItem.category?.trim() || 'Exclusive Decor'}
+                  </span>
+                  <span className="bg-amber-50 text-amber-700 text-[10px] px-2.5 py-1 rounded-full font-medium border border-amber-200/60 inline-flex items-center gap-1">
+                    <span>✨ Fully Customizable</span>
+                  </span>
                 </div>
 
-                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed mb-5">
+                {/* Full-width Title */}
+                <h2
+                  id="modal-title"
+                  className="text-2xl font-serif font-bold text-gray-900 mb-2 leading-tight"
+                >
+                  {activeModalItem.title}
+                </h2>
+
+                {/* Description */}
+                <p className="text-sm text-gray-600 leading-relaxed mb-5">
                   {activeModalItem.caption?.trim() ||
                     'Handcrafted with meticulous detail, floral artistry, and luxury styling to make your celebration memorable.'}
                 </p>
 
-                {/* Action Toolbar */}
-                <div className="flex items-center gap-2.5 pt-3 border-t border-slate-100">
-                  {/* WhatsApp Booking Direct Button */}
-                  <a
-                    href={getWhatsAppUrl(activeModalItem)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex-1 inline-flex items-center justify-center gap-2 py-3 px-4 rounded-2xl bg-[#0F172A] hover:bg-[#1E293B] text-white text-xs font-bold tracking-wide transition-all shadow-md active:scale-[0.98] cursor-pointer"
-                  >
-                    <MessageCircle className="w-4 h-4 text-[#D4AF37] fill-[#D4AF37]" />
-                    <span>Inquire on WhatsApp</span>
-                  </a>
+                {/* Price Block & Action Toolbar Container */}
+                <div className="pt-4 border-t border-slate-100 mt-auto space-y-4">
+                  {/* Price Tag Makeover: Two-line price block */}
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <span className="block text-[10px] uppercase tracking-wider text-gray-500 font-semibold">
+                        STARTS FROM
+                      </span>
+                      <span className="text-xl font-bold font-serif text-[#0A3659]">
+                        {formatPrice(activeModalItem.price)}
+                      </span>
+                    </div>
+                    <span className="text-[11px] text-gray-400 font-medium">
+                      *Taxes &amp; setup included
+                    </span>
+                  </div>
 
-                  {/* Instagram Button */}
-                  <a
-                    href={formatInstagramUrl(activeModalItem.instagramUrl)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-11 h-11 rounded-2xl bg-pink-50 hover:bg-pink-100 text-[#E4405F] flex items-center justify-center transition-colors border border-pink-100 flex-shrink-0 cursor-pointer shadow-2xs"
-                    title="View on Instagram"
-                    aria-label="View on Instagram"
-                  >
-                    <Instagram className="w-4 h-4" />
-                  </a>
-
-                  {/* Share Button */}
-                  <div className="relative">
-                    <button
-                      type="button"
-                      onClick={() => handleShare(activeModalItem)}
-                      className="w-11 h-11 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition-colors border border-slate-200 flex-shrink-0 cursor-pointer shadow-2xs"
-                      title="Share showcase"
-                      aria-label="Share showcase"
+                  {/* Action Toolbar */}
+                  <div className="flex items-center gap-2.5">
+                    {/* Primary Button: Check Availability */}
+                    <a
+                      href={getWhatsAppUrl(activeModalItem)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1 inline-flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-sm font-bold tracking-wide transition-all hover:shadow-md active:scale-[0.98] cursor-pointer"
                     >
-                      {shareCopied ? (
-                        <Check className="w-4 h-4 text-emerald-600" />
-                      ) : (
-                        <Share2 className="w-4 h-4" />
-                      )}
-                    </button>
+                      <MessageCircle className="w-4 h-4 text-[#D4AF37] fill-[#D4AF37]" />
+                      <span>Check Availability</span>
+                    </a>
 
-                    <AnimatePresence>
-                      {shareCopied && (
-                        <motion.span
-                          initial={{ opacity: 0, y: 5, scale: 0.9 }}
-                          animate={{ opacity: 1, y: -34, scale: 1 }}
-                          exit={{ opacity: 0, y: -25 }}
-                          className="absolute left-1/2 -translate-x-1/2 bottom-full mb-1 px-2 py-0.5 rounded-md bg-slate-900 text-white text-[10px] font-medium whitespace-nowrap shadow-lg pointer-events-none z-20"
-                        >
-                          Link copied!
-                        </motion.span>
-                      )}
-                    </AnimatePresence>
+                    {/* Instagram Button: Perfectly Square Aspect-square w-12 */}
+                    <a
+                      href={formatInstagramUrl(activeModalItem.instagramUrl)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-12 h-12 aspect-square rounded-xl bg-pink-50/50 hover:bg-pink-100/80 text-[#E4405F] flex items-center justify-center transition-all border border-gray-200 flex-shrink-0 cursor-pointer shadow-2xs hover:border-pink-200"
+                      title="View on Instagram"
+                      aria-label="View on Instagram"
+                    >
+                      <Instagram className="w-5 h-5" />
+                    </a>
+
+                    {/* Share Button: Perfectly Square Aspect-square w-12 */}
+                    <div className="relative">
+                      <button
+                        type="button"
+                        onClick={() => handleShare(activeModalItem)}
+                        className="w-12 h-12 aspect-square rounded-xl bg-gray-50 hover:bg-gray-100 text-gray-700 flex items-center justify-center transition-all border border-gray-200 flex-shrink-0 cursor-pointer shadow-2xs hover:border-gray-300"
+                        title="Share showcase"
+                        aria-label="Share showcase"
+                      >
+                        {shareCopied ? (
+                          <Check className="w-5 h-5 text-emerald-600" />
+                        ) : (
+                          <Share2 className="w-5 h-5" />
+                        )}
+                      </button>
+
+                      <AnimatePresence>
+                        {shareCopied && (
+                          <motion.span
+                            initial={{ opacity: 0, y: 5, scale: 0.9 }}
+                            animate={{ opacity: 1, y: -38, scale: 1 }}
+                            exit={{ opacity: 0, y: -25 }}
+                            className="absolute left-1/2 -translate-x-1/2 bottom-full mb-1 px-2.5 py-1 rounded-md bg-slate-900 text-white text-[10px] font-medium whitespace-nowrap shadow-lg pointer-events-none z-20"
+                          >
+                            Link copied!
+                          </motion.span>
+                        )}
+                      </AnimatePresence>
+                    </div>
                   </div>
                 </div>
               </div>
