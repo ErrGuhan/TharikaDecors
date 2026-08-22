@@ -74,13 +74,35 @@ export async function ensureDatabaseSchema(): Promise<boolean> {
       END $$;
     `).catch(() => null);
 
-    // 4. Create high-performance query indexes
+    // 4. Create high-performance query indexes inside idempotent block
     await prisma.$executeRawUnsafe(`
-      CREATE INDEX IF NOT EXISTS "portfolio_items_categoryId_idx" ON public.portfolio_items("categoryId");
-    `).catch(() => null);
-
-    await prisma.$executeRawUnsafe(`
-      CREATE INDEX IF NOT EXISTS "portfolio_items_createdAt_idx" ON public.portfolio_items("createdAt" DESC);
+      DO $$
+      BEGIN
+        BEGIN
+          CREATE INDEX IF NOT EXISTS "categories_name_idx" ON public.categories("name");
+        EXCEPTION WHEN duplicate_table OR unique_violation THEN NULL;
+        END;
+        BEGIN
+          CREATE INDEX IF NOT EXISTS "categories_createdAt_idx" ON public.categories("createdAt" DESC);
+        EXCEPTION WHEN duplicate_table OR unique_violation THEN NULL;
+        END;
+        BEGIN
+          CREATE INDEX IF NOT EXISTS "portfolio_items_categoryId_idx" ON public.portfolio_items("categoryId");
+        EXCEPTION WHEN duplicate_table OR unique_violation THEN NULL;
+        END;
+        BEGIN
+          CREATE INDEX IF NOT EXISTS "portfolio_items_isCover_idx" ON public.portfolio_items("isCover");
+        EXCEPTION WHEN duplicate_table OR unique_violation THEN NULL;
+        END;
+        BEGIN
+          CREATE INDEX IF NOT EXISTS "portfolio_items_createdAt_idx" ON public.portfolio_items("createdAt" DESC);
+        EXCEPTION WHEN duplicate_table OR unique_violation THEN NULL;
+        END;
+        BEGIN
+          CREATE INDEX IF NOT EXISTS "portfolio_items_cat_cover_created_idx" ON public.portfolio_items("categoryId", "isCover", "createdAt" DESC);
+        EXCEPTION WHEN duplicate_table OR unique_violation THEN NULL;
+        END;
+      END $$;
     `).catch(() => null);
 
     // 5. Seed initial default categories if table is empty

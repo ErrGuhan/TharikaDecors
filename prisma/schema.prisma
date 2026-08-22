@@ -16,6 +16,8 @@ model Category {
   createdAt DateTime        @default(now())
   items     PortfolioItem[]
 
+  @@index([name])
+  @@index([createdAt(sort: Desc)])
   @@map("categories")
 }
 
@@ -33,6 +35,8 @@ model PortfolioItem {
   updatedAt    DateTime  @updatedAt
 
   @@index([categoryId])
+  @@index([isCover])
   @@index([createdAt(sort: Desc)])
+  @@index([categoryId, isCover, createdAt(sort: Desc)])
   @@map("portfolio_items")
 }

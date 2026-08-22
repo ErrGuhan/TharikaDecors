@@ -59,8 +59,12 @@ BEGIN
 END $$;
 
 -- 4. Create High-Performance Query Indexes
+CREATE INDEX IF NOT EXISTS "categories_name_idx" ON public.categories("name");
+CREATE INDEX IF NOT EXISTS "categories_createdAt_idx" ON public.categories("createdAt" DESC);
 CREATE INDEX IF NOT EXISTS "portfolio_items_categoryId_idx" ON public.portfolio_items("categoryId");
+CREATE INDEX IF NOT EXISTS "portfolio_items_isCover_idx" ON public.portfolio_items("isCover");
 CREATE INDEX IF NOT EXISTS "portfolio_items_createdAt_idx" ON public.portfolio_items("createdAt" DESC);
+CREATE INDEX IF NOT EXISTS "portfolio_items_cat_cover_created_idx" ON public.portfolio_items("categoryId", "isCover", "createdAt" DESC);
 
 -- 5. Seed Default Categories
 INSERT INTO public.categories (id, name, slug)
