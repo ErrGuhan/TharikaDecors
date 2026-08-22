@@ -7,7 +7,7 @@ import { usePathname } from 'next/navigation';
 import { Sparkles, MessageCircle, Calendar } from 'lucide-react';
 
 const WHATSAPP_URL =
-  'https://wa.me/916384947914?text=Hello%20Tharika%20Decors!%20I%20was%20looking%20at%20your%20portfolio%20and%20would%20like%20to%20inquire%20about%20booking%20event%20decor';
+  'https://wa.me/916384947914?text=Hello%20Tharika%20Decors!%20I%20was%20looking%20at%20your%20works%20and%20would%20like%20to%20inquire%20about%20booking%20event%20decor';
 
 export default function Header() {
   const pathname = usePathname();
@@ -66,7 +66,7 @@ export default function Header() {
               pathname === '/book' ? 'text-tharika-blue font-bold border-b-2 border-tharika-blue pb-0.5' : ''
             }`}
           >
-            Consultation
+            Our Story
           </Link>
         </nav>
 

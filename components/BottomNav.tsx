@@ -55,7 +55,7 @@ function PortfolioIcon({ className }: { className?: string }) {
   );
 }
 
-function ProcessIcon({ className }: { className?: string }) {
+function StoryIcon({ className }: { className?: string }) {
   return (
     <svg
       className={className}
@@ -67,14 +67,8 @@ function ProcessIcon({ className }: { className?: string }) {
       strokeLinejoin="round"
       aria-hidden="true"
     >
-      <circle cx="6" cy="6" r="2" />
-      <circle cx="18" cy="6" r="2" />
-      <circle cx="18" cy="18" r="2" />
-      <circle cx="6" cy="18" r="2" />
-      <path d="M8 6h8" />
-      <path d="M18 8v8" />
-      <path d="M8 18h8" />
-      <path d="M6 8v8" />
+      <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+      <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
     </svg>
   );
 }
@@ -102,7 +96,7 @@ function BookIcon({ className }: { className?: string }) {
 const navItems: NavItem[] = [
   { label: 'Home', href: '/', icon: HomeIcon },
   { label: 'Our Works', href: '/portfolio', icon: PortfolioIcon },
-  { label: 'Process', href: '/book', icon: ProcessIcon },
+  { label: 'Our Story', href: '/book', icon: StoryIcon },
   {
     label: 'Book',
     href: WHATSAPP_BOOKING_URL,
