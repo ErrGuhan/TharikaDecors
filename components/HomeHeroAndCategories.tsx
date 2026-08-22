@@ -119,7 +119,7 @@ export default function HomeHeroAndCategories({ categories }: HomeHeroAndCategor
               className="inline-flex items-center justify-center gap-2 px-7 py-4 text-sm sm:text-base font-semibold tracking-wide text-white rounded-full bg-white/20 hover:bg-white/30 backdrop-blur-md border border-white/30 transition-all shadow-md"
             >
               <Sparkles className="w-4 h-4 text-tharika-gold" />
-              <span>Explore Portfolio</span>
+              <span>Explore Our Works</span>
             </Link>
           </motion.div>
         </div>

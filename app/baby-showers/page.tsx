@@ -4,8 +4,8 @@ import PortfolioFeed from '@/components/PortfolioFeed';
 import { PortfolioCardItem } from '@/components/PortfolioCard';
 import { ensureDatabaseSchema } from '@/lib/dbInit';
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+export const revalidate = 3600; // ISR: serve from cache, rebuild in background every hour
+
 
 export const metadata: Metadata = {
   title: 'Baby Showers & Seemantham Portfolio | Tharika Decors & Events',

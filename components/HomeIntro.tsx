@@ -11,20 +11,34 @@ export default function HomeIntro() {
   useEffect(() => {
     setIsMounted(true);
 
-    // Only show the intro once per browser session — not on every page visit.
+    // Only show the intro once per browser session
     const alreadyPlayed = sessionStorage.getItem('tharika-intro-played');
     if (!alreadyPlayed) {
       setShowIntro(true);
     }
   }, []);
 
+  // Safety fallback: if video stalls or takes longer than 11 seconds, auto dismiss
+  useEffect(() => {
+    if (!showIntro) return;
+
+    const safetyTimer = setTimeout(() => {
+      handleEnd();
+    }, 11000);
+
+    return () => clearTimeout(safetyTimer);
+  }, [showIntro]);
+
   const handleEnd = () => {
-    sessionStorage.setItem('tharika-intro-played', '1');
+    try {
+      sessionStorage.setItem('tharika-intro-played', '1');
+    } catch {
+      // Ignore sessionStorage exceptions (e.g. private browsing modes)
+    }
     setShowIntro(false);
   };
 
   const handleSkip = () => {
-    // Pause + mark done so onEnded doesn't fire a second time
     if (videoRef.current) {
       videoRef.current.pause();
     }
@@ -32,7 +46,6 @@ export default function HomeIntro() {
   };
 
   // Don't render anything until client-side hydration is complete
-  // (avoids a server/client mismatch on `showIntro`)
   if (!isMounted) return null;
 
   return (
@@ -42,34 +55,35 @@ export default function HomeIntro() {
           key="home-intro"
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 1, ease: 'easeInOut' }}
+          transition={{ duration: 0.8, ease: 'easeInOut' }}
           className="fixed inset-0 z-[100] bg-[#FAF7F2] flex items-center justify-center overflow-hidden"
           aria-modal="true"
           role="dialog"
           aria-label="Tharika Decors intro"
         >
-          {/* Full-screen video */}
+          {/* Full-screen compressed video with faststart streaming */}
           <video
             ref={videoRef}
             src="/tharika-intro.mp4"
             autoPlay
             muted
             playsInline
+            preload="auto"
             onEnded={handleEnd}
+            onError={handleEnd}
             className="w-full h-full object-cover"
           />
 
-          {/* Subtle skip button — bottom-right corner */}
+          {/* Skip button — bottom-right corner */}
           <button
             type="button"
             onClick={handleSkip}
-            className="absolute bottom-10 right-10 z-[101] flex items-center gap-1.5 text-sm font-medium text-white/70 hover:text-white transition-colors duration-200 cursor-pointer select-none group"
+            className="absolute bottom-8 right-8 z-[101] flex items-center gap-1.5 px-4 py-2 rounded-full bg-black/30 backdrop-blur-md text-xs font-semibold text-white/90 hover:text-white hover:bg-black/50 transition-all duration-200 cursor-pointer select-none group border border-white/10 shadow-lg"
             aria-label="Skip intro"
           >
             <span>Skip</span>
-            {/* Animated arrow */}
             <svg
-              className="w-4 h-4 translate-x-0 group-hover:translate-x-1 transition-transform duration-200"
+              className="w-3.5 h-3.5 translate-x-0 group-hover:translate-x-0.5 transition-transform duration-200"
               viewBox="0 0 16 16"
               fill="none"
               aria-hidden="true"
@@ -85,8 +99,8 @@ export default function HomeIntro() {
           </button>
 
           {/* Subtle logo watermark — bottom-left */}
-          <div className="absolute bottom-10 left-10 z-[101]">
-            <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-white/40 select-none">
+          <div className="absolute bottom-8 left-8 z-[101] pointer-events-none">
+            <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-white/50 select-none drop-shadow-sm">
               Tharika Decors
             </span>
           </div>

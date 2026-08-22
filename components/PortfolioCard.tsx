@@ -52,7 +52,6 @@ export default function PortfolioCard({
             priority={priority}
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-            unoptimized={true}
           />
         ) : (
           <div className="w-full h-full flex flex-col items-center justify-center bg-slate-900 text-amber-200/60 p-4 text-center">
