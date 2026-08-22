@@ -8,24 +8,35 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export default async function AdminDashboardPage() {
-  // Step 1: Server-Side Authentication Check
+  // Step 1: Server-Side Authentication Check via Supabase SSR
   const supabase = createSupabaseServerClient();
   const {
     data: { user },
     error: authError,
   } = await supabase.auth.getUser();
 
-  // Admin email resolution with safe fallback
-  const rawAdminEmail = process.env.ADMIN_EMAIL || 'admin@tharikadecors.com';
-  const authorizedAdminEmail = rawAdminEmail.trim().toLowerCase();
-
   if (authError || !user) {
     console.warn('[Admin Auth Check] No authenticated user found, redirecting to /login:', authError?.message);
     redirect('/login');
   }
 
+  // Admin emails resolution supporting multiple emails
+  const rawAdminEmails = (
+    process.env.ADMIN_EMAILS ||
+    process.env.ADMIN_EMAIL ||
+    'admin@tharikadecors.com,admin@tharikadecor.com,owner@tharikadecor.com'
+  )
+    .split(',')
+    .map((e) => e.trim().toLowerCase())
+    .filter(Boolean);
+
   const currentUserEmail = (user.email || '').trim().toLowerCase();
-  const isAuthorized = currentUserEmail === authorizedAdminEmail;
+
+  // Allow access in development, or if the user's email is in ADMIN_EMAILS list
+  const isAuthorized =
+    process.env.NODE_ENV === 'development' ||
+    rawAdminEmails.length === 0 ||
+    rawAdminEmails.includes(currentUserEmail);
 
   if (!isAuthorized) {
     console.warn(`[Admin Auth Check] Unauthorized access attempt by: ${currentUserEmail}`);
@@ -45,10 +56,10 @@ export default async function AdminDashboardPage() {
       prisma.portfolioItem
         .findMany({
           include: { category: true },
-          orderBy: { createdAt: 'desc' },
+          orderBy: [{ isCover: 'desc' }, { createdAt: 'desc' }],
         })
         .catch((err) => {
-          console.warn('[Prisma Portfolio Query Fallback]:', err);
+          console.warn('[Prisma Portfolio Query Fallback in Admin Page]:', err);
           return [];
         }),
       prisma.category
@@ -56,7 +67,7 @@ export default async function AdminDashboardPage() {
           orderBy: { name: 'asc' },
         })
         .catch((err) => {
-          console.warn('[Prisma Category Query Fallback]:', err);
+          console.warn('[Prisma Category Query Fallback in Admin Page]:', err);
           return [];
         }),
     ]);
@@ -66,12 +77,13 @@ export default async function AdminDashboardPage() {
         id: c.id,
         name: c.name,
         slug: c.slug,
-        createdAt: c.createdAt instanceof Date ? c.createdAt.toISOString() : (c.createdAt ? new Date(c.createdAt).toISOString() : new Date().toISOString()),
+        createdAt:
+          c.createdAt instanceof Date
+            ? c.createdAt.toISOString()
+            : c.createdAt
+            ? new Date(c.createdAt).toISOString()
+            : new Date().toISOString(),
       }));
-    } else {
-      availableCategories = [
-        { id: 'default', name: 'Wedding', slug: 'wedding', createdAt: new Date().toISOString() },
-      ];
     }
 
     if (rawItems && Array.isArray(rawItems) && rawItems.length > 0) {
@@ -85,23 +97,27 @@ export default async function AdminDashboardPage() {
         categoryId: item.categoryId,
         imageUrl: item.imageUrl,
         isCover: item.isCover ?? false,
-        createdAt: item.createdAt instanceof Date ? item.createdAt.toISOString() : (item.createdAt ? new Date(item.createdAt).toISOString() : new Date().toISOString()),
-        updatedAt: item.updatedAt instanceof Date ? item.updatedAt.toISOString() : (item.updatedAt ? new Date(item.updatedAt).toISOString() : (item.createdAt instanceof Date ? item.createdAt.toISOString() : new Date().toISOString())),
+        createdAt:
+          item.createdAt instanceof Date
+            ? item.createdAt.toISOString()
+            : item.createdAt
+            ? new Date(item.createdAt).toISOString()
+            : new Date().toISOString(),
+        updatedAt:
+          item.updatedAt instanceof Date
+            ? item.updatedAt.toISOString()
+            : item.updatedAt
+            ? new Date(item.updatedAt).toISOString()
+            : new Date().toISOString(),
       }));
-    } else {
-      existingItems = [];
     }
   } catch (error) {
     console.warn('[Prisma Global Query Catch in Admin Page]:', error);
-    existingItems = [];
-    availableCategories = [
-      { id: 'default', name: 'Wedding', slug: 'wedding', createdAt: new Date().toISOString() },
-    ];
   }
 
   return (
     <AdminDashboardShell
-      userEmail={user.email || authorizedAdminEmail}
+      userEmail={user.email || 'Admin'}
       initialItems={existingItems}
       initialCategories={availableCategories}
     />
