@@ -1,7 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { revalidatePath, revalidateTag } from 'next/cache';
 import { prisma } from '@/lib/prisma';
 import { getServiceSupabase } from '@/lib/supabase';
 import { ensureDatabaseSchema } from '@/lib/dbInit';
+
+function revalidateAllRoutes() {
+  try {
+    revalidatePath('/', 'layout');
+    revalidatePath('/');
+    revalidatePath('/about');
+    revalidatePath('/book');
+    revalidatePath('/admin');
+    revalidatePath('/weddings');
+    revalidatePath('/baby-showers');
+    revalidatePath('/portfolio');
+    revalidateTag('portfolio');
+  } catch (err) {
+    console.warn('revalidate warning:', err);
+  }
+}
 
 // Authorized admin emails check helper
 const AUTHORIZED_ADMIN_EMAILS = (
@@ -169,6 +186,8 @@ export async function POST(req: NextRequest) {
           });
         }
 
+        revalidateAllRoutes();
+
         return NextResponse.json({
           success: true,
           message: `"${updatedItem?.title || 'Showcase'}" is now the primary cover photo!`,
@@ -178,6 +197,7 @@ export async function POST(req: NextRequest) {
 
       if (action === 'delete' && id) {
         const deleted = await prisma.portfolioItem.delete({ where: { id } }).catch(() => null);
+        revalidateAllRoutes();
         return NextResponse.json({
           success: true,
           message: 'Showcase deleted successfully',
@@ -311,6 +331,8 @@ export async function POST(req: NextRequest) {
           : new Date().toISOString(),
     };
 
+    revalidateAllRoutes();
+
     return NextResponse.json({
       success: true,
       message: `Showcase "${title}" published successfully!`,
@@ -442,6 +464,8 @@ export async function PUT(req: NextRequest) {
       });
     }
 
+    revalidateAllRoutes();
+
     return NextResponse.json({
       success: true,
       message: 'Showcase updated successfully!',
@@ -489,6 +513,8 @@ export async function DELETE(req: NextRequest) {
     const deleted = await prisma.portfolioItem.delete({
       where: { id },
     }).catch(() => null);
+
+    revalidateAllRoutes();
 
     return NextResponse.json({
       success: true,

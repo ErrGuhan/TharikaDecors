@@ -1,7 +1,25 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { revalidatePath, revalidateTag } from 'next/cache';
 import { prisma } from '@/lib/prisma';
 import { getServiceSupabase } from '@/lib/supabase';
 import { ensureDatabaseSchema } from '@/lib/dbInit';
+
+function revalidateAllRoutes() {
+  try {
+    revalidatePath('/', 'layout');
+    revalidatePath('/');
+    revalidatePath('/about');
+    revalidatePath('/book');
+    revalidatePath('/admin');
+    revalidatePath('/weddings');
+    revalidatePath('/baby-showers');
+    revalidatePath('/portfolio');
+    revalidateTag('categories');
+    revalidateTag('portfolio');
+  } catch (err) {
+    console.warn('revalidate warning:', err);
+  }
+}
 
 function slugify(text: string): string {
   return text
@@ -137,6 +155,7 @@ export async function POST(req: NextRequest) {
           where: { id: existing.id },
           data: { imageUrl },
         });
+        revalidateAllRoutes();
         return NextResponse.json({
           success: true,
           message: `Category "${updated.name}" updated with new image!`,
@@ -176,6 +195,8 @@ export async function POST(req: NextRequest) {
         imageUrl,
       },
     });
+
+    revalidateAllRoutes();
 
     return NextResponse.json({
       success: true,
@@ -270,6 +291,8 @@ export async function PUT(req: NextRequest) {
       data: updateData,
     });
 
+    revalidateAllRoutes();
+
     return NextResponse.json({
       success: true,
       message: `Category "${updated.name}" updated successfully!`,
@@ -314,6 +337,8 @@ export async function DELETE(req: NextRequest) {
     const deleted = await prisma.category.delete({
       where: { id },
     }).catch(() => null);
+
+    revalidateAllRoutes();
 
     return NextResponse.json({
       success: true,

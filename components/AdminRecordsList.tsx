@@ -26,6 +26,7 @@ import {
   Check,
 } from 'lucide-react';
 import dynamic from 'next/dynamic';
+import { useRouter } from 'next/navigation';
 import {
   updatePortfolioItem,
   deletePortfolioItem,
@@ -64,6 +65,7 @@ interface AdminRecordsListProps {
 }
 
 export default function AdminRecordsList({ initialItems }: AdminRecordsListProps) {
+  const router = useRouter();
   const [items, setItems] = useState<PortfolioItemRecord[]>(initialItems);
   const [activeFilter, setActiveFilter] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -289,6 +291,7 @@ export default function AdminRecordsList({ initialItems }: AdminRecordsListProps
 
         showToast('success', `Updated "${editTitle}" successfully!`);
         handleCloseEdit();
+        router.refresh();
       } catch (err: any) {
         console.error('Update item error:', err);
         showToast('error', err.message || 'Failed to save changes.');
@@ -339,6 +342,7 @@ export default function AdminRecordsList({ initialItems }: AdminRecordsListProps
           })
         );
         showToast('success', `"${item.title}" is now the primary cover photo!`);
+        router.refresh();
       } catch (err: any) {
         console.error('Set cover error:', err);
         showToast('error', err.message || 'Failed to set cover photo.');
@@ -383,6 +387,7 @@ export default function AdminRecordsList({ initialItems }: AdminRecordsListProps
         setItems((prev) => prev.filter((i) => i.id !== itemToDelete.id));
         showToast('success', `Deleted "${itemToDelete.title}" successfully.`);
         setItemToDelete(null);
+        router.refresh();
       } catch (err: any) {
         console.error('Delete item error:', err);
         // Rollback: remove from optimistic deleted set so item reappears

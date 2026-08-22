@@ -20,6 +20,7 @@ import {
   ExternalLink,
 } from 'lucide-react';
 import { createCategory, updateCategory, deleteCategory } from '@/app/actions/adminActions';
+import { useRouter } from 'next/navigation';
 import imageCompression from 'browser-image-compression';
 
 export interface CategoryData {
@@ -38,6 +39,7 @@ interface CategoryManagerProps {
 }
 
 export default function CategoryManager({ initialCategories }: CategoryManagerProps) {
+  const router = useRouter();
   const [categories, setCategories] = useState<CategoryData[]>(initialCategories);
 
   // Creation state
@@ -218,6 +220,7 @@ export default function CategoryManager({ initialCategories }: CategoryManagerPr
         setName('');
         setSlug('');
         handleClearFile();
+        router.refresh();
       }
     } catch (err: any) {
       console.error('Create category error:', err);
@@ -298,6 +301,7 @@ export default function CategoryManager({ initialCategories }: CategoryManagerPr
         );
         showToast('success', `Category "${res.category.name}" updated!`);
         handleCloseEdit();
+        router.refresh();
       }
     } catch (err: any) {
       console.error('Update category error:', err);
@@ -340,6 +344,7 @@ export default function CategoryManager({ initialCategories }: CategoryManagerPr
 
       setCategories((prev) => prev.filter((c) => c.id !== id));
       showToast('success', `Deleted category "${catName}".`);
+      router.refresh();
     } catch (err: any) {
       console.error('Delete category error:', err);
       showToast('error', err.message || 'Failed to delete category.');

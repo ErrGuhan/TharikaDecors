@@ -1,6 +1,6 @@
 'use server';
 
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 import { z } from 'zod';
 import { prisma } from '@/lib/prisma';
 import { createSupabaseServerClient } from '@/lib/supabaseServer';
@@ -156,6 +156,8 @@ function revalidateAllRoutes() {
     revalidatePath('/weddings');
     revalidatePath('/baby-showers');
     revalidatePath('/portfolio');
+    revalidateTag('portfolio');
+    revalidateTag('categories');
   } catch (err) {
     console.warn('revalidatePath warning:', err);
   }

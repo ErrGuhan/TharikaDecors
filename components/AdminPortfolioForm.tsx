@@ -2,6 +2,7 @@
 
 import React, { useState, useRef } from 'react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { UploadCloud, Image as ImageIcon, CheckCircle, AlertCircle, Loader2, X, Plus } from 'lucide-react';
 import imageCompression from 'browser-image-compression';
@@ -24,6 +25,7 @@ export default function AdminPortfolioForm({
   userEmail,
   onItemAdded,
 }: AdminPortfolioFormProps) {
+  const router = useRouter();
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState('Wedding');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -123,6 +125,7 @@ export default function AdminPortfolioForm({
       if (onItemAdded && data.item) {
         onItemAdded(data.item);
       }
+      router.refresh();
     } catch (err: any) {
       console.error('Submit error:', err);
       setStatusMessage({

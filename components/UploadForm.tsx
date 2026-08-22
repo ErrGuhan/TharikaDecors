@@ -22,6 +22,7 @@ import {
   FolderPlus,
 } from 'lucide-react';
 import dynamic from 'next/dynamic';
+import { useRouter } from 'next/navigation';
 import imageCompression from 'browser-image-compression';
 import { createPortfolioItem, createCategory } from '@/app/actions/adminActions';
 
@@ -54,6 +55,7 @@ export default function UploadForm({
   categories = [],
   onItemCreated,
 }: UploadFormProps) {
+  const router = useRouter();
   const [title, setTitle] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>(
     categories[0]?.id || 'wedding'
@@ -150,6 +152,7 @@ export default function UploadForm({
         setSelectedCategory(addedCat.id);
         setNewCategoryName('');
         setIsAddingCategory(false);
+        router.refresh();
       } else {
         alert(res.error || 'Failed to create category.');
       }
@@ -252,6 +255,9 @@ export default function UploadForm({
         setInstagramUrl('');
         setIsCover(false);
         handleClearFile();
+
+        // Refresh Server Component cache so admin UI updates immediately
+        router.refresh();
       } catch (err: any) {
         console.error('Upload form error:', err);
         setFeedback({
