@@ -28,9 +28,23 @@ interface PortfolioFeedProps {
 const WHATSAPP_BOOKING_BASE_URL = 'https://wa.me/916384947914';
 const DEFAULT_INSTAGRAM_URL = 'https://www.instagram.com/tharikadecors';
 
+/**
+ * Normalizes an Instagram string from the database (e.g. handle, @handle, full URL)
+ * into a safe, valid clickable external URL.
+ */
+function formatInstagramUrl(url?: string | null): string {
+  if (!url || !url.trim()) return DEFAULT_INSTAGRAM_URL;
+  const trimmed = url.trim();
+  if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
+    return trimmed;
+  }
+  const handle = trimmed.replace(/^@/, '');
+  return `https://www.instagram.com/${handle}`;
+}
+
 export default function PortfolioFeed({
   initialItems = [],
-  title = 'Complete Portfolio',
+  title = 'Our Works',
   subtitle = 'Discover our hand-crafted wedding stages, intimate family ceremonies, and luxury event decors.',
   defaultCategory = 'all',
   hideFilterTabs = false,
@@ -39,6 +53,23 @@ export default function PortfolioFeed({
   const [searchQuery, setSearchQuery] = useState('');
   const [activeModalItem, setActiveModalItem] = useState<PortfolioCardItem | null>(null);
   const [shareCopied, setShareCopied] = useState(false);
+
+  // Sync state with URL search parameters on load
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const catParam = params.get('category');
+      const itemParam = params.get('item');
+
+      if (catParam) {
+        setSelectedCategory(catParam);
+      }
+      if (itemParam && initialItems.length > 0) {
+        const found = initialItems.find((i) => i.id === itemParam);
+        if (found) setActiveModalItem(found);
+      }
+    }
+  }, [initialItems]);
 
   // Lock body scroll when detail modal is active
   useEffect(() => {
@@ -101,26 +132,23 @@ export default function PortfolioFeed({
       }
     };
     if (activeModalItem) {
-      document.body.style.overflow = 'hidden';
       window.addEventListener('keydown', handleKeyDown);
-    } else {
-      document.body.style.overflow = '';
     }
     return () => {
-      document.body.style.overflow = '';
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, [activeModalItem, closeModal]);
 
   // Native Web Share API with Clipboard Copy Fallback
   const handleShare = async (item: PortfolioCardItem) => {
-    const pageUrl = typeof window !== 'undefined' ? window.location.href : '';
+    const origin = typeof window !== 'undefined' ? window.location.origin : '';
+    const itemUrl = `${origin}/portfolio?item=${encodeURIComponent(item.id)}`;
     const shareData = {
       title: `${item.title} | Tharika Decors & Events`,
       text: item.caption
         ? `${item.title}: ${item.caption}`
         : `Check out ${item.title} by Tharika Decors`,
-      url: pageUrl,
+      url: itemUrl,
     };
 
     if (typeof navigator !== 'undefined' && navigator.share) {
@@ -133,7 +161,7 @@ export default function PortfolioFeed({
       }
     } else if (typeof navigator !== 'undefined' && navigator.clipboard) {
       try {
-        await navigator.clipboard.writeText(pageUrl);
+        await navigator.clipboard.writeText(itemUrl);
         setShareCopied(true);
         setTimeout(() => setShareCopied(false), 2500);
       } catch (err) {
@@ -190,7 +218,7 @@ export default function PortfolioFeed({
           )}
         </div>
 
-        {/* ── Category Filter Tabs (Pills with no left-edge clipping) ── */}
+        {/* ── Category Filter Tabs ── */}
         {!hideFilterTabs && categoryOptions.length > 0 && (
           <div className="w-full max-w-xl mx-auto mt-4 px-2">
             <div className="flex items-center justify-start sm:justify-center gap-2 overflow-x-auto py-2 px-2 scrollbar-none">
@@ -199,61 +227,47 @@ export default function PortfolioFeed({
                 onClick={() => setSelectedCategory('all')}
                 className={`px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all cursor-pointer shadow-xs ${
                   selectedCategory === 'all'
-                    ? 'bg-[#0F172A] text-white ring-1 ring-[#0F172A]'
-                    : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 hover:border-[#D4AF37]/50'
+                    ? 'bg-[#0F172A] text-white shadow-sm'
+                    : 'bg-white text-slate-600 border border-slate-200/80 hover:bg-slate-50'
                 }`}
               >
-                All ({initialItems.length})
+                All Works
               </button>
-              {categoryOptions.map((cat) => {
-                const count = initialItems.filter((i) => i.category === cat).length;
-                const isSelected =
-                  selectedCategory.toLowerCase() === cat.toLowerCase();
-                return (
-                  <button
-                    key={cat}
-                    type="button"
-                    onClick={() => setSelectedCategory(cat)}
-                    className={`px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all cursor-pointer shadow-xs ${
-                      isSelected
-                        ? 'bg-[#0F172A] text-white ring-1 ring-[#0F172A]'
-                        : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 hover:border-[#D4AF37]/50'
-                    }`}
-                  >
-                    {cat} ({count})
-                  </button>
-                );
-              })}
+              {categoryOptions.map((cat) => (
+                <button
+                  key={cat}
+                  type="button"
+                  onClick={() => setSelectedCategory(cat)}
+                  className={`px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all cursor-pointer shadow-xs ${
+                    selectedCategory.toLowerCase() === cat.toLowerCase()
+                      ? 'bg-[#0F172A] text-white shadow-sm'
+                      : 'bg-white text-slate-600 border border-slate-200/80 hover:bg-slate-50'
+                  }`}
+                >
+                  {cat}
+                </button>
+              ))}
             </div>
           </div>
         )}
       </div>
 
-      {/* ── 2. Portfolio Feed Cards: Vertical feed with clean spacing ── */}
-      <div className="max-w-md mx-auto px-4">
+      {/* ── 2. Grid of Showcase Cards ── */}
+      <div className="max-w-md mx-auto px-4 sm:px-6">
         {filteredItems.length === 0 ? (
-          <div className="bg-white rounded-3xl border border-slate-200/80 p-8 sm:p-12 text-center shadow-sm my-4">
-            <div className="w-14 h-14 rounded-full bg-[#0F172A]/5 text-[#D4AF37] flex items-center justify-center mx-auto mb-4 border border-[#D4AF37]/30">
-              <Camera className="w-7 h-7" />
+          <div className="text-center py-16 px-4 bg-white rounded-3xl border border-slate-200/80 shadow-xs">
+            <div className="w-12 h-12 rounded-full bg-amber-50 text-[#D4AF37] flex items-center justify-center mx-auto mb-3">
+              <Camera className="w-6 h-6" />
             </div>
-            <h3 className="font-heading font-serif text-xl text-[#0F172A] font-bold mb-2">
+            <h2 className="font-heading font-serif text-lg font-bold text-slate-800">
               No Showcases Found
-            </h3>
-            <p className="text-xs sm:text-sm text-slate-500 max-w-xs mx-auto mb-6">
+            </h2>
+            <p className="text-xs text-slate-500 mt-1 max-w-xs mx-auto">
               {searchQuery
-                ? `No portfolio records matched "${searchQuery}". Try a different keyword.`
-                : 'New luxury event decor showcases will be published soon.'}
+                ? `No items match "${searchQuery}". Try a different keyword.`
+                : 'No decor showcases found in this collection.'}
             </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-              <a
-                href={`${WHATSAPP_BOOKING_BASE_URL}?text=Hello%20Tharika%20Decors!%20I%20am%20inquiring%20about%20event%20decor.`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-[#0F172A] text-white text-xs font-semibold shadow hover:bg-[#1E293B] transition-colors"
-              >
-                <MessageCircle className="w-4 h-4 text-[#D4AF37]" />
-                <span>Inquire on WhatsApp</span>
-              </a>
+            <div className="mt-4">
               <button
                 type="button"
                 onClick={() => {
@@ -262,7 +276,7 @@ export default function PortfolioFeed({
                 }}
                 className="w-full sm:w-auto px-5 py-2.5 rounded-full border border-slate-200 text-xs font-semibold text-slate-700 bg-white hover:bg-slate-50 transition-colors cursor-pointer"
               >
-                View All
+                View All Works
               </button>
             </div>
           </div>
@@ -369,7 +383,7 @@ export default function PortfolioFeed({
 
                   {/* Instagram Button */}
                   <a
-                    href={activeModalItem.instagramUrl?.trim() || DEFAULT_INSTAGRAM_URL}
+                    href={formatInstagramUrl(activeModalItem.instagramUrl)}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-11 h-11 rounded-2xl bg-pink-50 hover:bg-pink-100 text-[#E4405F] flex items-center justify-center transition-colors border border-pink-100 flex-shrink-0 cursor-pointer shadow-2xs"

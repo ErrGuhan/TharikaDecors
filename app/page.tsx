@@ -46,11 +46,11 @@ export default async function HomePage() {
         if (cat.slug === 'wedding' || cat.slug === 'weddings') {
           href = '/weddings';
           defaultImage = '/wedding-cover.png';
-        } else if (cat.slug === 'baby-shower' || cat.slug === 'baby-showers') {
+        } else if (cat.slug === 'baby-shower' || cat.slug === 'baby-showers' || cat.slug === 'valaikappu' || cat.slug === 'seemantham') {
           href = '/baby-showers';
           defaultImage = '/baby-shower-cover.jpg';
-        } else if (cat.slug === 'ear-piercing' || cat.slug === 'ear-piercing-gala') {
-          href = '/portfolio';
+        } else {
+          href = `/portfolio?category=${encodeURIComponent(cat.name)}`;
           defaultImage = '/ear-piercing-cover.jpg';
         }
 
