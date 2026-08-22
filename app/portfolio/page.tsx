@@ -4,11 +4,10 @@ import PortfolioFeed from '@/components/PortfolioFeed';
 import { PortfolioCardItem } from '@/components/PortfolioCard';
 import { ensureDatabaseSchema } from '@/lib/dbInit';
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+export const revalidate = 3600; // ISR: serve from cache, rebuild every hour
 
 export const metadata: Metadata = {
-  title: 'Full Portfolio Showcase | Tharika Decors & Events',
+  title: 'Our Works | Tharika Decors & Events',
   description:
     'Explore bespoke wedding mandaps, floral stage decor, traditional valaikappu setups, and milestone celebrations curated by Tharika Decors.',
 };
@@ -84,7 +83,7 @@ export default async function PortfolioPage() {
   return (
     <PortfolioFeed
       initialItems={items}
-      title="Complete Portfolio"
+      title="Our Works"
       subtitle="Discover our hand-crafted wedding stages, intimate family ceremonies, and luxury event decors."
       defaultCategory="all"
     />

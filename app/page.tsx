@@ -3,8 +3,7 @@ import prisma from '@/lib/prisma';
 import HomeHeroAndCategories, { DynamicCategoryCard } from '@/components/HomeHeroAndCategories';
 import { ensureDatabaseSchema } from '@/lib/dbInit';
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+export const revalidate = 3600; // ISR: serve from cache, rebuild every hour
 
 export const metadata: Metadata = {
   title: 'Tharika Decors & Events | Luxury Event Styling & Stage Decor',

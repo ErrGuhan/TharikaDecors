@@ -58,7 +58,7 @@ export default function Header() {
               pathname === '/portfolio' ? 'text-tharika-blue font-bold border-b-2 border-tharika-blue pb-0.5' : ''
             }`}
           >
-            All Portfolio
+            Our Works
           </Link>
           <Link
             href="/book"

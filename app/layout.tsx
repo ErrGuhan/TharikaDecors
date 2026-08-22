@@ -42,9 +42,10 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href="/logo.png" />
       </head>
       <body
-        className={`${inter.className} bg-tharika-cream text-gray-900 antialiased min-h-screen flex flex-col`}
+        className={`${inter.className} bg-[#FAF7F2] text-gray-900 antialiased min-h-screen flex flex-col`}
       >
         <Header />
+        {/* pb-28 ensures content clears the fixed bottom nav on mobile; md:pb-12 for desktop */}
         <main className="flex-1 w-full pb-28 md:pb-12">{children}</main>
         <BottomNav />
       </body>

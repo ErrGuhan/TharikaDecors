@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useTransition } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -70,6 +70,10 @@ export default function UploadForm({
     type: 'success' | 'error';
     message: string;
   } | null>(null);
+
+  // useTransition: disables the Publish button the instant it's tapped,
+  // before the multipart upload even begins — eliminates perceived lag on mobile.
+  const [isPending, startTransition] = useTransition();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -148,7 +152,7 @@ export default function UploadForm({
   );
   const displayCategoryName = selectedCategoryObj?.name || 'Showcase';
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!croppedFile) {
@@ -170,66 +174,69 @@ export default function UploadForm({
     setIsLoading(true);
     setFeedback(null);
 
-    try {
-      const formData = new FormData();
-      formData.append('file', croppedFile);
-      formData.append('title', title.trim());
-      formData.append('category', selectedCategory);
-      formData.append('caption', caption.trim());
-      formData.append('price', price.trim());
-      formData.append('instagramUrl', instagramUrl.trim());
-      formData.append('isCover', isCover ? 'true' : 'false');
-
-      let result: any = null;
-
-      // 1. Primary: Use dedicated Next.js API route handler for standard multipart upload
+    startTransition(async () => {
       try {
-        const res = await fetch('/api/admin/portfolio', {
-          method: 'POST',
-          body: formData,
-        });
-        const resData = await res.json().catch(() => null);
-        if (res.ok && resData?.success) {
-          result = resData;
-        } else if (resData?.error) {
-          throw new Error(resData.error);
+        const formData = new FormData();
+        formData.append('file', croppedFile);
+        formData.append('title', title.trim());
+        formData.append('category', selectedCategory);
+        formData.append('caption', caption.trim());
+        formData.append('price', price.trim());
+        formData.append('instagramUrl', instagramUrl.trim());
+        formData.append('isCover', isCover ? 'true' : 'false');
+
+        let result: any = null;
+
+        // 1. Primary: Use dedicated Next.js API route handler for standard multipart upload
+        try {
+          const res = await fetch('/api/admin/portfolio', {
+            method: 'POST',
+            body: formData,
+          });
+          const resData = await res.json().catch(() => null);
+          if (res.ok && resData?.success) {
+            result = resData;
+          } else if (resData?.error) {
+            throw new Error(resData.error);
+          }
+        } catch (fetchErr: any) {
+          console.warn('API route note, trying server action fallback:', fetchErr?.message);
+          // 2. Fallback to Server Action if needed
+          result = await createPortfolioItem(formData);
         }
-      } catch (fetchErr: any) {
-        console.warn('API route note, trying server action fallback:', fetchErr?.message);
-        // 2. Fallback to Server Action if needed
-        result = await createPortfolioItem(formData);
+
+        if (!result || !result.success) {
+          throw new Error(result?.error || 'Failed to upload and save showcase item.');
+        }
+
+        setFeedback({
+          type: 'success',
+          message: result.message || `Showcase "${title}" published to live site!`,
+        });
+
+        if (onItemCreated && result.item) {
+          onItemCreated(result.item);
+        }
+
+        // Reset form
+        setTitle('');
+        setCaption('');
+        setPrice('');
+        setInstagramUrl('');
+        setIsCover(false);
+        handleClearFile();
+      } catch (err: any) {
+        console.error('Upload form error:', err);
+        setFeedback({
+          type: 'error',
+          message: err.message || 'An unexpected error occurred while saving the showcase.',
+        });
+      } finally {
+        setIsLoading(false);
       }
-
-      if (!result || !result.success) {
-        throw new Error(result?.error || 'Failed to upload and save showcase item.');
-      }
-
-      setFeedback({
-        type: 'success',
-        message: result.message || `Showcase "${title}" published to live site!`,
-      });
-
-      if (onItemCreated && result.item) {
-        onItemCreated(result.item);
-      }
-
-      // Reset form
-      setTitle('');
-      setCaption('');
-      setPrice('');
-      setInstagramUrl('');
-      setIsCover(false);
-      handleClearFile();
-    } catch (err: any) {
-      console.error('Upload form error:', err);
-      setFeedback({
-        type: 'error',
-        message: err.message || 'An unexpected error occurred while saving the showcase.',
-      });
-    } finally {
-      setIsLoading(false);
-    }
+    });
   };
+
 
   return (
     <>
@@ -525,13 +532,13 @@ export default function UploadForm({
 
               <button
                 type="submit"
-                disabled={isLoading || !croppedFile}
+                disabled={isPending || isLoading || !croppedFile}
                 className="flex-1 py-3 px-4 rounded-xl bg-[#0F172A] hover:bg-[#1E293B] active:scale-[0.99] text-white font-bold text-xs tracking-wide shadow-sm hover:shadow-md transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer border border-[#0F172A]"
               >
-                {isLoading ? (
+                {isPending || isLoading ? (
                   <>
                     <Loader2 className="w-3.5 h-3.5 animate-spin text-[#D4AF37]" />
-                    <span>Publishing...</span>
+                    <span>{isPending && !isLoading ? 'Processing…' : 'Publishing…'}</span>
                   </>
                 ) : (
                   <>

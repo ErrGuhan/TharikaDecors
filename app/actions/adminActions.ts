@@ -6,6 +6,57 @@ import { createSupabaseServerClient } from '@/lib/supabaseServer';
 import { getServiceSupabase } from '@/lib/supabase';
 import { ensureDatabaseSchema } from '@/lib/dbInit';
 
+// ---------------------------------------------------------------------------
+// Structured error helpers
+// ---------------------------------------------------------------------------
+
+/** Maps Prisma error codes to human-readable messages. */
+function prismaErrorMessage(error: any): string {
+  const code = error?.code;
+  if (code === 'P1001') return 'Cannot reach the database — check DATABASE_URL and connection pooler settings.';
+  if (code === 'P1008') return 'Database operation timed out — the connection pool may be exhausted.';
+  if (code === 'P2002') return 'A record with those details already exists (unique constraint violation).';
+  if (code === 'P2025') return 'The record you are trying to modify was not found.';
+  if (code === 'P2003') return 'Foreign key constraint failed — the referenced record may have been deleted.';
+  return error?.message || 'An unexpected database error occurred.';
+}
+
+/** Uniform structured logger for Server Action failures. */
+function logActionError(actionName: string, error: any, context?: Record<string, unknown>) {
+  console.error(
+    `[ServerAction:${actionName}] FAILED`,
+    JSON.stringify(
+      {
+        errorCode: error?.code ?? 'UNKNOWN',
+        message: error?.message ?? String(error),
+        prismaMessage: prismaErrorMessage(error),
+        ...context,
+        stack: process.env.NODE_ENV === 'development' ? error?.stack?.split('\n').slice(0, 6).join(' | ') : undefined,
+      },
+      null,
+      2
+    )
+  );
+}
+
+/**
+ * Retries a Prisma operation once on transient connection errors (P1001, P1008).
+ * This handles brief cold-start hiccups without surfacing errors to the user.
+ */
+async function withDbRetry<T>(fn: () => Promise<T>): Promise<T> {
+  try {
+    return await fn();
+  } catch (err: any) {
+    const isTransient = err?.code === 'P1001' || err?.code === 'P1008' || /connection/i.test(err?.message || '');
+    if (isTransient) {
+      console.warn('[withDbRetry] Transient DB error — retrying once in 500ms…', err?.code);
+      await new Promise((r) => setTimeout(r, 500));
+      return await fn();
+    }
+    throw err;
+  }
+}
+
 const ADMIN_EMAILS = (
   process.env.ADMIN_EMAILS ||
   process.env.ADMIN_EMAIL ||
@@ -167,10 +218,10 @@ export async function createCategory(name: string, slug?: string): Promise<Actio
       category: serializeCategory(newCategory),
     };
   } catch (error: any) {
-    console.error('Error in createCategory action:', error);
+    logActionError('createCategory', error, { name });
     return {
       success: false,
-      error: error.message || 'Failed to create category.',
+      error: prismaErrorMessage(error),
     };
   }
 }
@@ -206,10 +257,10 @@ export async function deleteCategory(id: string): Promise<ActionResponse> {
       category: deletedCategory ? serializeCategory(deletedCategory) : null,
     };
   } catch (error: any) {
-    console.error('Error in deleteCategory action:', error);
+    logActionError('deleteCategory', error, { id });
     return {
       success: false,
-      error: error.message || 'Failed to delete category.',
+      error: prismaErrorMessage(error),
     };
   }
 }
@@ -421,10 +472,10 @@ export async function createPortfolioItem(formData: FormData): Promise<ActionRes
       item: serializeItem(newItem),
     };
   } catch (error: any) {
-    console.error('Error in createPortfolioItem Server Action:', error);
+    logActionError('createPortfolioItem', error, { title: formData.get('title') });
     return {
       success: false,
-      error: error?.message || 'An unexpected error occurred while saving showcase item.',
+      error: prismaErrorMessage(error),
     };
   }
 }
@@ -566,10 +617,10 @@ export async function updatePortfolioItem(
       item: serializeItem(updatedItem),
     };
   } catch (error: any) {
-    console.error('Error in updatePortfolioItem:', error);
+    logActionError('updatePortfolioItem', error, { id });
     return {
       success: false,
-      error: error?.message || 'Failed to update portfolio item.',
+      error: prismaErrorMessage(error),
     };
   }
 }
@@ -605,10 +656,10 @@ export async function deletePortfolioItem(id: string): Promise<ActionResponse> {
       item: deletedItem ? serializeItem(deletedItem) : null,
     };
   } catch (error: any) {
-    console.error('Error in deletePortfolioItem:', error);
+    logActionError('deletePortfolioItem', error, { id });
     return {
       success: false,
-      error: error?.message || 'Failed to delete portfolio item.',
+      error: prismaErrorMessage(error),
     };
   }
 }
@@ -673,10 +724,10 @@ export async function setCoverPhoto(
       item: serializeItem(updatedItem),
     };
   } catch (error: any) {
-    console.error('Error in setCoverPhoto:', error);
+    logActionError('setCoverPhoto', error, { id, categoryIdentifier });
     return {
       success: false,
-      error: error?.message || 'Failed to set cover photo.',
+      error: prismaErrorMessage(error),
     };
   }
 }

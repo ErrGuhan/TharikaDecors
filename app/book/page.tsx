@@ -15,6 +15,10 @@ import {
   DollarSign,
   ChevronDown,
   Home,
+  Heart,
+  Star,
+  Award,
+  ArrowRight,
 } from 'lucide-react';
 
 interface BookingFormData {
@@ -37,6 +41,12 @@ const initialFormState: BookingFormData = {
   notes: '',
 };
 
+const stats = [
+  { icon: Award, label: '8+ Years', sub: 'of Experience' },
+  { icon: Star, label: '500+', sub: 'Events Crafted' },
+  { icon: Heart, label: '100%', sub: 'Bespoke Work' },
+];
+
 export default function BookingPage() {
   const [formData, setFormData] = useState<BookingFormData>(initialFormState);
   const [isLoading, setIsLoading] = useState(false);
@@ -50,26 +60,14 @@ export default function BookingPage() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleFocus = (fieldName: string) => {
-    setFocusedField(fieldName);
-  };
-
-  const handleBlur = () => {
-    setFocusedField(null);
-  };
+  const handleFocus = (fieldName: string) => setFocusedField(fieldName);
+  const handleBlur = () => setFocusedField(null);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
-
-    const payload = {
-      ...formData,
-      submittedAt: new Date().toISOString(),
-    };
-
-    console.log('--- Booking Form Submission Payload ---');
-    console.log(JSON.stringify(payload, null, 2));
-
+    const payload = { ...formData, submittedAt: new Date().toISOString() };
+    console.log('--- Booking Submission ---', JSON.stringify(payload, null, 2));
     try {
       await new Promise((resolve) => setTimeout(resolve, 1500));
       setIsSubmitted(true);
@@ -86,304 +84,381 @@ export default function BookingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-tharika-cream py-16 px-4 sm:px-6 lg:px-8 flex flex-col justify-center items-center">
-      {/* Background Subtle Ambient Glow */}
-      <div
-        className="fixed inset-0 pointer-events-none opacity-40"
-        style={{
-          backgroundImage:
-            'radial-gradient(circle at 50% 20%, rgba(10, 54, 89, 0.08) 0%, transparent 65%)',
-        }}
-        aria-hidden="true"
-      />
+    <div className="min-h-screen bg-[#FAF7F2]">
 
-      <div className="w-full max-w-lg relative z-10">
-        {/* Header Section with Official Logo */}
-        <motion.div
-          className="text-center mb-8 flex flex-col items-center"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        >
-          <Link href="/" className="relative w-48 h-20 mb-4 block hover:scale-105 transition-transform duration-300">
-            <Image
-              src="/logo.png"
-              alt="Tharika Decors & Events"
-              fill
-              className="object-contain"
-              priority
-              unoptimized
-            />
-          </Link>
-          <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-semibold uppercase tracking-widest text-tharika-green bg-tharika-green/10 mb-2">
-            <Sparkles className="w-3.5 h-3.5 text-tharika-gold" />
-            Reserve Your Date
-          </span>
-          <h1 className="font-heading text-3xl sm:text-4xl text-tharika-blue tracking-tight">
-            Book a Consultation
-          </h1>
-          <p className="mt-2 text-xs sm:text-sm text-tharika-blue/70 max-w-md mx-auto leading-relaxed">
-            Let us bring your celebration to life with bespoke royal decor tailored to your personal aesthetic.
-          </p>
-        </motion.div>
+      {/* ── SECTION 1: About Tharika Decors ── */}
+      <section className="relative overflow-hidden bg-[#FAF7F2] px-4 pt-14 pb-16 sm:px-6 lg:px-8">
+        {/* Ambient decorative elements */}
+        <div
+          className="pointer-events-none absolute inset-0"
+          style={{
+            backgroundImage:
+              'radial-gradient(circle at 20% 50%, rgba(212,175,55,0.07) 0%, transparent 60%), radial-gradient(circle at 80% 20%, rgba(10,54,89,0.05) 0%, transparent 50%)',
+          }}
+          aria-hidden="true"
+        />
 
-        {/* Form Container Card */}
-        <motion.div
-          className="bg-white shadow-xl rounded-3xl p-8 sm:p-10 border border-tharika-blue/10 transition-all duration-300 hover:shadow-2xl"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-        >
-          <AnimatePresence mode="wait">
-            {isSubmitted ? (
-              <motion.div
-                key="success"
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                className="py-8 text-center flex flex-col items-center justify-center space-y-4"
+        <div className="relative mx-auto max-w-3xl text-center">
+          {/* Badge */}
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="mb-5 inline-flex items-center gap-2 rounded-full border border-[#D4AF37]/30 bg-white/70 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-[#0A3659] shadow-sm"
+          >
+            <Sparkles className="h-3.5 w-3.5 text-[#D4AF37]" />
+            Our Story
+          </motion.div>
+
+          {/* Heading */}
+          <motion.h1
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.05 }}
+            className="mb-4 font-heading text-4xl font-bold tracking-tight text-[#0A3659] sm:text-5xl"
+          >
+            About Tharika Decors
+          </motion.h1>
+
+          {/* Gold divider */}
+          <motion.div
+            initial={{ scaleX: 0 }}
+            animate={{ scaleX: 1 }}
+            transition={{ duration: 0.7, delay: 0.15 }}
+            className="mx-auto mb-6 h-px w-24 origin-center bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent"
+          />
+
+          {/* Story paragraph */}
+          <motion.p
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="mb-4 text-base leading-relaxed text-[#0A3659]/75 sm:text-lg"
+          >
+            Founded with a passion for blending tradition with timeless elegance, Tharika Decors &amp; Events
+            has been transforming celebrations across Tamil Nadu for over eight years. From grand wedding
+            mandaps draped in jasmine and marigold to intimate baby shower stages adorned with brass lamps
+            and lotus blooms — every detail is handcrafted with intention and love.
+          </motion.p>
+
+          <motion.p
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.28 }}
+            className="mb-10 text-sm leading-relaxed text-[#0A3659]/60 sm:text-base"
+          >
+            Our signature approach combines authentic Tamil heritage with contemporary luxury styling.
+            We believe every family's story deserves a stage worthy of its moments — designed bespoke,
+            executed with precision, and delivered with warmth.
+          </motion.p>
+
+          {/* Stat pills */}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.35 }}
+            className="flex flex-wrap items-center justify-center gap-4"
+          >
+            {stats.map(({ icon: Icon, label, sub }) => (
+              <div
+                key={label}
+                className="flex flex-col items-center gap-1.5 rounded-2xl border border-[#D4AF37]/20 bg-white/80 px-7 py-4 shadow-sm backdrop-blur-sm"
               >
-                <div className="w-16 h-16 rounded-full bg-emerald-50 text-tharika-green flex items-center justify-center shadow-inner">
-                  <CheckCircle2 className="w-10 h-10" />
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#0A3659]/5">
+                  <Icon className="h-4.5 w-4.5 text-[#D4AF37]" />
                 </div>
-                <h2 className="font-heading text-2xl text-tharika-blue">
-                  Thank You, {formData.fullName.split(' ')[0] || 'there'}!
-                </h2>
-                <p className="text-sm text-gray-600 max-w-sm">
-                  We have received your booking inquiry for your {formData.eventType || 'event'}. Our team will review the details and get in touch with you shortly.
-                </p>
-                <div className="pt-4 w-full flex flex-col gap-2.5">
-                  <a
-                    href={`https://wa.me/916384947914?text=${encodeURIComponent(
-                      `Hello Tharika Decors! I just submitted a booking inquiry for ${formData.fullName} (${formData.eventType || 'Event'} on ${formData.eventDate || 'upcoming date'}, Budget: ${formData.estimatedBudget || 'Standard'}). Would love to connect!`
-                    )}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full py-3.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
-                  >
-                    <span>Connect on WhatsApp</span>
-                  </a>
-                  <button
-                    type="button"
-                    onClick={handleReset}
-                    className="w-full py-3 px-4 rounded-xl border border-tharika-blue/20 text-tharika-blue text-sm font-semibold hover:bg-tharika-blue/5 transition-colors cursor-pointer"
-                  >
-                    Submit Another Inquiry
-                  </button>
-                </div>
-              </motion.div>
-            ) : (
-              <motion.form
-                key="form"
-                onSubmit={handleSubmit}
-                className="space-y-6"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-              >
-                {/* 1. Full Name */}
-                <div className="relative z-0 w-full group">
-                  <input
-                    type="text"
-                    name="fullName"
-                    id="fullName"
-                    value={formData.fullName}
-                    onChange={handleChange}
-                    onFocus={() => handleFocus('fullName')}
-                    onBlur={handleBlur}
-                    required
-                    placeholder=" "
-                    className="peer block w-full appearance-none border-0 border-b border-gray-300 bg-transparent py-2.5 px-0 text-sm text-gray-900 font-medium focus:border-tharika-blue focus:outline-none focus:ring-0 transition-colors"
-                  />
-                  <label
-                    htmlFor="fullName"
-                    className={`absolute top-2.5 -z-10 origin-[0] text-sm duration-300 transform cursor-text flex items-center gap-1.5 ${
-                      formData.fullName || focusedField === 'fullName'
-                        ? '-translate-y-5 scale-75 text-tharika-blue font-semibold'
-                        : 'translate-y-0 scale-100 text-gray-400'
-                    }`}
-                  >
-                    <User className="w-3.5 h-3.5" />
-                    Full Name <span className="text-red-500">*</span>
-                  </label>
-                </div>
+                <span className="font-heading text-2xl font-bold text-[#0A3659]">{label}</span>
+                <span className="text-[11px] font-semibold uppercase tracking-widest text-[#0A3659]/50">{sub}</span>
+              </div>
+            ))}
+          </motion.div>
+        </div>
+      </section>
 
-                {/* 2. Email Address */}
-                <div className="relative z-0 w-full group">
-                  <input
-                    type="email"
-                    name="email"
-                    id="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    onFocus={() => handleFocus('email')}
-                    onBlur={handleBlur}
-                    required
-                    placeholder=" "
-                    className="peer block w-full appearance-none border-0 border-b border-gray-300 bg-transparent py-2.5 px-0 text-sm text-gray-900 font-medium focus:border-tharika-blue focus:outline-none focus:ring-0 transition-colors"
-                  />
-                  <label
-                    htmlFor="email"
-                    className={`absolute top-2.5 -z-10 origin-[0] text-sm duration-300 transform cursor-text flex items-center gap-1.5 ${
-                      formData.email || focusedField === 'email'
-                        ? '-translate-y-5 scale-75 text-tharika-blue font-semibold'
-                        : 'translate-y-0 scale-100 text-gray-400'
-                    }`}
-                  >
-                    <Mail className="w-3.5 h-3.5" />
-                    Email Address <span className="text-red-500">*</span>
-                  </label>
-                </div>
+      {/* Decorative wave between sections */}
+      <div className="relative -mt-2 overflow-hidden">
+        <svg
+          viewBox="0 0 1440 48"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className="w-full"
+          preserveAspectRatio="none"
+          aria-hidden="true"
+        >
+          <path
+            d="M0 48 C360 0 1080 0 1440 48 L1440 48 L0 48 Z"
+            fill="white"
+          />
+        </svg>
+      </div>
 
-                {/* 3. Phone Number */}
-                <div className="relative z-0 w-full group">
-                  <input
-                    type="tel"
-                    name="phone"
-                    id="phone"
-                    value={formData.phone}
-                    onChange={handleChange}
-                    onFocus={() => handleFocus('phone')}
-                    onBlur={handleBlur}
-                    required
-                    placeholder=" "
-                    className="peer block w-full appearance-none border-0 border-b border-gray-300 bg-transparent py-2.5 px-0 text-sm text-gray-900 font-medium focus:border-tharika-blue focus:outline-none focus:ring-0 transition-colors"
-                  />
-                  <label
-                    htmlFor="phone"
-                    className={`absolute top-2.5 -z-10 origin-[0] text-sm duration-300 transform cursor-text flex items-center gap-1.5 ${
-                      formData.phone || focusedField === 'phone'
-                        ? '-translate-y-5 scale-75 text-tharika-blue font-semibold'
-                        : 'translate-y-0 scale-100 text-gray-400'
-                    }`}
-                  >
-                    <Phone className="w-3.5 h-3.5" />
-                    Phone Number <span className="text-red-500">*</span>
-                  </label>
-                </div>
+      {/* ── SECTION 2: Booking Form ── */}
+      <section className="bg-white px-4 py-16 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-lg">
 
-                {/* 4. Event Date */}
-                <div className="relative z-0 w-full group">
-                  <input
-                    type="date"
-                    name="eventDate"
-                    id="eventDate"
-                    value={formData.eventDate}
-                    onChange={handleChange}
-                    onFocus={() => handleFocus('eventDate')}
-                    onBlur={handleBlur}
-                    required
-                    className="peer block w-full appearance-none border-0 border-b border-gray-300 bg-transparent py-2.5 px-0 text-sm text-gray-900 font-medium focus:border-tharika-blue focus:outline-none focus:ring-0 transition-colors cursor-pointer"
-                  />
-                  <label
-                    htmlFor="eventDate"
-                    className={`absolute top-2.5 -z-10 origin-[0] text-sm duration-300 transform cursor-text flex items-center gap-1.5 ${
-                      formData.eventDate || focusedField === 'eventDate'
-                        ? '-translate-y-5 scale-75 text-tharika-blue font-semibold'
-                        : 'translate-y-0 scale-100 text-gray-400'
-                    }`}
-                  >
-                    <Calendar className="w-3.5 h-3.5" />
-                    Event Date <span className="text-red-500">*</span>
-                  </label>
-                </div>
+          {/* Form header */}
+          <div className="mb-8 text-center">
+            <span className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-[#0A3659]/5 px-3.5 py-1 text-xs font-bold uppercase tracking-widest text-[#0A3659]">
+              <Calendar className="h-3.5 w-3.5 text-[#D4AF37]" />
+              Reserve Your Date
+            </span>
+            <h2 className="font-heading text-3xl font-bold tracking-tight text-[#0A3659] sm:text-4xl">
+              Book a Consultation
+            </h2>
+            <p className="mt-2 text-sm text-[#0A3659]/60">
+              Let us bring your celebration to life with bespoke royal decor tailored to your personal aesthetic.
+            </p>
+          </div>
 
-                {/* 5. Event Type */}
-                <div className="relative z-0 w-full group">
-                  <div className="relative">
-                    <select
-                      name="eventType"
-                      id="eventType"
-                      value={formData.eventType}
-                      onChange={handleChange}
-                      onFocus={() => handleFocus('eventType')}
-                      onBlur={handleBlur}
-                      required
-                      className={`block w-full appearance-none border-0 border-b border-gray-300 bg-transparent py-2.5 px-0 text-sm font-medium focus:border-tharika-blue focus:outline-none focus:ring-0 transition-colors cursor-pointer ${
-                        formData.eventType ? 'text-gray-900' : 'text-transparent'
+          {/* Form Card */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            className="rounded-3xl border border-[#0A3659]/8 bg-white p-8 shadow-xl sm:p-10 hover:shadow-2xl transition-shadow duration-300"
+          >
+            <AnimatePresence mode="wait">
+              {isSubmitted ? (
+                <motion.div
+                  key="success"
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  className="flex flex-col items-center justify-center space-y-4 py-8 text-center"
+                >
+                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-50 text-emerald-600 shadow-inner">
+                    <CheckCircle2 className="h-10 w-10" />
+                  </div>
+                  <h3 className="font-heading text-2xl text-[#0A3659]">
+                    Thank You, {formData.fullName.split(' ')[0] || 'there'}!
+                  </h3>
+                  <p className="max-w-sm text-sm text-gray-600">
+                    We have received your inquiry for your{' '}
+                    <strong>{formData.eventType || 'event'}</strong>. Our team will get in touch
+                    with you shortly to begin planning your dream celebration.
+                  </p>
+                  <div className="w-full pt-4 flex flex-col gap-2.5">
+                    <a
+                      href={`https://wa.me/916384947914?text=${encodeURIComponent(
+                        `Hello Tharika Decors! I just submitted a booking inquiry for ${formData.fullName} (${formData.eventType || 'Event'} on ${formData.eventDate || 'upcoming date'}, Budget: ${formData.estimatedBudget || 'Standard'}). Would love to connect!`
+                      )}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-3.5 text-sm font-bold text-white shadow-md transition-all hover:bg-emerald-700"
+                    >
+                      <span>Connect on WhatsApp</span>
+                      <ArrowRight className="h-4 w-4" />
+                    </a>
+                    <button
+                      type="button"
+                      onClick={handleReset}
+                      className="w-full cursor-pointer rounded-xl border border-[#0A3659]/20 px-4 py-3 text-sm font-semibold text-[#0A3659] transition-colors hover:bg-[#0A3659]/5"
+                    >
+                      Submit Another Inquiry
+                    </button>
+                  </div>
+                </motion.div>
+              ) : (
+                <motion.form
+                  key="form"
+                  onSubmit={handleSubmit}
+                  className="space-y-6"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                >
+                  {/* Full Name */}
+                  <FloatingField
+                    id="fullName" name="fullName" type="text"
+                    label="Full Name" required icon={<User className="h-3.5 w-3.5" />}
+                    value={formData.fullName} onChange={handleChange}
+                    onFocus={() => handleFocus('fullName')} onBlur={handleBlur}
+                    focused={focusedField === 'fullName'}
+                  />
+
+                  {/* Email */}
+                  <FloatingField
+                    id="email" name="email" type="email"
+                    label="Email Address" required icon={<Mail className="h-3.5 w-3.5" />}
+                    value={formData.email} onChange={handleChange}
+                    onFocus={() => handleFocus('email')} onBlur={handleBlur}
+                    focused={focusedField === 'email'}
+                  />
+
+                  {/* Phone */}
+                  <FloatingField
+                    id="phone" name="phone" type="tel"
+                    label="Phone Number" required icon={<Phone className="h-3.5 w-3.5" />}
+                    value={formData.phone} onChange={handleChange}
+                    onFocus={() => handleFocus('phone')} onBlur={handleBlur}
+                    focused={focusedField === 'phone'}
+                  />
+
+                  {/* Event Date */}
+                  <FloatingField
+                    id="eventDate" name="eventDate" type="date"
+                    label="Event Date" required icon={<Calendar className="h-3.5 w-3.5" />}
+                    value={formData.eventDate} onChange={handleChange}
+                    onFocus={() => handleFocus('eventDate')} onBlur={handleBlur}
+                    focused={focusedField === 'eventDate'}
+                  />
+
+                  {/* Event Type — select */}
+                  <div className="relative z-0 w-full">
+                    <div className="relative">
+                      <select
+                        name="eventType" id="eventType"
+                        value={formData.eventType}
+                        onChange={handleChange}
+                        onFocus={() => handleFocus('eventType')}
+                        onBlur={handleBlur}
+                        required
+                        className={`block w-full cursor-pointer appearance-none border-0 border-b-2 bg-transparent py-3 px-0 text-sm font-medium transition-colors focus:outline-none focus:ring-0 ${
+                          formData.eventType ? 'text-gray-900' : 'text-transparent'
+                        } ${
+                          focusedField === 'eventType' || formData.eventType
+                            ? 'border-[#0A3659]'
+                            : 'border-gray-200'
+                        }`}
+                      >
+                        <option value="" disabled hidden />
+                        <option value="Wedding" className="text-gray-800">Wedding Ceremony &amp; Reception</option>
+                        <option value="Baby Shower" className="text-gray-800">Baby Shower Celebration</option>
+                        <option value="Ear Piercing" className="text-gray-800">Ear Piercing Ceremony</option>
+                        <option value="Birthday" className="text-gray-800">Milestone Birthday / Gala</option>
+                        <option value="Other" className="text-gray-800">Other Bespoke Event</option>
+                      </select>
+                      <ChevronDown className="pointer-events-none absolute right-0 top-3.5 h-4 w-4 text-gray-400" />
+                    </div>
+                    <label
+                      htmlFor="eventType"
+                      className={`absolute origin-[0] transform text-sm transition-all duration-300 flex items-center gap-1.5 pointer-events-none ${
+                        formData.eventType || focusedField === 'eventType'
+                          ? '-top-2 scale-75 font-semibold text-[#0A3659]'
+                          : 'top-3 scale-100 text-gray-400'
                       }`}
                     >
-                      <option value="" disabled hidden></option>
-                      <option value="Wedding" className="text-gray-800">Wedding Ceremony &amp; Reception</option>
-                      <option value="Baby Shower" className="text-gray-800">Baby Shower Celebration</option>
-                      <option value="Ear Piercing" className="text-gray-800">Ear Piercing Ceremony</option>
-                      <option value="Birthday" className="text-gray-800">Milestone Birthday / Gala</option>
-                      <option value="Other" className="text-gray-800">Other Bespoke Event</option>
-                    </select>
-                    <ChevronDown className="absolute right-0 top-3 w-4 h-4 text-gray-400 pointer-events-none" />
+                      <Sparkles className="h-3.5 w-3.5" />
+                      Event Type <span className="text-red-500">*</span>
+                    </label>
                   </div>
-                  <label
-                    htmlFor="eventType"
-                    className={`absolute top-2.5 -z-10 origin-[0] text-sm duration-300 transform cursor-pointer flex items-center gap-1.5 ${
-                      formData.eventType || focusedField === 'eventType'
-                        ? '-translate-y-5 scale-75 text-tharika-blue font-semibold'
-                        : 'translate-y-0 scale-100 text-gray-400'
-                    }`}
-                  >
-                    <Sparkles className="w-3.5 h-3.5" />
-                    Event Type <span className="text-red-500">*</span>
-                  </label>
-                </div>
 
-                {/* 6. Estimated Budget */}
-                <div className="relative z-0 w-full group">
-                  <input
-                    type="text"
-                    name="estimatedBudget"
-                    id="estimatedBudget"
-                    value={formData.estimatedBudget}
-                    onChange={handleChange}
-                    onFocus={() => handleFocus('estimatedBudget')}
-                    onBlur={handleBlur}
-                    placeholder=" "
-                    className="peer block w-full appearance-none border-0 border-b border-gray-300 bg-transparent py-2.5 px-0 text-sm text-gray-900 font-medium focus:border-tharika-blue focus:outline-none focus:ring-0 transition-colors"
+                  {/* Budget */}
+                  <FloatingField
+                    id="estimatedBudget" name="estimatedBudget" type="text"
+                    label="Estimated Budget (e.g. ₹50,000 – ₹2,00,000)"
+                    icon={<DollarSign className="h-3.5 w-3.5" />}
+                    value={formData.estimatedBudget} onChange={handleChange}
+                    onFocus={() => handleFocus('estimatedBudget')} onBlur={handleBlur}
+                    focused={focusedField === 'estimatedBudget'}
                   />
-                  <label
-                    htmlFor="estimatedBudget"
-                    className={`absolute top-2.5 -z-10 origin-[0] text-sm duration-300 transform cursor-text flex items-center gap-1.5 ${
-                      formData.estimatedBudget || focusedField === 'estimatedBudget'
-                        ? '-translate-y-5 scale-75 text-tharika-blue font-semibold'
-                        : 'translate-y-0 scale-100 text-gray-400'
-                    }`}
-                  >
-                    <DollarSign className="w-3.5 h-3.5" />
-                    Estimated Budget (e.g. ₹50,000 - ₹2,00,000)
-                  </label>
-                </div>
 
-                {/* Submit Button */}
-                <div className="pt-2">
-                  <button
-                    type="submit"
-                    disabled={isLoading}
-                    className="relative w-full py-4 px-6 rounded-xl bg-tharika-gold-gradient text-tharika-blue font-bold text-sm tracking-wide shadow-md hover:shadow-lg active:scale-[0.99] transition-all flex items-center justify-center gap-2 disabled:opacity-75 disabled:cursor-not-allowed cursor-pointer"
-                  >
-                    {isLoading ? (
-                      <>
-                        <Loader2 className="w-4 h-4 animate-spin text-tharika-blue" />
-                        <span>Submitting Your Request...</span>
-                      </>
-                    ) : (
-                      <span>Request Consultation</span>
-                    )}
-                  </button>
-                </div>
-              </motion.form>
-            )}
-          </AnimatePresence>
-        </motion.div>
+                  {/* Notes (optional) */}
+                  <div className="relative z-0 w-full">
+                    <textarea
+                      name="notes" id="notes"
+                      value={formData.notes}
+                      onChange={handleChange}
+                      onFocus={() => handleFocus('notes')}
+                      onBlur={handleBlur}
+                      rows={3}
+                      placeholder=" "
+                      className={`peer block w-full resize-none appearance-none border-0 border-b-2 bg-transparent py-2.5 px-0 text-sm font-medium text-gray-900 transition-colors focus:outline-none focus:ring-0 ${
+                        focusedField === 'notes' ? 'border-[#0A3659]' : 'border-gray-200'
+                      }`}
+                    />
+                    <label
+                      htmlFor="notes"
+                      className="absolute top-2.5 -z-10 origin-[0] transform text-sm duration-300 flex items-center gap-1.5 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:font-semibold peer-focus:text-[#0A3659] peer-[:not(:placeholder-shown)]:-translate-y-6 peer-[:not(:placeholder-shown)]:scale-75 text-gray-400"
+                    >
+                      Any special notes or vision?
+                    </label>
+                  </div>
 
-        {/* Footer Link */}
-        <div className="text-center mt-6">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-1.5 text-xs text-tharika-blue/70 hover:text-tharika-blue transition-colors"
-          >
-            <Home className="w-3.5 h-3.5" />
-            <span>Return to Homepage</span>
-          </Link>
+                  {/* Submit */}
+                  <div className="pt-2">
+                    <button
+                      type="submit"
+                      disabled={isLoading}
+                      className="relative w-full cursor-pointer rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#c4a030] px-6 py-4 text-sm font-bold tracking-wide text-[#0A3659] shadow-md transition-all hover:shadow-lg hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-2 disabled:cursor-not-allowed disabled:opacity-75"
+                    >
+                      {isLoading ? (
+                        <>
+                          <Loader2 className="h-4 w-4 animate-spin text-[#0A3659]" />
+                          <span>Submitting Your Request…</span>
+                        </>
+                      ) : (
+                        <>
+                          <span>Request Consultation</span>
+                          <ArrowRight className="h-4 w-4" />
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </motion.form>
+              )}
+            </AnimatePresence>
+          </motion.div>
+
+          {/* Footer link */}
+          <div className="mt-6 text-center">
+            <Link
+              href="/"
+              className="inline-flex items-center gap-1.5 text-xs text-[#0A3659]/60 transition-colors hover:text-[#0A3659]"
+            >
+              <Home className="h-3.5 w-3.5" />
+              <span>Return to Homepage</span>
+            </Link>
+          </div>
         </div>
-      </div>
+      </section>
+    </div>
+  );
+}
+
+// ── Reusable floating-label input ──────────────────────────────────────────
+interface FloatingFieldProps {
+  id: string;
+  name: string;
+  type: string;
+  label: string;
+  required?: boolean;
+  icon: React.ReactNode;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onFocus: () => void;
+  onBlur: () => void;
+  focused: boolean;
+}
+
+function FloatingField({
+  id, name, type, label, required, icon, value, onChange, onFocus, onBlur, focused,
+}: FloatingFieldProps) {
+  const lifted = !!value || focused;
+  return (
+    <div className="relative z-0 w-full">
+      <input
+        type={type} name={name} id={id}
+        value={value} onChange={onChange}
+        onFocus={onFocus} onBlur={onBlur}
+        required={required}
+        placeholder=" "
+        className={`peer block w-full appearance-none border-0 border-b-2 bg-transparent py-3 px-0 text-sm font-medium text-gray-900 transition-colors focus:outline-none focus:ring-0 ${
+          focused ? 'border-[#0A3659]' : 'border-gray-200'
+        }`}
+      />
+      <label
+        htmlFor={id}
+        className={`absolute origin-[0] transform text-sm transition-all duration-300 flex items-center gap-1.5 pointer-events-none ${
+          lifted
+            ? '-top-2 scale-75 font-semibold text-[#0A3659]'
+            : 'top-3 scale-100 text-gray-400'
+        }`}
+      >
+        {icon}
+        {label}
+        {required && <span className="text-red-500">*</span>}
+      </label>
     </div>
   );
 }

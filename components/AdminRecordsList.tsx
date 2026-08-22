@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo, useRef } from 'react';
+import React, { useState, useMemo, useRef, useTransition } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -86,6 +86,26 @@ export default function AdminRecordsList({ initialItems }: AdminRecordsListProps
 
   const editFileInputRef = useRef<HTMLInputElement>(null);
 
+  // ── useTransition: gives instant isPending on first touch ──
+  const [isPending, startTransition] = useTransition();
+
+  // ── Optimistic delete: instantly reflect deletes in UI before server confirms ──
+  // React 18-compatible version: mirrors useOptimistic pattern with a separate state.
+  const [optimisticDeletedIds, setOptimisticDeletedIds] = useState<Set<string>>(new Set());
+  const optimisticItems = items.filter((i) => !optimisticDeletedIds.has(i.id));
+
+  function addOptimisticDelete(id: string) {
+    setOptimisticDeletedIds((prev) => new Set(prev).add(id));
+  }
+
+  function clearOptimisticDelete(id: string) {
+    setOptimisticDeletedIds((prev) => {
+      const next = new Set(prev);
+      next.delete(id);
+      return next;
+    });
+  }
+
   // Sync items when initialItems prop changes
   React.useEffect(() => {
     setItems(initialItems);
@@ -125,9 +145,9 @@ export default function AdminRecordsList({ initialItems }: AdminRecordsListProps
     return chips;
   }, [items]);
 
-  // Filtered Items
+  // Filtered Items — uses optimisticItems so deleted items vanish instantly
   const filteredItems = useMemo(() => {
-    return items.filter((item) => {
+    return optimisticItems.filter((item) => {
       const catLower = item.category.toLowerCase();
       if (activeFilter === 'wedding' && !catLower.includes('wedding')) return false;
       if (
@@ -159,7 +179,8 @@ export default function AdminRecordsList({ initialItems }: AdminRecordsListProps
 
       return true;
     });
-  }, [items, activeFilter, searchQuery]);
+  }, [optimisticItems, activeFilter, searchQuery]);
+
 
   // Open Edit Modal
   const handleOpenEdit = (item: PortfolioItemRecord) => {
@@ -196,163 +217,171 @@ export default function AdminRecordsList({ initialItems }: AdminRecordsListProps
     setIsEditCropperOpen(false);
   };
 
-  // Submit Update
-  const handleSaveEdit = async (e: React.FormEvent) => {
+  // Submit Update — wrapped in startTransition for instant button-disable
+  const handleSaveEdit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!editingItem) return;
 
     setIsUpdating(true);
 
-    try {
-      const formData = new FormData();
-      formData.append('id', editingItem.id);
-      formData.append('title', editTitle.trim());
-      formData.append('category', editCategory);
-      formData.append('caption', editCaption.trim());
-      formData.append('price', editPrice.trim());
-      formData.append('instagramUrl', editInstagramUrl.trim());
-      if (editFile) {
-        formData.append('file', editFile);
-      }
-
-      let res: any = null;
+    startTransition(async () => {
       try {
-        const apiRes = await fetch('/api/admin/portfolio', {
-          method: 'PUT',
-          body: formData,
-        });
-        const resData = await apiRes.json().catch(() => null);
-        if (apiRes.ok && resData?.success) {
-          res = resData;
-        } else if (resData?.error) {
-          throw new Error(resData.error);
+        const formData = new FormData();
+        formData.append('id', editingItem.id);
+        formData.append('title', editTitle.trim());
+        formData.append('category', editCategory);
+        formData.append('caption', editCaption.trim());
+        formData.append('price', editPrice.trim());
+        formData.append('instagramUrl', editInstagramUrl.trim());
+        if (editFile) {
+          formData.append('file', editFile);
         }
-      } catch (fetchErr: any) {
-        console.warn('API update note, using server action fallback:', fetchErr?.message);
-        res = await updatePortfolioItem(editingItem.id, formData);
+
+        let res: any = null;
+        try {
+          const apiRes = await fetch('/api/admin/portfolio', {
+            method: 'PUT',
+            body: formData,
+          });
+          const resData = await apiRes.json().catch(() => null);
+          if (apiRes.ok && resData?.success) {
+            res = resData;
+          } else if (resData?.error) {
+            throw new Error(resData.error);
+          }
+        } catch (fetchErr: any) {
+          console.warn('API update note, using server action fallback:', fetchErr?.message);
+          res = await updatePortfolioItem(editingItem.id, formData);
+        }
+
+        if (!res || !res.success) {
+          throw new Error(res?.error || 'Failed to update item.');
+        }
+
+        setItems((prev) =>
+          prev.map((i) =>
+            i.id === editingItem.id
+              ? {
+                  ...i,
+                  ...res.item,
+                  category: res.item.category?.name || res.item.category || editCategory,
+                  price: res.item.price !== undefined ? res.item.price : editPrice.trim() || null,
+                  instagramUrl:
+                    res.item.instagramUrl !== undefined
+                      ? res.item.instagramUrl
+                      : editInstagramUrl.trim() || null,
+                }
+              : i
+          )
+        );
+
+        showToast('success', `Updated "${editTitle}" successfully!`);
+        handleCloseEdit();
+      } catch (err: any) {
+        console.error('Update item error:', err);
+        showToast('error', err.message || 'Failed to save changes.');
+      } finally {
+        setIsUpdating(false);
       }
-
-      if (!res || !res.success) {
-        throw new Error(res?.error || 'Failed to update item.');
-      }
-
-      setItems((prev) =>
-        prev.map((i) =>
-          i.id === editingItem.id
-            ? {
-                ...i,
-                ...res.item,
-                category: res.item.category?.name || res.item.category || editCategory,
-                price: res.item.price !== undefined ? res.item.price : editPrice.trim() || null,
-                instagramUrl:
-                  res.item.instagramUrl !== undefined
-                    ? res.item.instagramUrl
-                    : editInstagramUrl.trim() || null,
-              }
-            : i
-        )
-      );
-
-      showToast('success', `Updated "${editTitle}" successfully!`);
-      handleCloseEdit();
-    } catch (err: any) {
-      console.error('Update item error:', err);
-      showToast('error', err.message || 'Failed to save changes.');
-    } finally {
-      setIsUpdating(false);
-    }
+    });
   };
 
-  // Toggle Cover Photo
-  const handleSetCover = async (item: PortfolioItemRecord) => {
+
+  // Toggle Cover Photo — wrapped in startTransition for instant button-disable
+  const handleSetCover = (item: PortfolioItemRecord) => {
     setLoadingActionId(item.id);
 
-    try {
-      let res: any = null;
+    startTransition(async () => {
       try {
-        const apiRes = await fetch('/api/admin/portfolio', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            action: 'setCover',
-            id: item.id,
-            category: item.categoryId || item.category,
-          }),
-        });
-        const resData = await apiRes.json().catch(() => null);
-        if (apiRes.ok && resData?.success) {
-          res = resData;
-        } else if (resData?.error) {
-          throw new Error(resData.error);
+        let res: any = null;
+        try {
+          const apiRes = await fetch('/api/admin/portfolio', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              action: 'setCover',
+              id: item.id,
+              category: item.categoryId || item.category,
+            }),
+          });
+          const resData = await apiRes.json().catch(() => null);
+          if (apiRes.ok && resData?.success) {
+            res = resData;
+          } else if (resData?.error) {
+            throw new Error(resData.error);
+          }
+        } catch (fetchErr: any) {
+          console.warn('API set cover note, using server action fallback:', fetchErr?.message);
+          res = await setCoverPhoto(item.id, item.categoryId || item.category);
         }
-      } catch (fetchErr: any) {
-        console.warn('API set cover note, using server action fallback:', fetchErr?.message);
-        res = await setCoverPhoto(item.id, item.categoryId || item.category);
+
+        if (!res || !res.success) {
+          throw new Error(res?.error || 'Failed to set cover photo.');
+        }
+
+        setItems((prev) =>
+          prev.map((i) => {
+            if (i.id === item.id) return { ...i, isCover: true };
+            if (i.category.toLowerCase() === item.category.toLowerCase()) return { ...i, isCover: false };
+            return i;
+          })
+        );
+        showToast('success', `"${item.title}" is now the primary cover photo!`);
+      } catch (err: any) {
+        console.error('Set cover error:', err);
+        showToast('error', err.message || 'Failed to set cover photo.');
+      } finally {
+        setLoadingActionId(null);
       }
-
-      if (!res || !res.success) {
-        throw new Error(res?.error || 'Failed to set cover photo.');
-      }
-
-      setItems((prev) =>
-        prev.map((i) => {
-          if (i.id === item.id) {
-            return { ...i, isCover: true };
-          }
-          if (i.category.toLowerCase() === item.category.toLowerCase()) {
-            return { ...i, isCover: false };
-          }
-          return i;
-        })
-      );
-
-      showToast('success', `"${item.title}" is now the primary cover photo!`);
-    } catch (err: any) {
-      console.error('Set cover error:', err);
-      showToast('error', err.message || 'Failed to set cover photo.');
-    } finally {
-      setLoadingActionId(null);
-    }
+    });
   };
 
-  // Confirm Delete
-  const handleConfirmDelete = async () => {
+
+  // Confirm Delete — with optimistic removal
+  const handleConfirmDelete = () => {
     if (!itemToDelete) return;
 
+    // Instantly remove from UI (optimistic)
+    addOptimisticDelete(itemToDelete.id);
     setIsDeleting(true);
 
-    try {
-      let res: any = null;
+    startTransition(async () => {
       try {
-        const apiRes = await fetch(`/api/admin/portfolio?id=${encodeURIComponent(itemToDelete.id)}`, {
-          method: 'DELETE',
-        });
-        const resData = await apiRes.json().catch(() => null);
-        if (apiRes.ok && resData?.success) {
-          res = resData;
-        } else if (resData?.error) {
-          throw new Error(resData.error);
+        let res: any = null;
+        try {
+          const apiRes = await fetch(`/api/admin/portfolio?id=${encodeURIComponent(itemToDelete.id)}`, {
+            method: 'DELETE',
+          });
+          const resData = await apiRes.json().catch(() => null);
+          if (apiRes.ok && resData?.success) {
+            res = resData;
+          } else if (resData?.error) {
+            throw new Error(resData.error);
+          }
+        } catch (fetchErr: any) {
+          console.warn('API delete note, using server action fallback:', fetchErr?.message);
+          res = await deletePortfolioItem(itemToDelete.id);
         }
-      } catch (fetchErr: any) {
-        console.warn('API delete note, using server action fallback:', fetchErr?.message);
-        res = await deletePortfolioItem(itemToDelete.id);
+
+        if (!res || !res.success) {
+          throw new Error(res?.error || 'Failed to delete item.');
+        }
+
+        // Confirm: also update base state so optimistic and real stay in sync
+        setItems((prev) => prev.filter((i) => i.id !== itemToDelete.id));
+        showToast('success', `Deleted "${itemToDelete.title}" successfully.`);
+        setItemToDelete(null);
+      } catch (err: any) {
+        console.error('Delete item error:', err);
+        // Rollback: remove from optimistic deleted set so item reappears
+        clearOptimisticDelete(itemToDelete.id);
+        showToast('error', err.message || 'Failed to delete record.');
+      } finally {
+        setIsDeleting(false);
       }
-
-      if (!res || !res.success) {
-        throw new Error(res?.error || 'Failed to delete item.');
-      }
-
-      setItems((prev) => prev.filter((i) => i.id !== itemToDelete.id));
-
-      showToast('success', `Deleted "${itemToDelete.title}" successfully.`);
-      setItemToDelete(null);
-    } catch (err: any) {
-      console.error('Delete item error:', err);
-      showToast('error', err.message || 'Failed to delete record.');
-    } finally {
-      setIsDeleting(false);
-    }
+    });
   };
+
 
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden flex flex-col relative">
@@ -873,15 +902,15 @@ export default function AdminRecordsList({ initialItems }: AdminRecordsListProps
                   </button>
                   <button
                     type="submit"
-                    disabled={isUpdating}
+                    disabled={isPending || isUpdating}
                     className="px-5 py-2 rounded-xl bg-[#0F172A] text-white text-xs font-bold hover:bg-[#1E293B] transition-colors flex items-center gap-1.5 disabled:opacity-50 cursor-pointer"
                   >
-                    {isUpdating ? (
+                    {isPending || isUpdating ? (
                       <Loader2 className="w-3.5 h-3.5 animate-spin text-[#D4AF37]" />
                     ) : (
                       <Check className="w-3.5 h-3.5 text-[#D4AF37]" />
                     )}
-                    <span>Save Changes</span>
+                    <span>{isPending || isUpdating ? 'Saving…' : 'Save Changes'}</span>
                   </button>
                 </div>
               </form>
@@ -922,15 +951,15 @@ export default function AdminRecordsList({ initialItems }: AdminRecordsListProps
                 <button
                   type="button"
                   onClick={handleConfirmDelete}
-                  disabled={isDeleting}
+                  disabled={isPending || isDeleting}
                   className="px-4 py-2 rounded-xl bg-red-600 text-white text-xs font-bold hover:bg-red-700 transition-colors flex items-center gap-1.5 disabled:opacity-50 cursor-pointer"
                 >
-                  {isDeleting ? (
+                  {isPending || isDeleting ? (
                     <Loader2 className="w-3.5 h-3.5 animate-spin" />
                   ) : (
                     <Trash2 className="w-3.5 h-3.5" />
                   )}
-                  <span>Delete Record</span>
+                  <span>{isPending || isDeleting ? 'Deleting…' : 'Delete Record'}</span>
                 </button>
               </div>
             </motion.div>

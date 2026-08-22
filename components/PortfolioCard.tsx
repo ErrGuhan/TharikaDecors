@@ -40,7 +40,7 @@ export default function PortfolioCard({
         }
       }}
       aria-label={`View details for ${item.title}`}
-      className="group relative overflow-hidden rounded-3xl bg-slate-900 border border-amber-900/10 shadow-md hover:shadow-2xl transition-all duration-500 cursor-pointer w-full select-none flex flex-col"
+      className="group relative overflow-hidden rounded-2xl bg-slate-900 shadow-sm hover:shadow-xl transition-all duration-500 cursor-pointer w-full select-none flex flex-col"
     >
       {/* ── Image Container (4:5 Portrait Feed Card) ── */}
       <div className="relative w-full aspect-[4/5] bg-slate-950 overflow-hidden">
@@ -50,7 +50,7 @@ export default function PortfolioCard({
             alt={item.title}
             fill
             priority={priority}
-            sizes="(max-width: 640px) 100vw, 448px"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
             unoptimized={true}
           />

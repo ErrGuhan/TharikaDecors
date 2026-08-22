@@ -14,7 +14,7 @@ type NavItem = {
 };
 
 const WHATSAPP_BOOKING_URL =
-  'https://wa.me/916384947914?text=Hello%20Tharika%20Decors!%20I%20was%20looking%20at%20your%20portfolio%20and%20would%20like%20to%20inquire%20about%20booking%20event%20decor';
+  'https://wa.me/916384947914?text=Hello%20Tharika%20Decors!%20I%20was%20looking%20at%20your%20works%20and%20would%20like%20to%20inquire%20about%20booking%20event%20decor';
 
 function HomeIcon({ className }: { className?: string }) {
   return (
@@ -101,7 +101,7 @@ function BookIcon({ className }: { className?: string }) {
 
 const navItems: NavItem[] = [
   { label: 'Home', href: '/', icon: HomeIcon },
-  { label: 'Portfolio', href: '/portfolio', icon: PortfolioIcon },
+  { label: 'Our Works', href: '/portfolio', icon: PortfolioIcon },
   { label: 'Process', href: '/book', icon: ProcessIcon },
   {
     label: 'Book',

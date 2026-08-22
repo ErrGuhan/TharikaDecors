@@ -35,4 +35,3 @@ model PortfolioItem {
   @@index([createdAt(sort: Desc)])
   @@map("portfolio_items")
 }
-
