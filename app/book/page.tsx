@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Loader2,
@@ -79,15 +80,35 @@ export default function BookingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FAF7F2] py-10 sm:py-16 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-6xl mx-auto">
-        {/* Top Header Badge */}
-        <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-14">
+    <div className="min-h-screen bg-[#FAF7F2] pb-12 sm:pb-20">
+      {/* ── 1. Visual Hero Section with Priority Next.js Image ── */}
+      <section className="relative w-full h-[260px] sm:h-[320px] md:h-[360px] overflow-hidden flex items-center justify-center mb-10 sm:mb-14">
+        {/* Background Image */}
+        <div className="absolute inset-0 bg-slate-950">
+          <Image
+            src="https://images.pexels.com/photos/21926656/pexels-photo-21926656.jpeg?auto=compress&cs=tinysrgb&h=1080&w=1920"
+            alt="Tharika Decors Luxury Stage Consultation"
+            fill
+            priority={true}
+            sizes="100vw"
+            quality={75}
+            className="object-cover object-center scale-105"
+          />
+        </div>
+
+        {/* Dark Gradient Overlay */}
+        <div
+          className="absolute inset-0 bg-gradient-to-b from-black/75 via-black/55 to-black/85 pointer-events-none"
+          aria-hidden="true"
+        />
+
+        {/* Hero Text Overlays */}
+        <div className="relative z-10 mx-auto max-w-4xl px-4 sm:px-6 text-center">
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 rounded-full border border-[#D4AF37]/30 bg-white/80 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-[#0A3659] shadow-2xs mb-3"
+            className="inline-flex items-center gap-2 rounded-full border border-[#D4AF37]/40 bg-white/10 backdrop-blur-md px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-[#D4AF37] shadow-2xs mb-3"
           >
             <Sparkles className="h-3.5 w-3.5 text-[#D4AF37]" />
             <span>Consultation &amp; Date Reservation</span>
@@ -97,7 +118,7 @@ export default function BookingPage() {
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.05 }}
-            className="font-heading font-serif text-3xl sm:text-5xl font-bold tracking-tight text-[#0A3659]"
+            className="font-heading font-serif text-3xl sm:text-5xl font-bold tracking-tight text-white drop-shadow-md"
           >
             Book a Consultation
           </motion.h1>
@@ -106,12 +127,14 @@ export default function BookingPage() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.12 }}
-            className="mt-3 text-sm sm:text-base text-slate-600 max-w-lg mx-auto leading-relaxed"
+            className="mt-3 text-sm sm:text-base text-white/90 max-w-lg mx-auto leading-relaxed drop-shadow"
           >
             Let our design directors bring your dream royal mandap and celebratory stage vision to life.
           </motion.p>
         </div>
+      </section>
 
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* ── SPLIT LAYOUT (Desktop Side-by-Side / Mobile Stacked) ── */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
           {/* ── Left Side (5 cols): Contact & Location Information ── */}

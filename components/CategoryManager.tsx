@@ -20,6 +20,7 @@ import {
   ExternalLink,
 } from 'lucide-react';
 import { createCategory, updateCategory, deleteCategory } from '@/app/actions/adminActions';
+import imageCompression from 'browser-image-compression';
 
 export interface CategoryData {
   id: string;
@@ -158,13 +159,26 @@ export default function CategoryManager({ initialCategories }: CategoryManagerPr
     try {
       let res: any = null;
 
+      let fileToUpload: File | null = selectedFile;
+      if (selectedFile) {
+        try {
+          fileToUpload = await imageCompression(selectedFile, {
+            maxSizeMB: 0.5,
+            maxWidthOrHeight: 1920,
+            useWebWorker: true,
+          });
+        } catch (compErr) {
+          console.warn('Category image compression fallback:', compErr);
+        }
+      }
+
       // 1. Try multipart POST API endpoint
       try {
         const formData = new FormData();
         formData.append('name', name.trim());
         formData.append('slug', slug.trim());
-        if (selectedFile) {
-          formData.append('file', selectedFile);
+        if (fileToUpload) {
+          formData.append('file', fileToUpload);
         }
 
         const apiRes = await fetch('/api/admin/categories', {
@@ -223,13 +237,26 @@ export default function CategoryManager({ initialCategories }: CategoryManagerPr
     try {
       let res: any = null;
 
+      let fileToUpload: File | null = editSelectedFile;
+      if (editSelectedFile) {
+        try {
+          fileToUpload = await imageCompression(editSelectedFile, {
+            maxSizeMB: 0.5,
+            maxWidthOrHeight: 1920,
+            useWebWorker: true,
+          });
+        } catch (compErr) {
+          console.warn('Category edit image compression fallback:', compErr);
+        }
+      }
+
       try {
         const formData = new FormData();
         formData.append('id', editingCategory.id);
         formData.append('name', editName.trim());
         formData.append('slug', editSlug.trim());
-        if (editSelectedFile) {
-          formData.append('file', editSelectedFile);
+        if (fileToUpload) {
+          formData.append('file', fileToUpload);
         }
         if (editRemoveImage) {
           formData.append('removeImage', 'true');

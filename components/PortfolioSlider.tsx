@@ -241,8 +241,8 @@ export default function PortfolioSlider({
                 fill
                 priority
                 sizes="100vw"
+                quality={75}
                 className="object-cover pointer-events-none"
-                unoptimized
               />
             )}
           </motion.div>

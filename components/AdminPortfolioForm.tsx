@@ -4,6 +4,7 @@ import React, { useState, useRef } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { UploadCloud, Image as ImageIcon, CheckCircle, AlertCircle, Loader2, X, Plus } from 'lucide-react';
+import imageCompression from 'browser-image-compression';
 
 interface AdminPortfolioFormProps {
   userEmail?: string;
@@ -79,8 +80,19 @@ export default function AdminPortfolioForm({
     setStatusMessage(null);
 
     try {
+      let fileToUpload: File = selectedFile;
+      try {
+        fileToUpload = await imageCompression(selectedFile, {
+          maxSizeMB: 0.5,
+          maxWidthOrHeight: 1920,
+          useWebWorker: true,
+        });
+      } catch (compErr) {
+        console.warn('Portfolio form image compression fallback:', compErr);
+      }
+
       const formData = new FormData();
-      formData.append('file', selectedFile);
+      formData.append('file', fileToUpload);
       formData.append('title', title.trim());
       formData.append('category', category);
       if (userEmail) {

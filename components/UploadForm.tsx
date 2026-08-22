@@ -22,6 +22,7 @@ import {
   FolderPlus,
 } from 'lucide-react';
 import dynamic from 'next/dynamic';
+import imageCompression from 'browser-image-compression';
 import { createPortfolioItem, createCategory } from '@/app/actions/adminActions';
 
 const ImageCropper = dynamic(() => import('@/components/ImageCropper'), {
@@ -189,8 +190,21 @@ export default function UploadForm({
 
     startTransition(async () => {
       try {
+        // Client-side image compression: strictly ensure maxSizeMB: 0.5, maxWidthOrHeight: 1920
+        const options = {
+          maxSizeMB: 0.5,
+          maxWidthOrHeight: 1920,
+          useWebWorker: true,
+        };
+        let fileToUpload: File = croppedFile;
+        try {
+          fileToUpload = await imageCompression(croppedFile, options);
+        } catch (compressionErr) {
+          console.warn('Image compression fallback to croppedFile:', compressionErr);
+        }
+
         const formData = new FormData();
-        formData.append('file', croppedFile);
+        formData.append('file', fileToUpload);
         formData.append('title', title.trim());
         formData.append('category', selectedCategory);
         formData.append('caption', caption.trim());
