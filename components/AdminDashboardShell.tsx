@@ -34,7 +34,7 @@ import { useRealtimeSync } from '@/hooks/useRealtimeSync';
 const UploadForm = dynamic(() => import('@/components/UploadForm'), {
   loading: () => (
     <div className="flex items-center justify-center p-12">
-      <div className="w-8 h-8 rounded-full border-2 border-[#D4AF37]/30 border-t-[#D4AF37] animate-spin" />
+      <div className="w-8 h-8 rounded-full border-2 border-[#E5B842]/30 border-t-[#E5B842] animate-spin" />
     </div>
   ),
 });
@@ -42,7 +42,7 @@ const UploadForm = dynamic(() => import('@/components/UploadForm'), {
 const AdminRecordsList = dynamic(() => import('@/components/AdminRecordsList'), {
   loading: () => (
     <div className="flex items-center justify-center p-12">
-      <div className="w-8 h-8 rounded-full border-2 border-[#D4AF37]/30 border-t-[#D4AF37] animate-spin" />
+      <div className="w-8 h-8 rounded-full border-2 border-[#E5B842]/30 border-t-[#E5B842] animate-spin" />
     </div>
   ),
 });
@@ -50,7 +50,7 @@ const AdminRecordsList = dynamic(() => import('@/components/AdminRecordsList'), 
 const CategoryManager = dynamic(() => import('@/components/CategoryManager'), {
   loading: () => (
     <div className="flex items-center justify-center p-12">
-      <div className="w-8 h-8 rounded-full border-2 border-[#D4AF37]/30 border-t-[#D4AF37] animate-spin" />
+      <div className="w-8 h-8 rounded-full border-2 border-[#E5B842]/30 border-t-[#E5B842] animate-spin" />
     </div>
   ),
 });
@@ -97,24 +97,24 @@ export default function AdminDashboardShell({
     {
       id: 'dashboard',
       label: 'Dashboard',
-      icon: <LayoutDashboard className="w-4 h-4 text-[#D4AF37]" />,
+      icon: <LayoutDashboard className="w-4 h-4 text-[#E5B842]" />,
     },
     {
       id: 'works',
       label: 'Manage Works',
-      icon: <Layers className="w-4 h-4 text-[#D4AF37]" />,
+      icon: <Layers className="w-4 h-4 text-[#E5B842]" />,
       badge: items.length,
     },
     {
       id: 'categories',
       label: 'Categories',
-      icon: <Tag className="w-4 h-4 text-[#D4AF37]" />,
+      icon: <Tag className="w-4 h-4 text-[#E5B842]" />,
       badge: categories.length,
     },
     {
       id: 'settings',
       label: 'Settings',
-      icon: <Settings className="w-4 h-4 text-[#D4AF37]" />,
+      icon: <Settings className="w-4 h-4 text-[#E5B842]" />,
     },
   ];
 
@@ -132,7 +132,7 @@ export default function AdminDashboardShell({
   };
 
   return (
-    <div className="min-h-screen bg-[#FAF7F2] text-slate-900 flex flex-col md:flex-row">
+    <div className="min-h-screen bg-[#FCFAF7] text-slate-900 flex flex-col md:flex-row">
 
       {/* ── LEFT SIDEBAR ── */}
       <aside className="w-full md:w-64 bg-white border-r border-slate-200/80 flex flex-col justify-between flex-shrink-0 z-30 shadow-xs">
@@ -152,7 +152,7 @@ export default function AdminDashboardShell({
                 unoptimized
               />
             </Link>
-            <span className="text-[10px] font-extrabold tracking-widest text-[#D4AF37] uppercase px-3 py-0.5 rounded-full bg-[#0F172A]/5 border border-[#0F172A]/10">
+            <span className="text-[10px] font-extrabold tracking-widest text-[#E5B842] uppercase px-3 py-0.5 rounded-full bg-[#071A2E]/5 border border-[#071A2E]/10">
               Admin Studio CMS
             </span>
           </div>
@@ -166,8 +166,8 @@ export default function AdminDashboardShell({
                 onClick={() => setActiveTab(id)}
                 className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                   activeTab === id
-                    ? 'bg-[#0F172A] text-white shadow-xs'
-                    : 'text-slate-600 hover:bg-[#FAF7F2] hover:text-[#0F172A]'
+                    ? 'bg-[#0B2B4A] text-white shadow-xs'
+                    : 'text-slate-600 hover:bg-[#FCFAF7] hover:text-[#0B2B4A]'
                 }`}
               >
                 <div className="flex items-center gap-3">
@@ -197,7 +197,7 @@ export default function AdminDashboardShell({
               Live Showcase
             </span>
             {[
-              { href: '/portfolio', label: 'Our Works', icon: <Sparkles className="w-3.5 h-3.5 text-[#D4AF37]" /> },
+              { href: '/portfolio', label: 'Our Works', icon: <Sparkles className="w-3.5 h-3.5 text-[#E5B842]" /> },
               { href: '/weddings', label: 'Weddings', icon: <ImageIcon className="w-3.5 h-3.5 text-slate-400" /> },
               { href: '/', label: 'Website Homepage', icon: <Home className="w-3.5 h-3.5 text-slate-400" /> },
             ].map(({ href, label, icon }) => (
@@ -205,7 +205,7 @@ export default function AdminDashboardShell({
                 key={href}
                 href={href}
                 target="_blank"
-                className="flex items-center justify-between px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-[#FAF7F2] hover:text-[#0F172A] transition-colors"
+                className="flex items-center justify-between px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-[#FCFAF7] hover:text-[#0B2B4A] transition-colors"
               >
                 <span className="flex items-center gap-2">{icon}<span>{label}</span></span>
                 <ExternalLink className="w-3 h-3 text-slate-400" />
@@ -215,9 +215,9 @@ export default function AdminDashboardShell({
         </div>
 
         {/* User footer */}
-        <div className="p-4 border-t border-slate-100 bg-[#FAF7F2]/50">
+        <div className="p-4 border-t border-slate-100 bg-[#FCFAF7]/50">
           <div className="flex items-center gap-3 mb-3">
-            <div className="w-8 h-8 rounded-full bg-[#0F172A] text-[#D4AF37] flex items-center justify-center font-bold text-xs shadow-xs">
+            <div className="w-8 h-8 rounded-full bg-[#0B2B4A] text-[#E5B842] flex items-center justify-center font-bold text-xs shadow-xs">
               {userEmail.charAt(0).toUpperCase()}
             </div>
             <div className="overflow-hidden">
@@ -240,12 +240,12 @@ export default function AdminDashboardShell({
       </aside>
 
       {/* ── MAIN CONTENT ── */}
-      <main className="flex-1 bg-[#FAF7F2] min-h-screen overflow-y-auto p-4 sm:p-7 lg:p-9 space-y-6">
+      <main className="flex-1 bg-[#FCFAF7] min-h-screen overflow-y-auto p-4 sm:p-7 lg:p-9 space-y-6">
 
         {/* Top header bar */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-slate-200/80">
           <div>
-            <h1 className="font-heading text-2xl sm:text-3xl text-[#0F172A] font-bold tracking-tight">
+            <h1 className="font-heading text-2xl sm:text-3xl text-[#0B2B4A] font-bold tracking-tight">
               {tabTitle[activeTab]}
             </h1>
             <p className="text-xs sm:text-sm text-slate-500 mt-1">{tabSubtitle[activeTab]}</p>
@@ -256,14 +256,14 @@ export default function AdminDashboardShell({
               <button
                 type="button"
                 onClick={() => setIsDrawerOpen(true)}
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#0F172A] text-white text-xs font-bold hover:bg-[#1E293B] active:scale-[0.98] transition-all shadow-sm cursor-pointer"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#0B2B4A] text-white text-xs font-bold hover:bg-[#163859] active:scale-[0.98] transition-all shadow-sm cursor-pointer"
               >
-                <PlusCircle className="w-4 h-4 text-[#D4AF37]" />
+                <PlusCircle className="w-4 h-4 text-[#E5B842]" />
                 Add New Work
               </button>
             )}
             <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-white border border-slate-200/80 text-xs font-bold text-slate-800 shadow-2xs">
-              <Database className="w-3.5 h-3.5 text-[#0F172A]" />
+              <Database className="w-3.5 h-3.5 text-[#0B2B4A]" />
               <span>{items.length} Published</span>
             </span>
           </div>
@@ -278,21 +278,21 @@ export default function AdminDashboardShell({
                 {
                   label: 'Published Works',
                   value: items.length,
-                  icon: <Layers className="w-5 h-5 text-[#D4AF37]" />,
+                  icon: <Layers className="w-5 h-5 text-[#E5B842]" />,
                   sub: 'Total portfolio items live',
-                  color: 'bg-[#0F172A]/5',
+                  color: 'bg-[#0B2B4A]/5',
                 },
                 {
                   label: 'Categories',
                   value: categories.length,
-                  icon: <Tag className="w-5 h-5 text-[#D4AF37]" />,
+                  icon: <Tag className="w-5 h-5 text-[#E5B842]" />,
                   sub: 'Active event categories',
-                  color: 'bg-[#D4AF37]/8',
+                  color: 'bg-[#E5B842]/10',
                 },
                 {
                   label: 'Cover Photos',
                   value: items.filter((i) => i.isCover).length,
-                  icon: <ImageIcon className="w-5 h-5 text-[#D4AF37]" />,
+                  icon: <ImageIcon className="w-5 h-5 text-[#E5B842]" />,
                   sub: 'Category covers set',
                   color: 'bg-emerald-50',
                 },
@@ -303,7 +303,7 @@ export default function AdminDashboardShell({
                 >
                   <div className={`p-3 rounded-xl ${color}`}>{icon}</div>
                   <div>
-                    <p className="text-2xl font-bold text-[#0F172A] font-heading">{value}</p>
+                    <p className="text-2xl font-bold text-[#0B2B4A] font-heading">{value}</p>
                     <p className="text-xs font-semibold text-slate-700">{label}</p>
                     <p className="text-[11px] text-slate-400">{sub}</p>
                   </div>
@@ -315,10 +315,10 @@ export default function AdminDashboardShell({
             <div className="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-xs flex flex-col sm:flex-row items-center gap-5">
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-1">
-                  <TrendingUp className="w-4 h-4 text-[#D4AF37]" />
+                  <TrendingUp className="w-4 h-4 text-[#E5B842]" />
                   <span className="text-xs font-bold uppercase tracking-wider text-slate-600">Quick Action</span>
                 </div>
-                <p className="text-sm font-semibold text-[#0F172A]">Ready to add a new showcase?</p>
+                <p className="text-sm font-semibold text-[#0B2B4A]">Ready to add a new showcase?</p>
                 <p className="text-xs text-slate-500 mt-0.5">
                   Head to <strong>Manage Works</strong> and click "Add New Work" to upload your latest event.
                 </p>
@@ -326,9 +326,9 @@ export default function AdminDashboardShell({
               <button
                 type="button"
                 onClick={() => setActiveTab('works')}
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#0F172A] text-white text-xs font-bold hover:bg-[#1E293B] transition-all shadow-sm cursor-pointer whitespace-nowrap"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#0B2B4A] text-white text-xs font-bold hover:bg-[#163859] transition-all shadow-sm cursor-pointer whitespace-nowrap"
               >
-                <PlusCircle className="w-4 h-4 text-[#D4AF37]" />
+                <PlusCircle className="w-4 h-4 text-[#E5B842]" />
                 Go to Manage Works
               </button>
             </div>
@@ -349,11 +349,11 @@ export default function AdminDashboardShell({
         {activeTab === 'settings' && (
           <div className="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-6 sm:p-8 space-y-6">
             <div className="flex items-center gap-3 pb-4 border-b border-slate-100">
-              <div className="p-2.5 rounded-xl bg-[#0F172A]/5 border border-[#0F172A]/10">
-                <Sliders className="w-5 h-5 text-[#0F172A]" />
+              <div className="p-2.5 rounded-xl bg-[#0B2B4A]/5 border border-[#0B2B4A]/10">
+                <Sliders className="w-5 h-5 text-[#0B2B4A]" />
               </div>
               <div>
-                <h3 className="font-heading text-xl text-[#0F172A] font-bold">
+                <h3 className="font-heading text-xl text-[#0B2B4A] font-bold">
                   CMS &amp; Cloud Infrastructure
                 </h3>
                 <p className="text-xs text-slate-500">Current database and storage services status.</p>
@@ -378,7 +378,7 @@ export default function AdminDashboardShell({
                   detail: `Admin: ${userEmail}`,
                 },
               ].map(({ label, detail }) => (
-                <div key={label} className="p-4 rounded-xl border border-slate-200 bg-[#FAF7F2]/60">
+                <div key={label} className="p-4 rounded-xl border border-slate-200 bg-[#FCFAF7]/80">
                   <div className="flex items-center gap-2 text-xs font-bold text-slate-800 mb-1">
                     <CheckCircle2 className="w-4 h-4 text-emerald-600" />
                     <span>{label}</span>
@@ -414,12 +414,12 @@ export default function AdminDashboardShell({
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 30, stiffness: 280 }}
-              className="fixed right-0 top-0 z-50 h-full w-full max-w-md bg-[#FAF7F2] shadow-2xl flex flex-col overflow-hidden"
+              className="fixed right-0 top-0 z-50 h-full w-full max-w-md bg-[#FCFAF7] shadow-2xl flex flex-col overflow-hidden"
             >
               {/* Drawer header */}
               <div className="flex items-center justify-between px-5 py-4 border-b border-slate-200/80 bg-white flex-shrink-0">
                 <div>
-                  <h2 className="font-heading text-base font-bold text-[#0F172A]">Add New Work</h2>
+                  <h2 className="font-heading text-base font-bold text-[#0B2B4A]">Add New Work</h2>
                   <p className="text-xs text-slate-500">Upload a 9:16 portrait showcase image</p>
                 </div>
                 <button

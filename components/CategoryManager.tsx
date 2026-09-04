@@ -363,11 +363,11 @@ export default function CategoryManager({ initialCategories }: CategoryManagerPr
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             className={`fixed top-6 right-6 z-50 p-4 rounded-xl shadow-2xl flex items-center gap-3 text-sm font-medium text-white ${
-              toastMessage.type === 'success' ? 'bg-[#0F172A]' : 'bg-red-600'
+              toastMessage.type === 'success' ? 'bg-[#0B2B4A]' : 'bg-red-600'
             }`}
           >
             {toastMessage.type === 'success' ? (
-              <CheckCircle className="w-5 h-5 text-[#D4AF37]" />
+              <CheckCircle className="w-5 h-5 text-[#E5B842]" />
             ) : (
               <AlertCircle className="w-5 h-5 text-white" />
             )}
@@ -379,11 +379,11 @@ export default function CategoryManager({ initialCategories }: CategoryManagerPr
       {/* Header */}
       <div className="flex items-center justify-between pb-4 border-b border-slate-100">
         <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-[#0F172A]/5 text-[#0F172A] border border-[#0F172A]/10">
-            <Tag className="w-5 h-5 text-[#0F172A]" />
+          <div className="p-2.5 rounded-xl bg-[#0B2B4A]/5 text-[#0B2B4A] border border-[#0B2B4A]/10">
+            <Tag className="w-5 h-5 text-[#0B2B4A]" />
           </div>
           <div>
-            <h2 className="font-heading text-xl text-[#0F172A] font-bold">
+            <h2 className="font-heading text-xl text-[#0B2B4A] font-bold">
               Manage Dynamic Categories
             </h2>
             <p className="text-xs text-slate-500">
@@ -396,11 +396,11 @@ export default function CategoryManager({ initialCategories }: CategoryManagerPr
       {/* Create New Category Form */}
       <form
         onSubmit={handleCreate}
-        className="p-6 rounded-2xl bg-[#FAF7F2]/80 border border-slate-200 shadow-xs space-y-5"
+        className="p-6 rounded-2xl bg-[#FCFAF7]/90 border border-slate-200 shadow-xs space-y-5"
       >
         <div className="flex items-center justify-between">
           <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800 flex items-center gap-1.5">
-            <Plus className="w-4 h-4 text-[#D4AF37]" />
+            <Plus className="w-4 h-4 text-[#E5B842]" />
             <span>Add New Category</span>
           </h3>
           <span className="text-[11px] text-slate-500 font-medium">Cover Image is optional</span>
@@ -419,7 +419,7 @@ export default function CategoryManager({ initialCategories }: CategoryManagerPr
                 onChange={handleNameChange}
                 placeholder="e.g. Corporate Galas, Haldi Decor, Mehndi"
                 required
-                className="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:border-[#0F172A] focus:ring-1 focus:ring-[#0F172A] outline-none text-xs bg-white text-slate-900 shadow-2xs"
+                className="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:border-[#0B2B4A] focus:ring-1 focus:ring-[#0B2B4A] outline-none text-xs bg-white text-slate-900 shadow-2xs"
               />
             </div>
 
@@ -433,7 +433,7 @@ export default function CategoryManager({ initialCategories }: CategoryManagerPr
                 onChange={(e) => setSlug(e.target.value)}
                 placeholder="e.g. corporate-galas"
                 required
-                className="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:border-[#0F172A] focus:ring-1 focus:ring-[#0F172A] outline-none text-xs bg-white text-slate-900 font-mono shadow-2xs"
+                className="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:border-[#0B2B4A] focus:ring-1 focus:ring-[#0B2B4A] outline-none text-xs bg-white text-slate-900 font-mono shadow-2xs"
               />
               <p className="text-[10px] text-slate-400 mt-1">
                 Auto-generated for portfolio URLs and filters.
@@ -492,9 +492,9 @@ export default function CategoryManager({ initialCategories }: CategoryManagerPr
             ) : (
               <div
                 onClick={() => fileInputRef.current?.click()}
-                className="w-full h-32 rounded-xl border-2 border-dashed border-slate-300 hover:border-[#0F172A] bg-white hover:bg-slate-50/80 transition-all flex flex-col items-center justify-center gap-1.5 cursor-pointer p-4 text-center group"
+                className="w-full h-32 rounded-xl border-2 border-dashed border-slate-300 hover:border-[#0B2B4A] bg-white hover:bg-slate-50/80 transition-all flex flex-col items-center justify-center gap-1.5 cursor-pointer p-4 text-center group"
               >
-                <div className="p-2 rounded-full bg-slate-100 group-hover:bg-[#0F172A]/10 text-slate-500 group-hover:text-[#0F172A] transition-colors">
+                <div className="p-2 rounded-full bg-slate-100 group-hover:bg-[#0B2B4A]/10 text-slate-500 group-hover:text-[#0B2B4A] transition-colors">
                   <UploadCloud className="w-5 h-5" />
                 </div>
                 <p className="text-xs font-semibold text-slate-700">
@@ -512,16 +512,16 @@ export default function CategoryManager({ initialCategories }: CategoryManagerPr
           <button
             type="submit"
             disabled={isSubmitting || !name.trim()}
-            className="px-6 py-2.5 rounded-xl bg-[#0F172A] hover:bg-[#1E293B] text-white text-xs font-bold shadow-sm hover:shadow transition-all flex items-center gap-2 disabled:opacity-50 cursor-pointer"
+            className="px-6 py-2.5 rounded-xl bg-[#0B2B4A] hover:bg-[#163859] text-white text-xs font-bold shadow-sm hover:shadow transition-all flex items-center gap-2 disabled:opacity-50 cursor-pointer"
           >
             {isSubmitting ? (
               <>
-                <Loader2 className="w-3.5 h-3.5 animate-spin text-[#D4AF37]" />
+                <Loader2 className="w-3.5 h-3.5 animate-spin text-[#E5B842]" />
                 <span>Saving Category...</span>
               </>
             ) : (
               <>
-                <Plus className="w-3.5 h-3.5 text-[#D4AF37]" />
+                <Plus className="w-3.5 h-3.5 text-[#E5B842]" />
                 <span>Save Category</span>
               </>
             )}
@@ -567,7 +567,7 @@ export default function CategoryManager({ initialCategories }: CategoryManagerPr
                     />
                   ) : (
                     <div className="absolute inset-0 bg-gradient-to-br from-slate-900 to-slate-800 flex flex-col items-center justify-center text-slate-400 p-4">
-                      <Sparkles className="w-8 h-8 text-[#D4AF37] opacity-60 mb-1" />
+                      <Sparkles className="w-8 h-8 text-[#E5B842] opacity-60 mb-1" />
                       <span className="text-[11px] font-medium text-slate-300">
                         Default System Theme
                       </span>
@@ -579,8 +579,8 @@ export default function CategoryManager({ initialCategories }: CategoryManagerPr
 
                   {/* Badges */}
                   <div className="absolute top-2.5 left-2.5">
-                    <span className="px-2.5 py-1 rounded-full bg-[#0F172A]/80 backdrop-blur-md text-white text-[10px] font-semibold border border-white/10 flex items-center gap-1 shadow-xs">
-                      <Layers className="w-3 h-3 text-[#D4AF37]" />
+                    <span className="px-2.5 py-1 rounded-full bg-[#0B2B4A]/80 backdrop-blur-md text-white text-[10px] font-semibold border border-white/10 flex items-center gap-1 shadow-xs">
+                      <Layers className="w-3 h-3 text-[#E5B842]" />
                       <span>{cat._count?.items ?? 0} works</span>
                     </span>
                   </div>
@@ -655,13 +655,13 @@ export default function CategoryManager({ initialCategories }: CategoryManagerPr
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden z-10"
             >
-              <div className="flex items-center justify-between p-5 border-b border-slate-100 bg-[#FAF7F2]">
+              <div className="flex items-center justify-between p-5 border-b border-slate-100 bg-[#FCFAF7]">
                 <div className="flex items-center gap-2.5">
-                  <div className="p-2 rounded-xl bg-[#0F172A] text-white">
-                    <Edit2 className="w-4 h-4 text-[#D4AF37]" />
+                  <div className="p-2 rounded-xl bg-[#0B2B4A] text-white">
+                    <Edit2 className="w-4 h-4 text-[#E5B842]" />
                   </div>
                   <div>
-                    <h3 className="font-heading text-base font-bold text-[#0F172A]">
+                    <h3 className="font-heading text-base font-bold text-[#0B2B4A]">
                       Edit Category
                     </h3>
                     <p className="text-[11px] text-slate-500">Update name, slug, or cover image</p>
@@ -696,7 +696,7 @@ export default function CategoryManager({ initialCategories }: CategoryManagerPr
                       }
                     }}
                     required
-                    className="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:border-[#0F172A] focus:ring-1 focus:ring-[#0F172A] outline-none text-xs bg-white text-slate-900"
+                    className="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:border-[#0B2B4A] focus:ring-1 focus:ring-[#0B2B4A] outline-none text-xs bg-white text-slate-900"
                   />
                 </div>
 
@@ -709,7 +709,7 @@ export default function CategoryManager({ initialCategories }: CategoryManagerPr
                     value={editSlug}
                     onChange={(e) => setEditSlug(e.target.value)}
                     required
-                    className="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:border-[#0F172A] focus:ring-1 focus:ring-[#0F172A] outline-none text-xs bg-white text-slate-900 font-mono"
+                    className="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:border-[#0B2B4A] focus:ring-1 focus:ring-[#0B2B4A] outline-none text-xs bg-white text-slate-900 font-mono"
                   />
                 </div>
 
@@ -763,9 +763,9 @@ export default function CategoryManager({ initialCategories }: CategoryManagerPr
                   ) : (
                     <div
                       onClick={() => editFileInputRef.current?.click()}
-                      className="w-full h-32 rounded-xl border-2 border-dashed border-slate-300 hover:border-[#0F172A] bg-slate-50 hover:bg-slate-100/80 transition-all flex flex-col items-center justify-center gap-1.5 cursor-pointer p-4 text-center group"
+                      className="w-full h-32 rounded-xl border-2 border-dashed border-slate-300 hover:border-[#0B2B4A] bg-slate-50 hover:bg-slate-100/80 transition-all flex flex-col items-center justify-center gap-1.5 cursor-pointer p-4 text-center group"
                     >
-                      <UploadCloud className="w-6 h-6 text-slate-400 group-hover:text-[#0F172A] transition-colors" />
+                      <UploadCloud className="w-6 h-6 text-slate-400 group-hover:text-[#0B2B4A] transition-colors" />
                       <p className="text-xs font-semibold text-slate-700">
                         Click to upload new cover image
                       </p>
@@ -788,16 +788,16 @@ export default function CategoryManager({ initialCategories }: CategoryManagerPr
                   <button
                     type="submit"
                     disabled={isUpdating || !editName.trim()}
-                    className="px-5 py-2.5 rounded-xl bg-[#0F172A] hover:bg-[#1E293B] text-white text-xs font-bold shadow-sm transition-all flex items-center gap-2 disabled:opacity-50 cursor-pointer"
+                    className="px-5 py-2.5 rounded-xl bg-[#0B2B4A] hover:bg-[#163859] text-white text-xs font-bold shadow-sm transition-all flex items-center gap-2 disabled:opacity-50 cursor-pointer"
                   >
                     {isUpdating ? (
                       <>
-                        <Loader2 className="w-3.5 h-3.5 animate-spin text-[#D4AF37]" />
+                        <Loader2 className="w-3.5 h-3.5 animate-spin text-[#E5B842]" />
                         <span>Updating...</span>
                       </>
                     ) : (
                       <>
-                        <CheckCircle className="w-3.5 h-3.5 text-[#D4AF37]" />
+                        <CheckCircle className="w-3.5 h-3.5 text-[#E5B842]" />
                         <span>Save Changes</span>
                       </>
                     )}

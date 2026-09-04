@@ -410,11 +410,11 @@ export default function AdminRecordsList({ initialItems }: AdminRecordsListProps
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -20, scale: 0.95 }}
             className={`fixed top-5 right-5 z-50 p-3.5 px-5 rounded-2xl shadow-2xl flex items-center gap-2.5 text-xs font-semibold text-white ${
-              toastMessage.type === 'success' ? 'bg-[#0F172A]' : 'bg-red-600'
+              toastMessage.type === 'success' ? 'bg-[#0B2B4A]' : 'bg-red-600'
             }`}
           >
             {toastMessage.type === 'success' ? (
-              <Check className="w-4 h-4 text-[#D4AF37]" />
+              <Check className="w-4 h-4 text-[#E5B842]" />
             ) : (
               <AlertCircle className="w-4 h-4 text-white" />
             )}
@@ -426,11 +426,11 @@ export default function AdminRecordsList({ initialItems }: AdminRecordsListProps
       {/* ── 1. Sub-Header with Stats & View Toggle ── */}
       <div className="p-5 sm:p-6 pb-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-center gap-2.5">
-          <div className="p-2 rounded-xl bg-[#0F172A]/5 text-[#0F172A] border border-[#0F172A]/10">
-            <Database className="w-4 h-4 text-[#0F172A]" />
+          <div className="p-2 rounded-xl bg-[#0B2B4A]/5 text-[#0B2B4A] border border-[#0B2B4A]/10">
+            <Database className="w-4 h-4 text-[#0B2B4A]" />
           </div>
           <div>
-            <h2 className="font-heading text-lg sm:text-xl font-bold text-[#0F172A] tracking-tight">
+            <h2 className="font-heading text-lg sm:text-xl font-bold text-[#0B2B4A] tracking-tight">
               Published Showcases
             </h2>
             <p className="text-xs text-slate-500">
@@ -440,14 +440,14 @@ export default function AdminRecordsList({ initialItems }: AdminRecordsListProps
         </div>
 
         {/* View Mode Toggle: Grid vs Table */}
-        <div className="flex items-center gap-1 p-1 bg-[#FAF7F2] rounded-xl border border-slate-200 self-start sm:self-auto">
+        <div className="flex items-center gap-1 p-1 bg-[#FCFAF7] rounded-xl border border-slate-200 self-start sm:self-auto">
           <button
             type="button"
             onClick={() => setViewMode('grid')}
             className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer ${
               viewMode === 'grid'
-                ? 'bg-white text-[#0F172A] shadow-xs'
-                : 'text-slate-500 hover:text-[#0F172A]'
+                ? 'bg-white text-[#0B2B4A] shadow-xs'
+                : 'text-slate-500 hover:text-[#0B2B4A]'
             }`}
             title="Card Grid View"
           >
@@ -459,8 +459,8 @@ export default function AdminRecordsList({ initialItems }: AdminRecordsListProps
             onClick={() => setViewMode('table')}
             className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer ${
               viewMode === 'table'
-                ? 'bg-white text-[#0F172A] shadow-xs'
-                : 'text-slate-500 hover:text-[#0F172A]'
+                ? 'bg-white text-[#0B2B4A] shadow-xs'
+                : 'text-slate-500 hover:text-[#0B2B4A]'
             }`}
             title="Table View"
           >
@@ -471,7 +471,7 @@ export default function AdminRecordsList({ initialItems }: AdminRecordsListProps
       </div>
 
       {/* ── 2. Filter Chips & Real-Time Search Bar ── */}
-      <div className="p-4 sm:px-6 bg-[#FAF7F2]/40 border-b border-slate-100 flex flex-col gap-3">
+      <div className="p-4 sm:px-6 bg-[#FCFAF7]/60 border-b border-slate-100 flex flex-col gap-3">
         {/* Filter Chips */}
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
           {filterChips.map((chip) => {
@@ -483,8 +483,8 @@ export default function AdminRecordsList({ initialItems }: AdminRecordsListProps
                 onClick={() => setActiveFilter(chip.id)}
                 className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1.5 cursor-pointer ${
                   isActive
-                    ? 'bg-[#0F172A] text-white shadow-xs'
-                    : 'bg-white text-slate-600 border border-slate-200/80 hover:border-slate-300 hover:text-[#0F172A]'
+                    ? 'bg-[#0B2B4A] text-white shadow-xs'
+                    : 'bg-white text-slate-600 border border-slate-200/80 hover:border-slate-300 hover:text-[#0B2B4A]'
                 }`}
               >
                 <span>{chip.label}</span>
@@ -507,7 +507,7 @@ export default function AdminRecordsList({ initialItems }: AdminRecordsListProps
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search by title, category, price, or caption..."
-            className="w-full pl-9 pr-10 py-2 rounded-xl border border-slate-200 focus:border-[#0F172A] focus:ring-1 focus:ring-[#0F172A] outline-none text-xs transition-all bg-white text-slate-900 placeholder:text-slate-400"
+            className="w-full pl-9 pr-10 py-2 rounded-xl border border-slate-200 focus:border-[#0B2B4A] focus:ring-1 focus:ring-[#0B2B4A] outline-none text-xs transition-all bg-white text-slate-900 placeholder:text-slate-400"
           />
           <Search className="absolute left-3 top-2.5 w-3.5 h-3.5 text-slate-400" />
           {searchQuery && (
@@ -555,21 +555,21 @@ export default function AdminRecordsList({ initialItems }: AdminRecordsListProps
                     unoptimized
                   />
                   {/* Category Pill */}
-                  <span className="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-lg text-[10px] font-bold bg-[#0F172A]/85 text-white uppercase tracking-wider backdrop-blur-xs">
+                  <span className="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-lg text-[10px] font-bold bg-[#0B2B4A]/85 text-white uppercase tracking-wider backdrop-blur-xs">
                     {item.category}
                   </span>
 
                   {/* Active Cover Badge */}
                   {item.isCover && (
-                    <span className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-lg text-[10px] font-bold bg-[#D4AF37] text-[#0F172A] flex items-center gap-1 shadow-sm">
-                      <Star className="w-3 h-3 fill-[#0F172A] text-[#0F172A]" />
+                    <span className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-lg text-[10px] font-bold bg-[#E5B842] text-[#0B2B4A] flex items-center gap-1 shadow-sm">
+                      <Star className="w-3 h-3 fill-[#0B2B4A] text-[#0B2B4A]" />
                       <span>Cover</span>
                     </span>
                   )}
 
                   {/* Quick Mobile Preview Eye Hover Button */}
                   <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
-                    <span className="px-3 py-1.5 rounded-full bg-white/90 text-[#0F172A] text-xs font-bold flex items-center gap-1.5 shadow-md">
+                    <span className="px-3 py-1.5 rounded-full bg-white/90 text-[#0B2B4A] text-xs font-bold flex items-center gap-1.5 shadow-md">
                       <Eye className="w-3.5 h-3.5" />
                       <span>Preview</span>
                     </span>
@@ -579,7 +579,7 @@ export default function AdminRecordsList({ initialItems }: AdminRecordsListProps
                 {/* Content & Metadata */}
                 <div className="p-3.5 flex flex-col flex-1 justify-between gap-3">
                   <div>
-                    <h3 className="font-heading text-sm font-bold text-[#0F172A] line-clamp-1">
+                    <h3 className="font-heading text-sm font-bold text-[#0B2B4A] line-clamp-1">
                       {item.title}
                     </h3>
                     {item.caption && (
@@ -591,7 +591,7 @@ export default function AdminRecordsList({ initialItems }: AdminRecordsListProps
                     {/* Price & Instagram Indicators */}
                     <div className="flex items-center gap-2 mt-2 flex-wrap">
                       {item.price && (
-                        <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-[#FAF7F2] text-[#0F172A] border border-[#D4AF37]/40">
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-[#FCFAF7] text-[#0B2B4A] border border-[#E5B842]/40">
                           {item.price}
                         </span>
                       )}
@@ -618,16 +618,16 @@ export default function AdminRecordsList({ initialItems }: AdminRecordsListProps
                       disabled={loadingActionId === item.id || item.isCover}
                       className={`text-[11px] font-semibold px-2.5 py-1 rounded-lg transition-colors cursor-pointer flex items-center gap-1 ${
                         item.isCover
-                          ? 'bg-[#D4AF37]/20 text-[#0F172A] font-bold cursor-default'
-                          : 'bg-slate-100 hover:bg-[#D4AF37]/20 text-slate-700 hover:text-[#0F172A]'
+                          ? 'bg-[#E5B842]/20 text-[#0B2B4A] font-bold cursor-default'
+                          : 'bg-slate-100 hover:bg-[#E5B842]/20 text-slate-700 hover:text-[#0B2B4A]'
                       }`}
                     >
                       {loadingActionId === item.id ? (
-                        <Loader2 className="w-3 h-3 animate-spin text-[#0F172A]" />
+                        <Loader2 className="w-3 h-3 animate-spin text-[#0B2B4A]" />
                       ) : (
                         <Star
                           className={`w-3 h-3 ${
-                            item.isCover ? 'fill-[#D4AF37] text-[#D4AF37]' : 'text-slate-400'
+                            item.isCover ? 'fill-[#E5B842] text-[#E5B842]' : 'text-slate-400'
                           }`}
                         />
                       )}
@@ -639,7 +639,7 @@ export default function AdminRecordsList({ initialItems }: AdminRecordsListProps
                         type="button"
                         onClick={() => handleOpenEdit(item)}
                         title="Edit Item"
-                        className="p-1.5 rounded-lg text-slate-500 hover:text-[#0F172A] hover:bg-slate-100 transition-colors cursor-pointer"
+                        className="p-1.5 rounded-lg text-slate-500 hover:text-[#0B2B4A] hover:bg-slate-100 transition-colors cursor-pointer"
                       >
                         <Edit2 className="w-3.5 h-3.5" />
                       </button>
@@ -661,7 +661,7 @@ export default function AdminRecordsList({ initialItems }: AdminRecordsListProps
           /* ── Table View ── */
           <div className="overflow-x-auto border border-slate-200 rounded-xl">
             <table className="min-w-full divide-y divide-slate-200 text-left text-xs">
-              <thead className="bg-[#FAF7F2] text-slate-600 font-bold uppercase tracking-wider">
+              <thead className="bg-[#FCFAF7] text-slate-600 font-bold uppercase tracking-wider">
                 <tr>
                   <th scope="col" className="px-4 py-3">
                     Thumbnail
@@ -699,13 +699,13 @@ export default function AdminRecordsList({ initialItems }: AdminRecordsListProps
                     </td>
                     <td className="px-4 py-2.5">
                       <div className="max-w-xs">
-                        <p className="font-bold text-[#0F172A]">{item.title}</p>
+                        <p className="font-bold text-[#0B2B4A]">{item.title}</p>
                         {item.caption && (
                           <p className="text-[11px] text-slate-500 line-clamp-1">{item.caption}</p>
                         )}
                         <div className="flex items-center gap-2 mt-1">
                           {item.price && (
-                            <span className="text-[10px] font-bold text-[#0F172A] bg-[#FAF7F2] px-1.5 py-0.5 rounded border border-[#D4AF37]/30">
+                            <span className="text-[10px] font-bold text-[#0B2B4A] bg-[#FCFAF7] px-1.5 py-0.5 rounded border border-[#E5B842]/40">
                               {item.price}
                             </span>
                           )}
@@ -724,7 +724,7 @@ export default function AdminRecordsList({ initialItems }: AdminRecordsListProps
                       </div>
                     </td>
                     <td className="px-4 py-2.5 whitespace-nowrap">
-                      <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-[#0F172A]/5 text-[#0F172A] uppercase">
+                      <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-[#0B2B4A]/5 text-[#0B2B4A] uppercase">
                         {item.category}
                       </span>
                     </td>
@@ -735,13 +735,13 @@ export default function AdminRecordsList({ initialItems }: AdminRecordsListProps
                         disabled={loadingActionId === item.id || item.isCover}
                         className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-colors cursor-pointer flex items-center gap-1 ${
                           item.isCover
-                            ? 'bg-[#D4AF37]/20 text-[#0F172A] font-bold'
+                            ? 'bg-[#E5B842]/20 text-[#0B2B4A] font-bold'
                             : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                         }`}
                       >
                         <Star
                           className={`w-3 h-3 ${
-                            item.isCover ? 'fill-[#D4AF37] text-[#D4AF37]' : 'text-slate-400'
+                            item.isCover ? 'fill-[#E5B842] text-[#E5B842]' : 'text-slate-400'
                           }`}
                         />
                         <span>{item.isCover ? 'Cover' : 'Set'}</span>
@@ -752,14 +752,14 @@ export default function AdminRecordsList({ initialItems }: AdminRecordsListProps
                         <button
                           type="button"
                           onClick={() => setPreviewItem(item)}
-                          className="p-1.5 rounded-lg text-slate-500 hover:text-[#0F172A] hover:bg-slate-100 cursor-pointer"
+                          className="p-1.5 rounded-lg text-slate-500 hover:text-[#0B2B4A] hover:bg-slate-100 cursor-pointer"
                         >
                           <Eye className="w-3.5 h-3.5" />
                         </button>
                         <button
                           type="button"
                           onClick={() => handleOpenEdit(item)}
-                          className="p-1.5 rounded-lg text-slate-500 hover:text-[#0F172A] hover:bg-slate-100 cursor-pointer"
+                          className="p-1.5 rounded-lg text-slate-500 hover:text-[#0B2B4A] hover:bg-slate-100 cursor-pointer"
                         >
                           <Edit2 className="w-3.5 h-3.5" />
                         </button>
@@ -825,7 +825,7 @@ export default function AdminRecordsList({ initialItems }: AdminRecordsListProps
                       onClick={() => editFileInputRef.current?.click()}
                       className="absolute inset-0 bg-black/40 hover:bg-black/60 text-white flex items-center justify-center gap-1.5 opacity-0 hover:opacity-100 transition-opacity font-semibold text-xs cursor-pointer"
                     >
-                      <UploadCloud className="w-4 h-4 text-[#D4AF37]" />
+                      <UploadCloud className="w-4 h-4 text-[#E5B842]" />
                       <span>Replace Photo</span>
                     </button>
                   </div>
@@ -848,7 +848,7 @@ export default function AdminRecordsList({ initialItems }: AdminRecordsListProps
                     value={editTitle}
                     onChange={(e) => setEditTitle(e.target.value)}
                     required
-                    className="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:border-[#0F172A] focus:ring-1 focus:ring-[#0F172A] outline-none text-xs text-slate-900 font-medium"
+                    className="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:border-[#0B2B4A] focus:ring-1 focus:ring-[#0B2B4A] outline-none text-xs text-slate-900 font-medium"
                   />
                 </div>
 
@@ -863,7 +863,7 @@ export default function AdminRecordsList({ initialItems }: AdminRecordsListProps
                     onChange={(e) => setEditCategory(e.target.value)}
                     placeholder="e.g. Wedding, Baby Shower, Custom"
                     required
-                    className="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:border-[#0F172A] focus:ring-1 focus:ring-[#0F172A] outline-none text-xs text-slate-900 font-medium"
+                    className="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:border-[#0B2B4A] focus:ring-1 focus:ring-[#0B2B4A] outline-none text-xs text-slate-900 font-medium"
                   />
                 </div>
 
@@ -878,7 +878,7 @@ export default function AdminRecordsList({ initialItems }: AdminRecordsListProps
                       value={editPrice}
                       onChange={(e) => setEditPrice(e.target.value)}
                       placeholder="e.g. ₹50,000"
-                      className="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:border-[#0F172A] focus:ring-1 focus:ring-[#0F172A] outline-none text-xs text-slate-900"
+                      className="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:border-[#0B2B4A] focus:ring-1 focus:ring-[#0B2B4A] outline-none text-xs text-slate-900"
                     />
                   </div>
                   <div>
@@ -890,7 +890,7 @@ export default function AdminRecordsList({ initialItems }: AdminRecordsListProps
                       value={editInstagramUrl}
                       onChange={(e) => setEditInstagramUrl(e.target.value)}
                       placeholder="https://www.instagram.com/p/..."
-                      className="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:border-[#0F172A] focus:ring-1 focus:ring-[#0F172A] outline-none text-xs text-slate-900"
+                      className="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:border-[#0B2B4A] focus:ring-1 focus:ring-[#0B2B4A] outline-none text-xs text-slate-900"
                     />
                   </div>
                 </div>
@@ -904,7 +904,7 @@ export default function AdminRecordsList({ initialItems }: AdminRecordsListProps
                     value={editCaption}
                     onChange={(e) => setEditCaption(e.target.value)}
                     rows={2}
-                    className="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:border-[#0F172A] focus:ring-1 focus:ring-[#0F172A] outline-none text-xs text-slate-900 resize-none"
+                    className="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:border-[#0B2B4A] focus:ring-1 focus:ring-[#0B2B4A] outline-none text-xs text-slate-900 resize-none"
                   />
                 </div>
 
@@ -920,12 +920,12 @@ export default function AdminRecordsList({ initialItems }: AdminRecordsListProps
                   <button
                     type="submit"
                     disabled={isPending || isUpdating}
-                    className="px-5 py-2 rounded-xl bg-[#0F172A] text-white text-xs font-bold hover:bg-[#1E293B] transition-colors flex items-center gap-1.5 disabled:opacity-50 cursor-pointer"
+                    className="px-5 py-2 rounded-xl bg-[#0B2B4A] text-white text-xs font-bold hover:bg-[#163859] transition-colors flex items-center gap-1.5 disabled:opacity-50 cursor-pointer"
                   >
                     {isPending || isUpdating ? (
-                      <Loader2 className="w-3.5 h-3.5 animate-spin text-[#D4AF37]" />
+                      <Loader2 className="w-3.5 h-3.5 animate-spin text-[#E5B842]" />
                     ) : (
-                      <Check className="w-3.5 h-3.5 text-[#D4AF37]" />
+                      <Check className="w-3.5 h-3.5 text-[#E5B842]" />
                     )}
                     <span>{isPending || isUpdating ? 'Saving…' : 'Save Changes'}</span>
                   </button>

@@ -278,11 +278,11 @@ export default function UploadForm({
           {/* Card Header */}
           <div className="flex items-center justify-between pb-4 mb-5 border-b border-slate-100">
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded-xl bg-[#0F172A]/5 text-[#0F172A] border border-[#0F172A]/10">
-                <PlusCircle className="w-5 h-5 text-[#0F172A]" />
+              <div className="p-2 rounded-xl bg-[#0B2B4A]/5 text-[#0B2B4A] border border-[#0B2B4A]/10">
+                <PlusCircle className="w-5 h-5 text-[#0B2B4A]" />
               </div>
               <div>
-                <h2 className="font-heading text-lg sm:text-xl font-bold text-[#0F172A] tracking-tight">
+                <h2 className="font-heading text-lg sm:text-xl font-bold text-[#0B2B4A] tracking-tight">
                   Upload Showcase
                 </h2>
                 <p className="text-xs text-slate-500">
@@ -290,8 +290,8 @@ export default function UploadForm({
                 </p>
               </div>
             </div>
-            <span className="hidden sm:inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-[#D4AF37]/10 text-[#0F172A] border border-[#D4AF37]/30">
-              <Sparkles className="w-3 h-3 text-[#D4AF37]" />
+            <span className="hidden sm:inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-[#E5B842]/10 text-[#0B2B4A] border border-[#E5B842]/35">
+              <Sparkles className="w-3 h-3 text-[#E5B842]" />
               <span>9:16 Portrait</span>
             </span>
           </div>
@@ -330,7 +330,7 @@ export default function UploadForm({
                   <button
                     type="button"
                     onClick={() => setIsCropperOpen(true)}
-                    className="text-xs text-[#0F172A] hover:text-[#D4AF37] font-semibold flex items-center gap-1 cursor-pointer transition-colors"
+                    className="text-xs text-[#0B2B4A] hover:text-[#E5B842] font-semibold flex items-center gap-1 cursor-pointer transition-colors"
                   >
                     <Crop className="w-3.5 h-3.5" />
                     <span>Adjust Crop &amp; Ratio</span>
@@ -359,7 +359,7 @@ export default function UploadForm({
                     <X className="w-3.5 h-3.5" />
                   </button>
                   <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent p-2.5 text-white text-[10px] flex items-center justify-between">
-                    <span className="font-semibold text-[#D4AF37]">Ready</span>
+                    <span className="font-semibold text-[#E5B842]">Ready</span>
                     <button
                       type="button"
                       onClick={() => setIsCropperOpen(true)}
@@ -373,12 +373,12 @@ export default function UploadForm({
                 /* Empty Upload Dropzone */
                 <div
                   onClick={() => fileInputRef.current?.click()}
-                  className="border-2 border-dashed border-slate-300 hover:border-[#0F172A] rounded-2xl p-6 text-center cursor-pointer transition-all bg-[#FAF7F2]/60 hover:bg-[#FAF7F2] group flex flex-col items-center justify-center"
+                  className="border-2 border-dashed border-slate-300 hover:border-[#0B2B4A] rounded-2xl p-6 text-center cursor-pointer transition-all bg-[#FCFAF7]/60 hover:bg-[#FCFAF7] group flex flex-col items-center justify-center"
                 >
-                  <div className="w-10 h-10 rounded-full bg-white shadow-xs border border-slate-200 flex items-center justify-center text-slate-500 group-hover:text-[#0F172A] group-hover:scale-110 transition-all mb-2">
+                  <div className="w-10 h-10 rounded-full bg-white shadow-xs border border-slate-200 flex items-center justify-center text-slate-500 group-hover:text-[#0B2B4A] group-hover:scale-110 transition-all mb-2">
                     <UploadCloud className="w-5 h-5" />
                   </div>
-                  <p className="text-xs font-semibold text-slate-800 group-hover:text-[#0F172A]">
+                  <p className="text-xs font-semibold text-slate-800 group-hover:text-[#0B2B4A]">
                     Click or drag image here
                   </p>
                   <p className="text-[11px] text-slate-400 mt-0.5">
@@ -405,17 +405,17 @@ export default function UploadForm({
                 onChange={(e) => setTitle(e.target.value)}
                 required
                 placeholder=" "
-                className="peer block w-full appearance-none border-0 border-b border-slate-300 bg-transparent py-2.5 px-0 text-sm text-slate-900 font-medium focus:border-[#0F172A] focus:outline-none focus:ring-0 transition-colors"
+                className="peer block w-full appearance-none border-0 border-b border-slate-300 bg-transparent py-2.5 px-0 text-sm text-slate-900 font-medium focus:border-[#0B2B4A] focus:outline-none focus:ring-0 transition-colors"
               />
               <label
                 htmlFor="item-title"
                 className={`absolute top-3 -z-10 origin-[0] text-xs duration-300 transform cursor-text flex items-center gap-1.5 ${
                   title
-                    ? '-translate-y-5 scale-90 text-[#0F172A] font-bold'
+                    ? '-translate-y-5 scale-90 text-[#0B2B4A] font-bold'
                     : 'translate-y-0 scale-100 text-slate-400 font-normal'
-                } peer-focus:-translate-y-5 peer-focus:scale-90 peer-focus:text-[#0F172A] peer-focus:font-bold`}
+                } peer-focus:-translate-y-5 peer-focus:scale-90 peer-focus:text-[#0B2B4A] peer-focus:font-bold`}
               >
-                <Type className="w-3.5 h-3.5 text-slate-400 peer-focus:text-[#0F172A]" />
+                <Type className="w-3.5 h-3.5 text-slate-400 peer-focus:text-[#0B2B4A]" />
                 <span>Title (Design Name)</span>
                 <span className="text-red-500">*</span>
               </label>
@@ -428,16 +428,16 @@ export default function UploadForm({
                   htmlFor="item-category"
                   className="text-[11px] font-bold uppercase tracking-wider text-slate-600 flex items-center gap-1"
                 >
-                  <Tag className="w-3 h-3 text-[#D4AF37]" />
+                  <Tag className="w-3 h-3 text-[#E5B842]" />
                   <span>Category</span>
                   <span className="text-red-500">*</span>
                 </label>
                 <button
                   type="button"
                   onClick={() => setIsAddingCategory(true)}
-                  className="text-[11px] text-[#0F172A] hover:text-[#D4AF37] font-semibold flex items-center gap-1 cursor-pointer transition-colors"
+                  className="text-[11px] text-[#0B2B4A] hover:text-[#E5B842] font-semibold flex items-center gap-1 cursor-pointer transition-colors"
                 >
-                  <Plus className="w-3 h-3 text-[#D4AF37]" />
+                  <Plus className="w-3 h-3 text-[#E5B842]" />
                   <span>+ Add New Category</span>
                 </button>
               </div>
@@ -446,7 +446,7 @@ export default function UploadForm({
                 id="item-category"
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:border-[#0F172A] focus:ring-1 focus:ring-[#0F172A] outline-none text-xs font-medium transition-all bg-white text-slate-900 cursor-pointer"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:border-[#0B2B4A] focus:ring-1 focus:ring-[#0B2B4A] outline-none text-xs font-medium transition-all bg-white text-slate-900 cursor-pointer"
               >
                 {categoryList.length > 0 ? (
                   categoryList.map((cat) => (
@@ -474,15 +474,15 @@ export default function UploadForm({
                   value={price}
                   onChange={(e) => setPrice(e.target.value)}
                   placeholder=" "
-                  className="peer block w-full appearance-none border-0 border-b border-slate-300 bg-transparent py-2 px-0 text-xs text-slate-900 font-medium focus:border-[#0F172A] focus:outline-none focus:ring-0 transition-colors"
+                  className="peer block w-full appearance-none border-0 border-b border-slate-300 bg-transparent py-2 px-0 text-xs text-slate-900 font-medium focus:border-[#0B2B4A] focus:outline-none focus:ring-0 transition-colors"
                 />
                 <label
                   htmlFor="item-price"
                   className={`absolute top-2.5 -z-10 origin-[0] text-xs duration-300 transform cursor-text flex items-center gap-1 ${
                     price
-                      ? '-translate-y-4 scale-90 text-[#0F172A] font-bold'
+                      ? '-translate-y-4 scale-90 text-[#0B2B4A] font-bold'
                       : 'translate-y-0 scale-100 text-slate-400 font-normal'
-                  } peer-focus:-translate-y-4 peer-focus:scale-90 peer-focus:text-[#0F172A] peer-focus:font-bold`}
+                  } peer-focus:-translate-y-4 peer-focus:scale-90 peer-focus:text-[#0B2B4A] peer-focus:font-bold`}
                 >
                   <DollarSign className="w-3 h-3 text-slate-400" />
                   <span>Starting Price (e.g. ₹45,000)</span>
@@ -497,15 +497,15 @@ export default function UploadForm({
                   value={instagramUrl}
                   onChange={(e) => setInstagramUrl(e.target.value)}
                   placeholder=" "
-                  className="peer block w-full appearance-none border-0 border-b border-slate-300 bg-transparent py-2 px-0 text-xs text-slate-900 font-medium focus:border-[#0F172A] focus:outline-none focus:ring-0 transition-colors"
+                  className="peer block w-full appearance-none border-0 border-b border-slate-300 bg-transparent py-2 px-0 text-xs text-slate-900 font-medium focus:border-[#0B2B4A] focus:outline-none focus:ring-0 transition-colors"
                 />
                 <label
                   htmlFor="item-instagram"
                   className={`absolute top-2.5 -z-10 origin-[0] text-xs duration-300 transform cursor-text flex items-center gap-1 ${
                     instagramUrl
-                      ? '-translate-y-4 scale-90 text-[#0F172A] font-bold'
+                      ? '-translate-y-4 scale-90 text-[#0B2B4A] font-bold'
                       : 'translate-y-0 scale-100 text-slate-400 font-normal'
-                  } peer-focus:-translate-y-4 peer-focus:scale-90 peer-focus:text-[#0F172A] peer-focus:font-bold`}
+                  } peer-focus:-translate-y-4 peer-focus:scale-90 peer-focus:text-[#0B2B4A] peer-focus:font-bold`}
                 >
                   <Instagram className="w-3 h-3 text-pink-500" />
                   <span>Instagram Post Link</span>
@@ -527,23 +527,23 @@ export default function UploadForm({
                 onChange={(e) => setCaption(e.target.value)}
                 rows={2}
                 placeholder="Highlight design elements, floral details, or themes..."
-                className="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:border-[#0F172A] focus:ring-1 focus:ring-[#0F172A] outline-none text-xs transition-all bg-white text-slate-900 resize-none max-h-20 placeholder:text-slate-400"
+                className="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:border-[#0B2B4A] focus:ring-1 focus:ring-[#0B2B4A] outline-none text-xs transition-all bg-white text-slate-900 resize-none max-h-20 placeholder:text-slate-400"
               />
             </div>
 
             {/* 6. Category Cover Checkbox */}
             <div className="pt-0.5">
-              <label className="flex items-center gap-2 px-3 py-2 rounded-xl border border-slate-200 bg-[#FAF7F2]/60 hover:bg-[#FAF7F2] cursor-pointer transition-colors text-xs text-slate-700 font-medium">
+              <label className="flex items-center gap-2 px-3 py-2 rounded-xl border border-slate-200 bg-[#FCFAF7]/60 hover:bg-[#FCFAF7] cursor-pointer transition-colors text-xs text-slate-700 font-medium">
                 <input
                   type="checkbox"
                   checked={isCover}
                   onChange={(e) => setIsCover(e.target.checked)}
-                  className="w-4 h-4 rounded text-[#0F172A] focus:ring-[#0F172A] border-slate-300 cursor-pointer"
+                  className="w-4 h-4 rounded text-[#0B2B4A] focus:ring-[#0B2B4A] border-slate-300 cursor-pointer"
                 />
                 <span className="flex items-center gap-1.5">
                   <Star
                     className={`w-3.5 h-3.5 ${
-                      isCover ? 'fill-[#D4AF37] text-[#D4AF37]' : 'text-slate-400'
+                      isCover ? 'fill-[#E5B842] text-[#E5B842]' : 'text-slate-400'
                     }`}
                   />
                   <span>Feature as Primary Category Cover Photo</span>
@@ -557,25 +557,25 @@ export default function UploadForm({
                 type="button"
                 onClick={() => setIsPreviewModalOpen(true)}
                 disabled={!previewUrl}
-                className="flex-1 py-3 px-3.5 rounded-xl border border-slate-300 hover:border-[#0F172A] bg-white hover:bg-slate-50 text-slate-700 font-semibold text-xs transition-all flex items-center justify-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer shadow-2xs"
+                className="flex-1 py-3 px-3.5 rounded-xl border border-slate-300 hover:border-[#0B2B4A] bg-white hover:bg-slate-50 text-slate-700 font-semibold text-xs transition-all flex items-center justify-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer shadow-2xs"
               >
-                <Eye className="w-3.5 h-3.5 text-[#0F172A]" />
+                <Eye className="w-3.5 h-3.5 text-[#0B2B4A]" />
                 <span>Preview Showcase</span>
               </button>
 
               <button
                 type="submit"
                 disabled={isPending || isLoading || !croppedFile}
-                className="flex-1 py-3 px-4 rounded-xl bg-[#0F172A] hover:bg-[#1E293B] active:scale-[0.99] text-white font-bold text-xs tracking-wide shadow-sm hover:shadow-md transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer border border-[#0F172A]"
+                className="flex-1 py-3 px-4 rounded-xl bg-[#0B2B4A] hover:bg-[#163859] active:scale-[0.99] text-white font-bold text-xs tracking-wide shadow-sm hover:shadow-md transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer border border-[#0B2B4A]"
               >
                 {isPending || isLoading ? (
                   <>
-                    <Loader2 className="w-3.5 h-3.5 animate-spin text-[#D4AF37]" />
+                    <Loader2 className="w-3.5 h-3.5 animate-spin text-[#E5B842]" />
                     <span>{isPending && !isLoading ? 'Processing…' : 'Publishing…'}</span>
                   </>
                 ) : (
                   <>
-                    <Sparkles className="w-3.5 h-3.5 text-[#D4AF37]" />
+                    <Sparkles className="w-3.5 h-3.5 text-[#E5B842]" />
                     <span>Publish to Live Site</span>
                   </>
                 )}
@@ -588,7 +588,7 @@ export default function UploadForm({
       {/* ── Quick Inline Add Category Modal ── */}
       <AnimatePresence>
         {isAddingCategory && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
+          <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -597,8 +597,8 @@ export default function UploadForm({
             >
               <div className="flex items-center justify-between pb-3 mb-4 border-b border-slate-100">
                 <div className="flex items-center gap-2">
-                  <FolderPlus className="w-4 h-4 text-[#0F172A]" />
-                  <h3 className="font-heading text-base font-bold text-[#0F172A]">
+                  <FolderPlus className="w-4 h-4 text-[#0B2B4A]" />
+                  <h3 className="font-heading text-base font-bold text-[#0B2B4A]">
                     Add New Category
                   </h3>
                 </div>
@@ -623,7 +623,7 @@ export default function UploadForm({
                     placeholder="e.g. Corporate Galas, Haldi Decor"
                     required
                     autoFocus
-                    className="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:border-[#0F172A] focus:ring-1 focus:ring-[#0F172A] outline-none text-xs text-slate-900"
+                    className="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:border-[#0B2B4A] focus:ring-1 focus:ring-[#0B2B4A] outline-none text-xs text-slate-900"
                   />
                 </div>
 
@@ -638,12 +638,12 @@ export default function UploadForm({
                   <button
                     type="submit"
                     disabled={isCreatingCategory || !newCategoryName.trim()}
-                    className="px-4 py-2 rounded-xl bg-[#0F172A] text-white text-xs font-bold hover:bg-[#1E293B] transition-colors flex items-center gap-1.5 disabled:opacity-50 cursor-pointer"
+                    className="px-4 py-2 rounded-xl bg-[#0B2B4A] text-white text-xs font-bold hover:bg-[#163859] transition-colors flex items-center gap-1.5 disabled:opacity-50 cursor-pointer"
                   >
                     {isCreatingCategory ? (
                       <Loader2 className="w-3.5 h-3.5 animate-spin" />
                     ) : (
-                      <Plus className="w-3.5 h-3.5 text-[#D4AF37]" />
+                      <Plus className="w-3.5 h-3.5 text-[#E5B842]" />
                     )}
                     <span>Save Category</span>
                   </button>

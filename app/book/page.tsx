@@ -80,7 +80,7 @@ export default function BookingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FAF7F2] pb-16 sm:pb-24 overflow-hidden">
+    <div className="min-h-screen bg-[#FCFAF7] pb-28 sm:pb-24 overflow-hidden">
       {/* ── 1. Visual Hero Section with Priority Next.js Image & Golden Caustics ── */}
       <section className="relative w-full h-[280px] sm:h-[340px] md:h-[400px] overflow-hidden flex items-center justify-center mb-10 sm:mb-16">
         {/* Background Image */}
@@ -99,17 +99,17 @@ export default function BookingPage() {
 
         {/* Ambient Moving Gold Caustic Glow */}
         <div
-          className="absolute inset-0 pointer-events-none opacity-40 mix-blend-color-dodge"
+          className="absolute inset-0 pointer-events-none opacity-50 mix-blend-color-dodge"
           style={{
             background:
-              'radial-gradient(circle at 50% 40%, rgba(212, 175, 55, 0.45) 0%, rgba(10, 54, 89, 0.25) 60%, transparent 85%)',
+              'radial-gradient(circle at 50% 40%, rgba(229, 184, 66, 0.5) 0%, rgba(11, 43, 74, 0.25) 60%, transparent 85%)',
           }}
           aria-hidden="true"
         />
 
-        {/* Dark Gradient Overlay */}
+        {/* Dark Twilight Gradient Overlay */}
         <div
-          className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/60 to-black/90 pointer-events-none"
+          className="absolute inset-0 bg-gradient-to-b from-[#07192C]/80 via-[#0B2B4A]/50 to-[#07192C]/90 pointer-events-none"
           aria-hidden="true"
         />
 
@@ -119,9 +119,9 @@ export default function BookingPage() {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 rounded-full border border-[#D4AF37]/50 bg-white/10 backdrop-blur-xl px-4 py-1.5 text-xs font-bold uppercase tracking-[0.2em] text-[#FCF6BA] shadow-lg mb-3"
+            className="inline-flex items-center gap-2 rounded-full border border-[#E5B842]/50 bg-white/15 backdrop-blur-xl px-4 py-1.5 text-xs font-bold uppercase tracking-[0.2em] text-[#FFF3C4] shadow-lg mb-3"
           >
-            <Sparkles className="h-3.5 w-3.5 text-[#D4AF37]" />
+            <Sparkles className="h-3.5 w-3.5 text-[#E5B842]" />
             <span>Consultation &amp; Date Reservation</span>
           </motion.div>
 
@@ -157,12 +157,12 @@ export default function BookingPage() {
           >
             {/* "Let's Create Magic" Hero Block */}
             <div className="liquid-glass-card p-7 sm:p-9 rounded-3xl space-y-4">
-              <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#0A3659]/5 text-[#0A3659] text-xs font-extrabold uppercase tracking-wider border border-[#0A3659]/10">
-                <Sparkles className="w-3.5 h-3.5 text-[#D4AF37]" />
+              <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#0B2B4A]/5 text-[#0B2B4A] text-xs font-extrabold uppercase tracking-wider border border-[#0B2B4A]/12">
+                <Sparkles className="w-3.5 h-3.5 text-[#E5B842]" />
                 Bespoke Event Atelier
               </span>
 
-              <h2 className="font-heading font-serif text-2xl sm:text-3xl font-bold text-[#0A3659] leading-tight">
+              <h2 className="font-heading font-serif text-2xl sm:text-3xl font-bold text-[#0B2B4A] leading-tight">
                 Let&apos;s Create Magic
               </h2>
 
@@ -170,13 +170,13 @@ export default function BookingPage() {
                 Whether you envision a grand wedding mandap with traditional jasmine arches or an ethereal milestone celebration, our team is dedicated to crafting a stage that leaves lasting impressions.
               </p>
 
-              <div className="w-16 h-1 rounded-full bg-gradient-to-r from-[#D4AF37] to-transparent opacity-90 my-3" />
+              <div className="w-16 h-1 rounded-full bg-gradient-to-r from-[#E5B842] to-transparent opacity-90 my-3" />
 
               {/* Direct Contact Cards in Liquid Glass */}
               <div className="space-y-3.5 pt-2">
                 {/* Phone / WhatsApp */}
-                <div className="flex items-start gap-3.5 p-4 rounded-2xl bg-white/70 border border-white/80 shadow-xs hover:border-[#D4AF37]/50 hover:bg-white transition-all group">
-                  <div className="w-11 h-11 rounded-2xl bg-[#0A3659] text-[#D4AF37] flex items-center justify-center flex-shrink-0 shadow-md group-hover:scale-105 transition-transform">
+                <div className="flex items-start gap-3.5 p-4 rounded-2xl bg-white/70 border border-white/80 shadow-xs hover:border-[#E5B842]/50 hover:bg-white transition-all group">
+                  <div className="w-11 h-11 rounded-2xl bg-[#0B2B4A] text-[#E5B842] flex items-center justify-center flex-shrink-0 shadow-md group-hover:scale-105 transition-transform">
                     <Phone className="w-5 h-5" />
                   </div>
                   <div className="min-w-0 flex-1">
@@ -185,14 +185,14 @@ export default function BookingPage() {
                     </span>
                     <a
                       href="tel:6384947914"
-                      className="text-sm sm:text-base font-extrabold text-[#0A3659] hover:text-[#D4AF37] transition-colors"
+                      className="text-sm sm:text-base font-extrabold text-[#0B2B4A] hover:text-[#E5B842] transition-colors"
                     >
                       +91 6384947914
                     </a>
                     <div className="flex items-center gap-2 mt-1.5">
                       <a
                         href="tel:6384947914"
-                        className="text-[11px] font-bold text-[#0A3659] hover:underline"
+                        className="text-[11px] font-bold text-[#0B2B4A] hover:underline"
                       >
                         Call Direct &rarr;
                       </a>
@@ -211,8 +211,8 @@ export default function BookingPage() {
                 </div>
 
                 {/* Email */}
-                <div className="flex items-start gap-3.5 p-4 rounded-2xl bg-white/70 border border-white/80 shadow-xs hover:border-[#D4AF37]/50 hover:bg-white transition-all group">
-                  <div className="w-11 h-11 rounded-2xl bg-[#0A3659] text-[#D4AF37] flex items-center justify-center flex-shrink-0 shadow-md group-hover:scale-105 transition-transform">
+                <div className="flex items-start gap-3.5 p-4 rounded-2xl bg-white/70 border border-white/80 shadow-xs hover:border-[#E5B842]/50 hover:bg-white transition-all group">
+                  <div className="w-11 h-11 rounded-2xl bg-[#0B2B4A] text-[#E5B842] flex items-center justify-center flex-shrink-0 shadow-md group-hover:scale-105 transition-transform">
                     <Mail className="w-5 h-5" />
                   </div>
                   <div className="min-w-0 flex-1">
@@ -221,7 +221,7 @@ export default function BookingPage() {
                     </span>
                     <a
                       href="mailto:campuscartsvcet@gmail.com"
-                      className="text-xs sm:text-sm font-bold text-[#0A3659] hover:text-[#D4AF37] transition-colors break-all"
+                      className="text-xs sm:text-sm font-bold text-[#0B2B4A] hover:text-[#E5B842] transition-colors break-all"
                     >
                       campuscartsvcet@gmail.com
                     </a>
@@ -231,14 +231,14 @@ export default function BookingPage() {
 
                 {/* Location */}
                 <div className="flex items-start gap-3.5 p-4 rounded-2xl bg-white/70 border border-white/80 shadow-xs">
-                  <div className="w-11 h-11 rounded-2xl bg-[#0A3659] text-[#D4AF37] flex items-center justify-center flex-shrink-0 shadow-md">
+                  <div className="w-11 h-11 rounded-2xl bg-[#0B2B4A] text-[#E5B842] flex items-center justify-center flex-shrink-0 shadow-md">
                     <MapPin className="w-5 h-5" />
                   </div>
                   <div>
                     <span className="block text-[11px] font-bold uppercase tracking-wider text-slate-500">
                       Headquarters &amp; Service Region
                     </span>
-                    <p className="text-xs sm:text-sm font-bold text-[#0A3659]">
+                    <p className="text-xs sm:text-sm font-bold text-[#0B2B4A]">
                       Puducherry, India
                     </p>
                     <p className="text-[11px] text-slate-500 mt-0.5">
@@ -249,14 +249,14 @@ export default function BookingPage() {
 
                 {/* Business Hours */}
                 <div className="flex items-start gap-3.5 p-4 rounded-2xl bg-white/70 border border-white/80 shadow-xs">
-                  <div className="w-11 h-11 rounded-2xl bg-[#0A3659] text-[#D4AF37] flex items-center justify-center flex-shrink-0 shadow-md">
+                  <div className="w-11 h-11 rounded-2xl bg-[#0B2B4A] text-[#E5B842] flex items-center justify-center flex-shrink-0 shadow-md">
                     <Clock className="w-5 h-5" />
                   </div>
                   <div>
                     <span className="block text-[11px] font-bold uppercase tracking-wider text-slate-500">
                       Consultation Hours
                     </span>
-                    <p className="text-xs sm:text-sm font-bold text-[#0A3659]">
+                    <p className="text-xs sm:text-sm font-bold text-[#0B2B4A]">
                       Monday – Sunday: 9:00 AM – 9:00 PM IST
                     </p>
                   </div>
@@ -295,7 +295,7 @@ export default function BookingPage() {
                     <div className="flex h-20 w-20 items-center justify-center rounded-full bg-emerald-50 text-emerald-600 shadow-inner border border-emerald-200/70">
                       <CheckCircle2 className="h-12 w-12" />
                     </div>
-                    <h3 className="font-heading font-serif text-2xl sm:text-3xl text-[#0A3659] font-bold">
+                    <h3 className="font-heading font-serif text-2xl sm:text-3xl text-[#0B2B4A] font-bold">
                       Thank You, {formData.fullName.split(' ')[0] || 'there'}!
                     </h3>
                     <p className="max-w-md text-sm text-slate-600 leading-relaxed">
@@ -332,8 +332,8 @@ export default function BookingPage() {
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                   >
-                    <div className="pb-3 border-b border-[#D4AF37]/20">
-                      <h3 className="font-heading font-serif text-2xl font-bold text-[#0A3659]">
+                    <div className="pb-3 border-b border-[#E5B842]/25">
+                      <h3 className="font-heading font-serif text-2xl font-bold text-[#0B2B4A]">
                         Tell Us About Your Event
                       </h3>
                       <p className="text-xs text-slate-500 mt-1">
@@ -363,7 +363,7 @@ export default function BookingPage() {
                             placeholder="e.g. Priyadharshini Raman"
                             className="w-full pl-11 pr-4 py-3 rounded-xl liquid-glass-input text-xs sm:text-sm text-slate-900 outline-none placeholder:text-slate-400"
                           />
-                          <User className="w-4 h-4 text-[#D4AF37] absolute left-3.5 top-3.5 pointer-events-none" />
+                          <User className="w-4 h-4 text-[#E5B842] absolute left-3.5 top-3.5 pointer-events-none" />
                         </div>
                       </div>
 
@@ -388,7 +388,7 @@ export default function BookingPage() {
                             placeholder="you@domain.com"
                             className="w-full pl-11 pr-4 py-3 rounded-xl liquid-glass-input text-xs sm:text-sm text-slate-900 outline-none placeholder:text-slate-400"
                           />
-                          <Mail className="w-4 h-4 text-[#D4AF37] absolute left-3.5 top-3.5 pointer-events-none" />
+                          <Mail className="w-4 h-4 text-[#E5B842] absolute left-3.5 top-3.5 pointer-events-none" />
                         </div>
                       </div>
 
@@ -413,7 +413,7 @@ export default function BookingPage() {
                             placeholder="e.g. 9876543210"
                             className="w-full pl-11 pr-4 py-3 rounded-xl liquid-glass-input text-xs sm:text-sm text-slate-900 outline-none placeholder:text-slate-400"
                           />
-                          <Phone className="w-4 h-4 text-[#D4AF37] absolute left-3.5 top-3.5 pointer-events-none" />
+                          <Phone className="w-4 h-4 text-[#E5B842] absolute left-3.5 top-3.5 pointer-events-none" />
                         </div>
                       </div>
 
@@ -437,7 +437,7 @@ export default function BookingPage() {
                             required
                             className="w-full pl-11 pr-4 py-3 rounded-xl liquid-glass-input text-xs sm:text-sm text-slate-900 outline-none cursor-pointer"
                           />
-                          <Calendar className="w-4 h-4 text-[#D4AF37] absolute left-3.5 top-3.5 pointer-events-none" />
+                          <Calendar className="w-4 h-4 text-[#E5B842] absolute left-3.5 top-3.5 pointer-events-none" />
                         </div>
                       </div>
 
@@ -468,7 +468,7 @@ export default function BookingPage() {
                             <option value="Birthday & Gala">Milestone Birthday / Gala</option>
                             <option value="Corporate / Other">Bespoke Custom Event</option>
                           </select>
-                          <Sparkles className="w-4 h-4 text-[#D4AF37] absolute left-3.5 top-3.5 pointer-events-none" />
+                          <Sparkles className="w-4 h-4 text-[#E5B842] absolute left-3.5 top-3.5 pointer-events-none" />
                           <ChevronDown className="w-4 h-4 text-slate-400 absolute right-3.5 top-3.5 pointer-events-none" />
                         </div>
                       </div>
@@ -493,7 +493,7 @@ export default function BookingPage() {
                             placeholder="e.g. ₹50,000 – ₹1,50,000"
                             className="w-full pl-11 pr-4 py-3 rounded-xl liquid-glass-input text-xs sm:text-sm text-slate-900 outline-none placeholder:text-slate-400"
                           />
-                          <DollarSign className="w-4 h-4 text-[#D4AF37] absolute left-3.5 top-3.5 pointer-events-none" />
+                          <DollarSign className="w-4 h-4 text-[#E5B842] absolute left-3.5 top-3.5 pointer-events-none" />
                         </div>
                       </div>
 
@@ -524,17 +524,17 @@ export default function BookingPage() {
                       <button
                         type="submit"
                         disabled={isLoading}
-                        className="gold-shimmer group w-full py-4 px-6 rounded-xl bg-tharika-gold-gradient text-[#0A3659] font-extrabold text-xs sm:text-sm tracking-widest uppercase shadow-[0_8px_25px_rgba(191,149,63,0.35)] hover:shadow-[0_12px_35px_rgba(191,149,63,0.5)] transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60 active:scale-[0.99] border border-white/50"
+                        className="gold-shimmer group w-full py-4 px-6 rounded-xl bg-tharika-gold-gradient text-[#0B2B4A] font-extrabold text-xs sm:text-sm tracking-widest uppercase shadow-[0_8px_25px_rgba(229,184,66,0.38)] hover:shadow-[0_12px_35px_rgba(229,184,66,0.55)] transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60 active:scale-[0.99] border border-white/50"
                       >
                         {isLoading ? (
                           <>
-                            <Loader2 className="h-4 w-4 animate-spin text-[#0A3659]" />
+                            <Loader2 className="h-4 w-4 animate-spin text-[#0B2B4A]" />
                             <span>Reserving &amp; Processing Inquiry…</span>
                           </>
                         ) : (
                           <>
                             <span>Request Consultation</span>
-                            <ArrowRight className="h-4 w-4 text-[#0A3659] group-hover:translate-x-1 transition-transform" />
+                            <ArrowRight className="h-4 w-4 text-[#0B2B4A] group-hover:translate-x-1 transition-transform" />
                           </>
                         )}
                       </button>
@@ -548,7 +548,7 @@ export default function BookingPage() {
             <div className="mt-6 text-center">
               <Link
                 href="/"
-                className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-[#0A3659] transition-colors"
+                className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-[#0B2B4A] transition-colors"
               >
                 <Home className="w-3.5 h-3.5" />
                 <span>Back to Homepage</span>

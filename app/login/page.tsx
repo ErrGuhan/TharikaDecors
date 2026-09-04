@@ -65,13 +65,13 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FAF7F2] relative flex flex-col justify-center items-center py-12 px-4 sm:px-6 lg:px-8 overflow-hidden">
+    <div className="min-h-screen bg-[#FCFAF7] relative flex flex-col justify-center items-center py-12 px-4 sm:px-6 lg:px-8 overflow-hidden">
       {/* Ambient Liquid Glass Caustics */}
       <div
-        className="fixed inset-0 pointer-events-none opacity-60"
+        className="fixed inset-0 pointer-events-none opacity-70"
         style={{
           backgroundImage:
-            'radial-gradient(ellipse 65% 55% at 50% 15%, rgba(212,175,55,0.18) 0%, transparent 70%), radial-gradient(circle at 80% 80%, rgba(10,54,89,0.12) 0%, transparent 60%)',
+            'radial-gradient(ellipse 65% 55% at 50% 15%, rgba(229,184,66,0.22) 0%, transparent 70%), radial-gradient(circle at 80% 80%, rgba(11,43,74,0.12) 0%, transparent 60%)',
         }}
         aria-hidden="true"
       />
@@ -105,12 +105,12 @@ export default function LoginPage() {
               />
             </Link>
 
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#D4AF37]/15 border border-[#D4AF37]/35 text-[#0A3659] text-[11px] font-semibold tracking-wider uppercase mb-2">
-              <ShieldCheck className="w-3.5 h-3.5 text-[#D4AF37]" />
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#E5B842]/15 border border-[#E5B842]/40 text-[#0B2B4A] text-[11px] font-semibold tracking-wider uppercase mb-2">
+              <ShieldCheck className="w-3.5 h-3.5 text-[#E5B842]" />
               Secure Studio Access
             </div>
 
-            <h1 className="font-heading text-2xl font-bold text-[#0A3659] tracking-tight">
+            <h1 className="font-heading text-2xl font-bold text-[#0B2B4A] tracking-tight">
               Admin Studio Portal
             </h1>
             <p className="text-xs text-stone-600 mt-1">
@@ -124,9 +124,9 @@ export default function LoginPage() {
             <div className="relative">
               <label
                 htmlFor="admin-email"
-                className="block text-xs font-semibold text-[#0A3659] uppercase tracking-wider mb-1.5 flex items-center gap-1.5"
+                className="block text-xs font-semibold text-[#0B2B4A] uppercase tracking-wider mb-1.5 flex items-center gap-1.5"
               >
-                <Mail className="w-3.5 h-3.5 text-[#D4AF37]" />
+                <Mail className="w-3.5 h-3.5 text-[#E5B842]" />
                 Email Address
               </label>
               <input
@@ -139,7 +139,7 @@ export default function LoginPage() {
                 onBlur={() => setFocusedField(null)}
                 required
                 placeholder="admin@tharikadecors.com"
-                className="liquid-glass-input w-full px-4 py-3 rounded-xl text-sm text-[#0A3659] placeholder:text-stone-400 font-medium transition-all"
+                className="liquid-glass-input w-full px-4 py-3 rounded-xl text-sm text-[#0B2B4A] placeholder:text-stone-400 font-medium transition-all"
               />
             </div>
 
@@ -147,9 +147,9 @@ export default function LoginPage() {
             <div className="relative">
               <label
                 htmlFor="admin-password"
-                className="block text-xs font-semibold text-[#0A3659] uppercase tracking-wider mb-1.5 flex items-center gap-1.5"
+                className="block text-xs font-semibold text-[#0B2B4A] uppercase tracking-wider mb-1.5 flex items-center gap-1.5"
               >
-                <Lock className="w-3.5 h-3.5 text-[#D4AF37]" />
+                <Lock className="w-3.5 h-3.5 text-[#E5B842]" />
                 Password
               </label>
               <input
@@ -162,7 +162,7 @@ export default function LoginPage() {
                 onBlur={() => setFocusedField(null)}
                 required
                 placeholder="••••••••••••"
-                className="liquid-glass-input w-full px-4 py-3 rounded-xl text-sm text-[#0A3659] placeholder:text-stone-400 font-medium transition-all"
+                className="liquid-glass-input w-full px-4 py-3 rounded-xl text-sm text-[#0B2B4A] placeholder:text-stone-400 font-medium transition-all"
               />
             </div>
 
@@ -171,18 +171,18 @@ export default function LoginPage() {
               <motion.button
                 type="submit"
                 disabled={loading}
-                className="gold-shimmer w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-[#D4AF37] via-[#F4E078] to-[#D4AF37] text-[#0A3659] font-bold text-sm tracking-wide shadow-lg hover:shadow-xl active:scale-[0.99] transition-all flex items-center justify-center gap-2 disabled:opacity-75 disabled:cursor-not-allowed cursor-pointer border border-[#D4AF37]/50"
+                className="gold-shimmer w-full py-3.5 px-6 rounded-xl bg-tharika-gold-gradient text-[#0B2B4A] font-bold text-sm tracking-wide shadow-lg hover:shadow-xl active:scale-[0.99] transition-all flex items-center justify-center gap-2 disabled:opacity-75 disabled:cursor-not-allowed cursor-pointer border border-[#E5B842]/50"
                 whileHover={{ scale: 1.01 }}
                 whileTap={{ scale: 0.99 }}
               >
                 {loading ? (
                   <>
-                    <Loader2 className="w-4 h-4 animate-spin text-[#0A3659]" />
+                    <Loader2 className="w-4 h-4 animate-spin text-[#0B2B4A]" />
                     <span>Authenticating Studio...</span>
                   </>
                 ) : (
                   <>
-                    <Sparkles className="w-4 h-4 text-[#0A3659]" />
+                    <Sparkles className="w-4 h-4 text-[#0B2B4A]" />
                     <span>Sign In to Studio</span>
                   </>
                 )}
@@ -207,9 +207,9 @@ export default function LoginPage() {
             <div className="text-center pt-2">
               <Link
                 href="/"
-                className="inline-flex items-center gap-1.5 text-xs text-stone-500 hover:text-[#0A3659] transition-colors font-medium"
+                className="inline-flex items-center gap-1.5 text-xs text-stone-500 hover:text-[#0B2B4A] transition-colors font-medium"
               >
-                <Home className="w-3.5 h-3.5 text-[#D4AF37]" />
+                <Home className="w-3.5 h-3.5 text-[#E5B842]" />
                 <span>Return to Public Showcase</span>
               </Link>
             </div>

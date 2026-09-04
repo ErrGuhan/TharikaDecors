@@ -52,7 +52,7 @@ export default function MobilePreviewModal({
         {/* Top Floating Close / Info Bar */}
         <div className="flex items-center justify-between w-full max-w-[385px] mb-3 text-white">
           <div className="flex items-center gap-2 text-xs text-gray-300 font-medium">
-            <Smartphone className="w-4 h-4 text-[#D4AF37]" />
+            <Smartphone className="w-4 h-4 text-[#E5B842]" />
             <span>iOS Card Feed & Expand Preview</span>
           </div>
           <button
@@ -71,7 +71,7 @@ export default function MobilePreviewModal({
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.9, y: 20 }}
           transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-          className="relative w-[375px] h-[760px] rounded-[48px] border-[10px] border-slate-900 shadow-2xl overflow-hidden bg-[#FAF7F2] flex flex-col select-none ring-1 ring-white/10"
+          className="relative w-[375px] h-[760px] rounded-[48px] border-[10px] border-slate-900 shadow-2xl overflow-hidden bg-[#FCFAF7] flex flex-col select-none ring-1 ring-white/10"
         >
           {/* Dynamic Island / Notch */}
           <div className="absolute top-3 left-1/2 -translate-x-1/2 z-30 w-28 h-6 bg-slate-900 rounded-full flex items-center justify-between px-3">
@@ -102,7 +102,7 @@ export default function MobilePreviewModal({
                 unoptimized
               />
             </div>
-            <span className="text-[10px] font-bold uppercase tracking-wider text-[#B8860B] px-2.5 py-0.5 rounded-full bg-[#D4AF37]/15">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-[#B8860B] px-2.5 py-0.5 rounded-full bg-[#E5B842]/15">
               Feed Preview
             </span>
           </div>
@@ -129,7 +129,7 @@ export default function MobilePreviewModal({
                 />
               ) : (
                 <div className="w-full h-full flex flex-col items-center justify-center text-amber-200/60 bg-slate-900">
-                  <Sparkles className="w-8 h-8 mb-2 opacity-60 text-[#D4AF37]" />
+                  <Sparkles className="w-8 h-8 mb-2 opacity-60 text-[#E5B842]" />
                   <span className="text-xs uppercase tracking-wider">Tharika Decors</span>
                 </div>
               )}
@@ -191,7 +191,7 @@ export default function MobilePreviewModal({
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center text-amber-200/60">
-                          <Sparkles className="w-6 h-6 text-[#D4AF37]" />
+                          <Sparkles className="w-6 h-6 text-[#E5B842]" />
                         </div>
                       )}
                     </div>

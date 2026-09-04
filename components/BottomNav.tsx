@@ -107,9 +107,9 @@ export default function BottomNav() {
   }
 
   return (
-    <nav className="fixed bottom-0 left-0 z-50 w-full border-t border-[#D4AF37]/30 bg-[#FAF7F2]/85 backdrop-blur-xl shadow-[0_-8px_32px_0_rgba(10,54,89,0.12)] pb-[env(safe-area-inset-bottom,0px)] transition-all">
+    <nav className="md:hidden fixed bottom-0 left-0 z-50 w-full border-t border-[#E5B842]/30 bg-[#FCFAF7]/90 backdrop-blur-xl shadow-[0_-8px_32px_0_rgba(11,43,74,0.12)] pb-[env(safe-area-inset-bottom,0px)] transition-all">
       {/* Specular top rim line */}
-      <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-white/80 to-transparent pointer-events-none" />
+      <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-white/90 to-transparent pointer-events-none" />
 
       <div className="mx-auto flex max-w-md items-center justify-around py-2 sm:py-2.5">
         {navItems.map(({ label, href, isExternal, icon: Icon }) => {
@@ -124,12 +124,12 @@ export default function BottomNav() {
                 href={href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex min-w-[64px] flex-col items-center gap-0.5 px-3 py-1 text-xs font-semibold text-[#0A3659]/70 hover:text-[#0A3659] active:scale-95 transition-all group"
+                className="flex min-w-[64px] flex-col items-center gap-0.5 px-3 py-1 text-xs font-semibold text-[#0B2B4A]/70 hover:text-[#0B2B4A] active:scale-95 transition-all group"
               >
-                <div className="p-1 rounded-xl text-[#0A3659]/60 group-hover:text-[#0A3659] group-hover:bg-[#0A3659]/5 transition-colors">
+                <div className="p-1 rounded-xl text-[#0B2B4A]/60 group-hover:text-[#0B2B4A] group-hover:bg-[#0B2B4A]/5 transition-colors">
                   <Icon className="h-5 w-5" />
                 </div>
-                <span className="text-[11px] text-[#0A3659]/70 group-hover:text-[#0A3659] transition-colors">
+                <span className="text-[11px] text-[#0B2B4A]/70 group-hover:text-[#0B2B4A] transition-colors">
                   {label}
                 </span>
               </a>
@@ -144,23 +144,23 @@ export default function BottomNav() {
               className={cn(
                 'flex min-w-[64px] flex-col items-center gap-0.5 px-3 py-1 text-xs transition-all relative group',
                 active
-                  ? 'text-[#0A3659] font-extrabold'
-                  : 'text-[#0A3659]/60 font-semibold hover:text-[#0A3659]'
+                  ? 'text-[#0B2B4A] font-extrabold'
+                  : 'text-[#0B2B4A]/65 font-semibold hover:text-[#0B2B4A]'
               )}
             >
               <div
                 className={cn(
                   'p-1.5 rounded-2xl transition-all duration-300 relative',
                   active
-                    ? 'bg-[#0A3659] text-white shadow-md border border-[#D4AF37]/40 scale-105'
-                    : 'text-[#0A3659]/70 group-hover:text-[#0A3659] group-hover:bg-white/60'
+                    ? 'bg-[#0B2B4A] text-white shadow-md border border-[#E5B842]/45 scale-105'
+                    : 'text-[#0B2B4A]/70 group-hover:text-[#0B2B4A] group-hover:bg-white/70'
                 )}
               >
                 <Icon className="h-4 w-4 sm:h-5 sm:w-5" />
               </div>
               <span className="text-[10px] sm:text-[11px] tracking-tight">{label}</span>
               {active && (
-                <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37] absolute -bottom-0.5 shadow-[0_0_8px_#D4AF37]" />
+                <span className="w-1.5 h-1.5 rounded-full bg-[#E5B842] absolute -bottom-0.5 shadow-[0_0_8px_#E5B842]" />
               )}
             </Link>
           );

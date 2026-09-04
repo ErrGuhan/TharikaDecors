@@ -62,7 +62,7 @@ export default function ImageCropper({
       label: '4:5 Portrait',
       sublabel: 'Recommended for feed cards',
       aspect: 4 / 5,
-      icon: <Smartphone className="w-3.5 h-3.5 text-[#D4AF37]" />,
+      icon: <Smartphone className="w-3.5 h-3.5 text-[#E5B842]" />,
       recommended: true,
     },
     {
@@ -182,13 +182,13 @@ export default function ImageCropper({
         {/* Header Bar */}
         <div className="flex items-center justify-between px-5 sm:px-6 py-3.5 border-b border-slate-800 bg-slate-900/95">
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-xl bg-[#0F172A] border border-[#D4AF37]/30 text-[#D4AF37]">
+            <div className="p-2 rounded-xl bg-[#0B2B4A] border border-[#E5B842]/30 text-[#E5B842]">
               <Crop className="w-5 h-5" />
             </div>
             <div>
               <h3 className="font-heading text-base sm:text-lg text-white font-bold flex items-center gap-2">
                 <span>Compose Showcase Image</span>
-                <span className="text-[10px] font-sans font-extrabold px-2.5 py-0.5 rounded-full bg-[#D4AF37]/20 text-[#D4AF37] border border-[#D4AF37]/30">
+                <span className="text-[10px] font-sans font-extrabold px-2.5 py-0.5 rounded-full bg-[#E5B842]/20 text-[#E5B842] border border-[#E5B842]/30">
                   {aspectOptions.find((a) => a.id === selectedAspectId)?.label}
                 </span>
               </h3>
@@ -206,7 +206,7 @@ export default function ImageCropper({
               className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-300 hover:text-white transition-colors cursor-pointer border border-slate-700"
               title="Skip cropping and use full untouched photo"
             >
-              <ImageIcon className="w-3.5 h-3.5 text-[#D4AF37]" />
+              <ImageIcon className="w-3.5 h-3.5 text-[#E5B842]" />
               <span>Use Original (Skip Crop)</span>
             </button>
 
@@ -236,7 +236,7 @@ export default function ImageCropper({
                   onClick={() => handleSelectAspect(opt)}
                   className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all flex items-center gap-1.5 cursor-pointer ${
                     isSelected
-                      ? 'bg-[#0F172A] text-white border border-[#D4AF37] shadow-sm'
+                      ? 'bg-[#0B2B4A] text-white border border-[#E5B842] shadow-sm'
                       : 'bg-slate-800/70 text-slate-300 border border-slate-700 hover:bg-slate-800 hover:text-white'
                   }`}
                   title={opt.sublabel}
@@ -244,7 +244,7 @@ export default function ImageCropper({
                   {opt.icon}
                   <span>{opt.label}</span>
                   {opt.recommended && (
-                    <span className="text-[9px] uppercase font-extrabold px-1.5 py-0.2 rounded-full bg-[#D4AF37] text-slate-950">
+                    <span className="text-[9px] uppercase font-extrabold px-1.5 py-0.2 rounded-full bg-[#E5B842] text-[#0B2B4A]">
                       Best
                     </span>
                   )}
@@ -273,7 +273,7 @@ export default function ImageCropper({
             style={{
               containerStyle: { background: '#020617' },
               cropAreaStyle: {
-                border: '2px solid #D4AF37',
+                border: '2px solid #E5B842',
                 boxShadow: '0 0 0 9999em rgba(0, 0, 0, 0.75)',
                 borderRadius: '12px',
               },
@@ -296,10 +296,10 @@ export default function ImageCropper({
                 step={0.02}
                 aria-label="Zoom slider"
                 onChange={(e) => setZoom(Number(e.target.value))}
-                className="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-[#D4AF37]"
+                className="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-[#E5B842]"
               />
               <ZoomIn className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
-              <span className="text-xs font-mono font-bold text-[#D4AF37] w-12 text-right">
+              <span className="text-xs font-mono font-bold text-[#E5B842] w-12 text-right">
                 {zoom.toFixed(2)}x
               </span>
             </div>
@@ -352,7 +352,7 @@ export default function ImageCropper({
                 type="button"
                 onClick={handleConfirmCrop}
                 disabled={isProcessing}
-                className="px-5 py-2 rounded-xl bg-[#D4AF37] hover:bg-[#c49f2f] text-[#0F172A] font-bold text-xs tracking-wide shadow-md hover:shadow-lg transition-all flex items-center gap-1.5 disabled:opacity-70 cursor-pointer"
+                className="px-5 py-2 rounded-xl bg-[#E5B842] hover:bg-[#d4af37] text-[#0B2B4A] font-bold text-xs tracking-wide shadow-md hover:shadow-lg transition-all flex items-center gap-1.5 disabled:opacity-70 cursor-pointer"
               >
                 {isProcessing ? (
                   <>

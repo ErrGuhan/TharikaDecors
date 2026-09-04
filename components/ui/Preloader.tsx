@@ -220,14 +220,14 @@ export default function Preloader({ onComplete, skipIfSeen = false }: PreloaderP
               ref={(el) => {
                 upperCurtainsRef.current[i] = el;
               }}
-              className="absolute top-0 left-0 w-full h-[50.5vh] bg-[#070B10] border-b border-[#D4AF37]/25 origin-top will-change-transform shadow-[0_4px_20px_rgba(0,0,0,0.6)]"
+              className="absolute top-0 left-0 w-full h-[50.5vh] bg-[#070B10] border-b border-[#E5B842]/30 origin-top will-change-transform shadow-[0_4px_20px_rgba(0,0,0,0.6)]"
             />
             {/* Bottom Half Panel (Drops DOWN) */}
             <div
               ref={(el) => {
                 lowerCurtainsRef.current[i] = el;
               }}
-              className="absolute bottom-0 left-0 w-full h-[50.5vh] bg-[#070B10] border-t border-[#D4AF37]/25 origin-bottom will-change-transform shadow-[0_-4px_20px_rgba(0,0,0,0.6)]"
+              className="absolute bottom-0 left-0 w-full h-[50.5vh] bg-[#070B10] border-t border-[#E5B842]/30 origin-bottom will-change-transform shadow-[0_-4px_20px_rgba(0,0,0,0.6)]"
             />
           </div>
         ))}
@@ -243,7 +243,7 @@ export default function Preloader({ onComplete, skipIfSeen = false }: PreloaderP
           className="flex flex-col items-center justify-center w-full"
         >
           <h1
-            className="font-script font-bold text-[clamp(4.2rem,12vw,8.5rem)] text-[#D4AF37] leading-none tracking-normal whitespace-nowrap px-4 py-2 select-none flex items-center justify-center drop-shadow-[0_2px_15px_rgba(212,175,55,0.35)]"
+            className="font-script font-bold text-[clamp(4.2rem,12vw,8.5rem)] text-[#E5B842] leading-none tracking-normal whitespace-nowrap px-4 py-2 select-none flex items-center justify-center drop-shadow-[0_2px_18px_rgba(229,184,66,0.45)]"
           >
             {"Welcome".split("").map((char, index) => (
               <span
@@ -266,7 +266,7 @@ export default function Preloader({ onComplete, skipIfSeen = false }: PreloaderP
           className="absolute inset-0 flex flex-col items-center justify-center w-full opacity-0 pointer-events-none"
         >
           <h2
-            className="font-script font-bold text-[clamp(2.6rem,7.5vw,5.5rem)] text-[#D4AF37] leading-none tracking-normal whitespace-nowrap px-4 py-2 select-none flex items-center justify-center drop-shadow-[0_2px_15px_rgba(212,175,55,0.35)]"
+            className="font-script font-bold text-[clamp(2.6rem,7.5vw,5.5rem)] text-[#E5B842] leading-none tracking-normal whitespace-nowrap px-4 py-2 select-none flex items-center justify-center drop-shadow-[0_2px_18px_rgba(229,184,66,0.45)]"
           >
             {"Tharika Decors".split("").map((char, index) =>
               char === " " ? (
@@ -285,7 +285,7 @@ export default function Preloader({ onComplete, skipIfSeen = false }: PreloaderP
               )
             )}
           </h2>
-          <p className="text-xs uppercase tracking-[0.3em] text-[#D4AF37]/75 mt-3 font-medium">
+          <p className="text-xs uppercase tracking-[0.3em] text-[#E5B842]/85 mt-3 font-medium">
             Luxury Event Styling &amp; Decors
           </p>
         </div>

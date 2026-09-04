@@ -22,9 +22,9 @@ export default function Header() {
   ];
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-[#FAF7F2]/80 backdrop-blur-xl border-b border-[#D4AF37]/25 shadow-[0_8px_32px_0_rgba(10,54,89,0.06)] transition-all select-none">
+    <header className="sticky top-0 z-40 w-full bg-[#FCFAF7]/85 backdrop-blur-xl border-b border-[#E5B842]/25 shadow-[0_8px_32px_0_rgba(11,43,74,0.06)] transition-all select-none">
       {/* Specular top edge highlight for optical glass realism */}
-      <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-white/80 to-transparent pointer-events-none" />
+      <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-white/95 to-transparent pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
         {/* Brand Logo & Title with gentle hover scale */}
@@ -42,7 +42,7 @@ export default function Header() {
         </Link>
 
         {/* Desktop Navigation Links with Liquid Glass Pill Micro-Interactions */}
-        <nav className="hidden md:flex items-center gap-1.5 lg:gap-2 text-xs font-bold uppercase tracking-widest text-[#0A3659]">
+        <nav className="hidden md:flex items-center gap-1.5 lg:gap-2 text-xs font-bold uppercase tracking-widest text-[#0B2B4A]">
           {navLinks.map((link) => {
             const isActive = pathname === link.href;
             return (
@@ -51,12 +51,12 @@ export default function Header() {
                 href={link.href}
                 className={`relative px-4 py-2 rounded-full transition-all duration-300 flex items-center gap-1.5 ${
                   isActive
-                    ? 'bg-[#0A3659] text-white shadow-md border border-[#D4AF37]/40'
-                    : 'text-[#0A3659]/80 hover:text-[#0A3659] hover:bg-white/60 hover:border-white/80 border border-transparent'
+                    ? 'bg-[#0B2B4A] text-white shadow-md border border-[#E5B842]/45'
+                    : 'text-[#0B2B4A]/80 hover:text-[#0B2B4A] hover:bg-white/80 hover:border-white border border-transparent'
                 }`}
               >
                 {isActive && (
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37] animate-pulse" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#E5B842] animate-pulse" />
                 )}
                 <span>{link.label}</span>
               </Link>
@@ -68,9 +68,9 @@ export default function Header() {
         <div className="flex items-center gap-3">
           <Link
             href="/book"
-            className="gold-shimmer relative inline-flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 rounded-full bg-tharika-gold-gradient text-[#0A3659] font-extrabold text-xs tracking-wider uppercase shadow-[0_4px_16px_0_rgba(191,149,63,0.35)] hover:shadow-[0_6px_24px_0_rgba(191,149,63,0.5)] hover:scale-[1.03] active:scale-[0.98] transition-all border border-white/40"
+            className="gold-shimmer relative inline-flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 rounded-full bg-tharika-gold-gradient text-[#0B2B4A] font-extrabold text-xs tracking-wider uppercase shadow-[0_4px_16px_0_rgba(229,184,66,0.35)] hover:shadow-[0_6px_24px_0_rgba(229,184,66,0.5)] hover:scale-[1.03] active:scale-[0.98] transition-all border border-white/60"
           >
-            <Calendar className="w-4 h-4 text-[#0A3659]" />
+            <Calendar className="w-4 h-4 text-[#0B2B4A]" />
             <span className="hidden sm:inline">Book Consultation</span>
             <span className="sm:hidden">Book</span>
           </Link>

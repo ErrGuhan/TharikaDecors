@@ -42,31 +42,31 @@ export default function LiquidGlass({
       ? 'rounded-none'
       : 'rounded-2xl sm:rounded-3xl';
 
-  // Tint styling aligned to Tharika Decors luxury royal palette
+  // Tint styling aligned to Tharika Decors radiant luxury palette
   const tintStyles = {
     navy: {
-      bg: 'bg-[#0A3659]/80',
-      border: 'border-[#D4AF37]/30',
-      glow: 'rgba(212, 175, 55, 0.25)',
-      chroma: 'rgba(252, 246, 186, 0.2)',
+      bg: 'bg-[#0B2B4A]/85',
+      border: 'border-[#E5B842]/35',
+      glow: 'rgba(229, 184, 66, 0.3)',
+      chroma: 'rgba(255, 243, 196, 0.25)',
     },
     gold: {
-      bg: 'bg-gradient-to-br from-[#BF953F]/20 via-[#FCF6BA]/10 to-[#AA771C]/20',
-      border: 'border-[#D4AF37]/45',
-      glow: 'rgba(212, 175, 55, 0.35)',
-      chroma: 'rgba(255, 235, 160, 0.3)',
+      bg: 'bg-gradient-to-br from-[#E5B842]/25 via-[#FFF3C4]/15 to-[#C5992B]/20',
+      border: 'border-[#E5B842]/50',
+      glow: 'rgba(229, 184, 66, 0.4)',
+      chroma: 'rgba(255, 245, 205, 0.35)',
     },
     ivory: {
-      bg: 'bg-[#FAF7F2]/85',
-      border: 'border-white/80',
-      glow: 'rgba(10, 54, 89, 0.08)',
-      chroma: 'rgba(212, 175, 55, 0.15)',
+      bg: 'bg-[#FCFAF7]/90',
+      border: 'border-white/90',
+      glow: 'rgba(11, 43, 74, 0.08)',
+      chroma: 'rgba(229, 184, 66, 0.18)',
     },
     glass: {
-      bg: 'bg-white/70',
-      border: 'border-white/40',
-      glow: 'rgba(255, 255, 255, 0.3)',
-      chroma: 'rgba(212, 175, 55, 0.18)',
+      bg: 'bg-white/80',
+      border: 'border-white/70',
+      glow: 'rgba(255, 255, 255, 0.5)',
+      chroma: 'rgba(229, 184, 66, 0.2)',
     },
   }[tint];
 

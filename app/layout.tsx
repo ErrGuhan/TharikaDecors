@@ -44,7 +44,7 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href="/logo.png" />
       </head>
       <body
-        className={`${inter.className} bg-[#FAF7F2] text-gray-900 antialiased min-h-screen flex flex-col`}
+        className={`${inter.className} bg-[#FCFAF7] text-slate-800 antialiased min-h-screen flex flex-col`}
       >
         <Preloader />
         <Header />

@@ -183,17 +183,17 @@ export default function PortfolioFeed({
   };
 
   return (
-    <section className="w-full min-h-screen bg-[#FAF7F2] pt-8 sm:pt-14 pb-20 font-sans">
+    <section className="w-full min-h-screen bg-[#FCFAF7] pt-8 sm:pt-14 pb-28 sm:pb-20 font-sans">
       {/* ── Top Header / Hero Section ── */}
       <div className="max-w-2xl mx-auto text-center px-4 mb-8 sm:mb-12">
         {/* Subtle Gold Brand Tag */}
-        <div className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest text-[#0A3659] bg-white/80 backdrop-blur-md border border-[#D4AF37]/40 mb-4 shadow-sm">
-          <Sparkles className="w-3.5 h-3.5 text-[#D4AF37]" />
+        <div className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest text-[#0B2B4A] bg-white/90 backdrop-blur-md border border-[#E5B842]/45 mb-4 shadow-sm">
+          <Sparkles className="w-3.5 h-3.5 text-[#E5B842]" />
           <span>Curated Portfolio</span>
         </div>
 
         {/* Heading in Playfair Display Serif */}
-        <h1 className="font-heading font-serif text-3xl sm:text-5xl font-bold text-[#0A3659] tracking-tight leading-tight">
+        <h1 className="font-heading font-serif text-3xl sm:text-5xl font-bold text-[#0B2B4A] tracking-tight leading-tight">
           {title}
         </h1>
 
@@ -209,9 +209,9 @@ export default function PortfolioFeed({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search by decor style, theme, or budget..."
-            className="w-full pl-11 pr-10 py-3 rounded-full liquid-glass-input text-xs sm:text-sm text-[#0A3659] outline-none placeholder:text-slate-400"
+            className="w-full pl-11 pr-10 py-3 rounded-full liquid-glass-input text-xs sm:text-sm text-[#0B2B4A] outline-none placeholder:text-slate-400"
           />
-          <Search className="w-4 h-4 text-[#D4AF37] absolute left-4 top-3.5" />
+          <Search className="w-4 h-4 text-[#E5B842] absolute left-4 top-3.5" />
           {searchQuery && (
             <button
               type="button"
@@ -232,8 +232,8 @@ export default function PortfolioFeed({
                 onClick={() => setSelectedCategory('all')}
                 className={`px-5 py-2 rounded-full text-xs font-bold uppercase tracking-wider whitespace-nowrap transition-all duration-300 cursor-pointer ${
                   selectedCategory === 'all'
-                    ? 'liquid-glass-pill-active scale-105'
-                    : 'liquid-glass-pill text-slate-700 hover:text-[#0A3659] hover:bg-white'
+                    ? 'liquid-glass-pill-active scale-105 shadow-md'
+                    : 'liquid-glass-pill text-[#0B2B4A]/75 hover:text-[#0B2B4A] hover:bg-white'
                 }`}
               >
                 All Works ({initialItems.length})
@@ -247,8 +247,8 @@ export default function PortfolioFeed({
                     onClick={() => setSelectedCategory(cat)}
                     className={`px-5 py-2 rounded-full text-xs font-bold uppercase tracking-wider whitespace-nowrap transition-all duration-300 cursor-pointer ${
                       selectedCategory.toLowerCase() === cat.toLowerCase()
-                        ? 'liquid-glass-pill-active scale-105'
-                        : 'liquid-glass-pill text-slate-700 hover:text-[#0A3659] hover:bg-white'
+                        ? 'liquid-glass-pill-active scale-105 shadow-md'
+                        : 'liquid-glass-pill text-[#0B2B4A]/75 hover:text-[#0B2B4A] hover:bg-white'
                     }`}
                   >
                     {cat} {count > 0 ? `(${count})` : ''}
@@ -264,10 +264,10 @@ export default function PortfolioFeed({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {filteredItems.length === 0 ? (
           <div className="max-w-md mx-auto text-center py-16 px-6 liquid-glass-card rounded-3xl">
-            <div className="w-14 h-14 rounded-2xl bg-[#0A3659]/5 text-[#D4AF37] flex items-center justify-center mx-auto mb-4 border border-[#D4AF37]/30">
+            <div className="w-14 h-14 rounded-2xl bg-[#0B2B4A]/5 text-[#E5B842] flex items-center justify-center mx-auto mb-4 border border-[#E5B842]/35">
               <Camera className="w-7 h-7" />
             </div>
-            <h2 className="font-heading font-serif text-xl font-bold text-[#0A3659]">
+            <h2 className="font-heading font-serif text-xl font-bold text-[#0B2B4A]">
               No Showcases Found
             </h2>
             <p className="text-xs sm:text-sm text-slate-500 mt-1.5 max-w-xs mx-auto leading-relaxed">
@@ -282,7 +282,7 @@ export default function PortfolioFeed({
                   setSelectedCategory('all');
                   setSearchQuery('');
                 }}
-                className="px-6 py-2.5 rounded-full liquid-glass-pill text-xs font-bold text-[#0A3659] hover:bg-white transition-all cursor-pointer"
+                className="px-6 py-2.5 rounded-full liquid-glass-pill text-xs font-bold text-[#0B2B4A] hover:bg-white transition-all cursor-pointer shadow-xs"
               >
                 View All Works
               </button>

@@ -56,7 +56,7 @@ export default function HomeIntro() {
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.8, ease: 'easeInOut' }}
-          className="fixed inset-0 z-[100] bg-[#FAF7F2] flex items-center justify-center overflow-hidden"
+          className="fixed inset-0 z-[100] bg-[#FCFAF7] flex items-center justify-center overflow-hidden"
           aria-modal="true"
           role="dialog"
           aria-label="Tharika Decors intro"
@@ -79,12 +79,12 @@ export default function HomeIntro() {
           <button
             type="button"
             onClick={handleSkip}
-            className="absolute bottom-8 right-8 z-[101] flex items-center gap-2 px-5 py-2.5 rounded-full bg-black/40 hover:bg-black/60 backdrop-blur-xl text-xs font-bold uppercase tracking-widest text-white hover:text-[#FCF6BA] transition-all duration-300 cursor-pointer select-none group border border-white/20 hover:border-[#D4AF37]/60 shadow-[0_8px_32px_0_rgba(0,0,0,0.5)]"
+            className="absolute bottom-8 right-8 z-[101] flex items-center gap-2 px-5 py-2.5 rounded-full bg-black/40 hover:bg-black/60 backdrop-blur-xl text-xs font-bold uppercase tracking-widest text-white hover:text-[#FFF3C4] transition-all duration-300 cursor-pointer select-none group border border-white/20 hover:border-[#E5B842]/60 shadow-[0_8px_32px_0_rgba(0,0,0,0.5)]"
             aria-label="Skip intro"
           >
             <span>Skip</span>
             <svg
-              className="w-3.5 h-3.5 translate-x-0 group-hover:translate-x-1 transition-transform duration-200 text-[#D4AF37]"
+              className="w-3.5 h-3.5 translate-x-0 group-hover:translate-x-1 transition-transform duration-200 text-[#E5B842]"
               viewBox="0 0 16 16"
               fill="none"
               aria-hidden="true"
