@@ -5,8 +5,9 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Lock, Mail, Loader2, Home, AlertCircle } from 'lucide-react';
+import { Lock, Mail, Loader2, Home, AlertCircle, ShieldCheck, Sparkles } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
+import LiquidGlass from '@/components/ui/LiquidGlass';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -64,144 +65,156 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FAF7F2] flex flex-col justify-center items-center py-12 px-4 sm:px-6 lg:px-8">
-      {/* Background Subtle Gradient */}
+    <div className="min-h-screen bg-[#FAF7F2] relative flex flex-col justify-center items-center py-12 px-4 sm:px-6 lg:px-8 overflow-hidden">
+      {/* Ambient Liquid Glass Caustics */}
       <div
-        className="fixed inset-0 pointer-events-none opacity-40"
+        className="fixed inset-0 pointer-events-none opacity-60"
         style={{
           backgroundImage:
-            'radial-gradient(circle at 50% 20%, rgba(10, 54, 89, 0.08) 0%, transparent 70%)',
+            'radial-gradient(ellipse 65% 55% at 50% 15%, rgba(212,175,55,0.18) 0%, transparent 70%), radial-gradient(circle at 80% 80%, rgba(10,54,89,0.12) 0%, transparent 60%)',
         }}
         aria-hidden="true"
       />
 
       <motion.div
-        className="relative z-10 w-full max-w-md bg-white shadow-xl rounded-3xl p-8 border border-[#0A3659]/10"
-        initial={{ opacity: 0, y: 20 }}
+        className="relative z-10 w-full max-w-md"
+        initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
       >
-        {/* Official Brand Logo */}
-        <div className="text-center mb-6 flex flex-col items-center">
-          <Link href="/" className="relative w-44 h-20 mb-3 block hover:scale-105 transition-transform duration-300">
-            <Image
-              src="/logo.png"
-              alt="Tharika Decors & Events"
-              fill
-              className="object-contain"
-              priority
-              unoptimized
-            />
-          </Link>
-          <h1 className="font-heading text-2xl font-bold text-[#0A3659] tracking-tight">
-            Admin Studio Portal
-          </h1>
-          <p className="text-xs text-gray-500 mt-1">
-            Sign in to manage Tharika Decors showcases &amp; categories.
-          </p>
-        </div>
-
-        {/* Login Form */}
-        <form onSubmit={handleLogin} className="space-y-6">
-          {/* Email Input */}
-          <div className="relative z-0 w-full group">
-            <input
-              type="email"
-              name="email"
-              id="admin-email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              onFocus={() => setFocusedField('email')}
-              onBlur={() => setFocusedField(null)}
-              required
-              placeholder=" "
-              className="peer block w-full appearance-none border-0 border-b-2 border-gray-200 bg-transparent py-2.5 px-0 text-sm text-gray-900 font-medium focus:border-[#0A3659] focus:outline-none focus:ring-0 transition-colors"
-            />
-            <label
-              htmlFor="admin-email"
-              className={`absolute origin-[0] text-sm duration-300 transform cursor-text flex items-center gap-1.5 pointer-events-none ${
-                email || focusedField === 'email'
-                  ? '-top-2.5 scale-75 text-[#0A3659] font-semibold'
-                  : 'top-2.5 scale-100 text-gray-400'
-              }`}
-            >
-              <Mail className="w-3.5 h-3.5" />
-              Email Address
-            </label>
-          </div>
-
-          {/* Password Input */}
-          <div className="relative z-0 w-full group">
-            <input
-              type="password"
-              name="password"
-              id="admin-password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              onFocus={() => setFocusedField('password')}
-              onBlur={() => setFocusedField(null)}
-              required
-              placeholder=" "
-              className="peer block w-full appearance-none border-0 border-b-2 border-gray-200 bg-transparent py-2.5 px-0 text-sm text-gray-900 font-medium focus:border-[#0A3659] focus:outline-none focus:ring-0 transition-colors"
-            />
-            <label
-              htmlFor="admin-password"
-              className={`absolute origin-[0] text-sm duration-300 transform cursor-text flex items-center gap-1.5 pointer-events-none ${
-                password || focusedField === 'password'
-                  ? '-top-2.5 scale-75 text-[#0A3659] font-semibold'
-                  : 'top-2.5 scale-100 text-gray-400'
-              }`}
-            >
-              <Lock className="w-3.5 h-3.5" />
-              Password
-            </label>
-          </div>
-
-          {/* Submit Button */}
-          <div className="pt-2">
-            <motion.button
-              type="submit"
-              disabled={loading}
-              className="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#c4a030] text-[#0A3659] font-bold text-sm tracking-wide shadow-md hover:shadow-lg active:scale-[0.99] transition-all flex items-center justify-center gap-2 disabled:opacity-75 disabled:cursor-not-allowed cursor-pointer"
-              whileHover={{ scale: 1.01 }}
-              whileTap={{ scale: 0.99 }}
-            >
-              {loading ? (
-                <>
-                  <Loader2 className="w-4 h-4 animate-spin text-[#0A3659]" />
-                  <span>Authenticating...</span>
-                </>
-              ) : (
-                <span>Sign In to Studio</span>
-              )}
-            </motion.button>
-          </div>
-
-          {/* Error Message */}
-          <AnimatePresence>
-            {errorMessage && (
-              <motion.div
-                initial={{ opacity: 0, y: -6 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -6 }}
-                className="p-3 rounded-xl bg-red-50 border border-red-200 text-center flex items-center justify-center gap-2"
-              >
-                <AlertCircle className="w-4 h-4 text-red-600 flex-shrink-0" />
-                <p className="text-xs text-red-700 font-medium">{errorMessage}</p>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          <div className="text-center pt-2">
+        <LiquidGlass
+          tint="glass"
+          shape="rounded"
+          specular={true}
+          interactive={true}
+          className="p-8 sm:p-10 shadow-2xl"
+        >
+          {/* Official Brand Logo */}
+          <div className="text-center mb-7 flex flex-col items-center">
             <Link
               href="/"
-              className="inline-flex items-center gap-1 text-xs text-gray-500 hover:text-[#0A3659] transition-colors"
+              className="relative w-44 h-20 mb-3 block hover:scale-105 transition-transform duration-300 drop-shadow-sm"
             >
-              <Home className="w-3.5 h-3.5" />
-              <span>Back to Website</span>
+              <Image
+                src="/logo.png"
+                alt="Tharika Decors & Events"
+                fill
+                className="object-contain"
+                priority
+                unoptimized
+              />
             </Link>
+
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#D4AF37]/15 border border-[#D4AF37]/35 text-[#0A3659] text-[11px] font-semibold tracking-wider uppercase mb-2">
+              <ShieldCheck className="w-3.5 h-3.5 text-[#D4AF37]" />
+              Secure Studio Access
+            </div>
+
+            <h1 className="font-heading text-2xl font-bold text-[#0A3659] tracking-tight">
+              Admin Studio Portal
+            </h1>
+            <p className="text-xs text-stone-600 mt-1">
+              Sign in to manage Tharika Decors showcases &amp; event collections.
+            </p>
           </div>
-        </form>
+
+          {/* Login Form */}
+          <form onSubmit={handleLogin} className="space-y-5">
+            {/* Email Input */}
+            <div className="relative">
+              <label
+                htmlFor="admin-email"
+                className="block text-xs font-semibold text-[#0A3659] uppercase tracking-wider mb-1.5 flex items-center gap-1.5"
+              >
+                <Mail className="w-3.5 h-3.5 text-[#D4AF37]" />
+                Email Address
+              </label>
+              <input
+                type="email"
+                name="email"
+                id="admin-email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                onFocus={() => setFocusedField('email')}
+                onBlur={() => setFocusedField(null)}
+                required
+                placeholder="admin@tharikadecors.com"
+                className="liquid-glass-input w-full px-4 py-3 rounded-xl text-sm text-[#0A3659] placeholder:text-stone-400 font-medium transition-all"
+              />
+            </div>
+
+            {/* Password Input */}
+            <div className="relative">
+              <label
+                htmlFor="admin-password"
+                className="block text-xs font-semibold text-[#0A3659] uppercase tracking-wider mb-1.5 flex items-center gap-1.5"
+              >
+                <Lock className="w-3.5 h-3.5 text-[#D4AF37]" />
+                Password
+              </label>
+              <input
+                type="password"
+                name="password"
+                id="admin-password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                onFocus={() => setFocusedField('password')}
+                onBlur={() => setFocusedField(null)}
+                required
+                placeholder="••••••••••••"
+                className="liquid-glass-input w-full px-4 py-3 rounded-xl text-sm text-[#0A3659] placeholder:text-stone-400 font-medium transition-all"
+              />
+            </div>
+
+            {/* Submit Button */}
+            <div className="pt-2">
+              <motion.button
+                type="submit"
+                disabled={loading}
+                className="gold-shimmer w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-[#D4AF37] via-[#F4E078] to-[#D4AF37] text-[#0A3659] font-bold text-sm tracking-wide shadow-lg hover:shadow-xl active:scale-[0.99] transition-all flex items-center justify-center gap-2 disabled:opacity-75 disabled:cursor-not-allowed cursor-pointer border border-[#D4AF37]/50"
+                whileHover={{ scale: 1.01 }}
+                whileTap={{ scale: 0.99 }}
+              >
+                {loading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin text-[#0A3659]" />
+                    <span>Authenticating Studio...</span>
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="w-4 h-4 text-[#0A3659]" />
+                    <span>Sign In to Studio</span>
+                  </>
+                )}
+              </motion.button>
+            </div>
+
+            {/* Error Message */}
+            <AnimatePresence>
+              {errorMessage && (
+                <motion.div
+                  initial={{ opacity: 0, y: -6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -6 }}
+                  className="p-3.5 rounded-xl bg-red-50/90 border border-red-200/80 text-center flex items-center justify-center gap-2 backdrop-blur-sm"
+                >
+                  <AlertCircle className="w-4 h-4 text-red-600 flex-shrink-0" />
+                  <p className="text-xs text-red-700 font-medium">{errorMessage}</p>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            <div className="text-center pt-2">
+              <Link
+                href="/"
+                className="inline-flex items-center gap-1.5 text-xs text-stone-500 hover:text-[#0A3659] transition-colors font-medium"
+              >
+                <Home className="w-3.5 h-3.5 text-[#D4AF37]" />
+                <span>Return to Public Showcase</span>
+              </Link>
+            </div>
+          </form>
+        </LiquidGlass>
       </motion.div>
     </div>
   );

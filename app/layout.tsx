@@ -2,6 +2,7 @@ import './globals.css';
 import type { Metadata } from 'next';
 import { Inter, Playfair_Display } from 'next/font/google';
 import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 import BottomNav from '@/components/BottomNav';
 
 const inter = Inter({
@@ -45,8 +46,8 @@ export default function RootLayout({
         className={`${inter.className} bg-[#FAF7F2] text-gray-900 antialiased min-h-screen flex flex-col`}
       >
         <Header />
-        {/* pb-28 ensures content clears the fixed bottom nav on mobile; md:pb-12 for desktop */}
-        <main className="flex-1 w-full pb-28 md:pb-12">{children}</main>
+        <main className="flex-1 w-full">{children}</main>
+        <Footer />
         <BottomNav />
       </body>
     </html>

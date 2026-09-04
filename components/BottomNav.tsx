@@ -12,9 +12,6 @@ type NavItem = {
   icon: (props: { className?: string }) => JSX.Element;
 };
 
-const WHATSAPP_BOOKING_URL =
-  'https://wa.me/916384947914?text=Hello%20Tharika%20Decors!%20I%20was%20looking%20at%20your%20works%20and%20would%20like%20to%20inquire%20about%20booking%20event%20decor';
-
 function HomeIcon({ className }: { className?: string }) {
   return (
     <svg
@@ -110,8 +107,11 @@ export default function BottomNav() {
   }
 
   return (
-    <nav className="fixed bottom-0 left-0 z-50 w-full border-t border-slate-200/80 bg-white/95 backdrop-blur-lg shadow-[0_-4px_24px_rgba(0,0,0,0.06)] pb-[env(safe-area-inset-bottom,0px)]">
-      <div className="mx-auto flex max-w-md items-center justify-around py-1.5 sm:py-2">
+    <nav className="fixed bottom-0 left-0 z-50 w-full border-t border-[#D4AF37]/30 bg-[#FAF7F2]/85 backdrop-blur-xl shadow-[0_-8px_32px_0_rgba(10,54,89,0.12)] pb-[env(safe-area-inset-bottom,0px)] transition-all">
+      {/* Specular top rim line */}
+      <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-white/80 to-transparent pointer-events-none" />
+
+      <div className="mx-auto flex max-w-md items-center justify-around py-2 sm:py-2.5">
         {navItems.map(({ label, href, isExternal, icon: Icon }) => {
           const active =
             !isExternal &&
@@ -124,12 +124,14 @@ export default function BottomNav() {
                 href={href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex min-w-[64px] flex-col items-center gap-0.5 px-3 py-1 text-xs font-medium text-slate-500 hover:text-[#0F172A] active:scale-95 transition-all group"
+                className="flex min-w-[64px] flex-col items-center gap-0.5 px-3 py-1 text-xs font-semibold text-[#0A3659]/70 hover:text-[#0A3659] active:scale-95 transition-all group"
               >
-                <div className="p-1 rounded-xl text-slate-400 group-hover:text-[#0F172A] group-hover:bg-[#0F172A]/5 transition-colors">
+                <div className="p-1 rounded-xl text-[#0A3659]/60 group-hover:text-[#0A3659] group-hover:bg-[#0A3659]/5 transition-colors">
                   <Icon className="h-5 w-5" />
                 </div>
-                <span className="text-[11px] text-slate-500 group-hover:text-[#0F172A] transition-colors">{label}</span>
+                <span className="text-[11px] text-[#0A3659]/70 group-hover:text-[#0A3659] transition-colors">
+                  {label}
+                </span>
               </a>
             );
           }
@@ -142,21 +144,23 @@ export default function BottomNav() {
               className={cn(
                 'flex min-w-[64px] flex-col items-center gap-0.5 px-3 py-1 text-xs transition-all relative group',
                 active
-                  ? 'text-[#0F172A] font-bold'
-                  : 'text-slate-500 font-medium hover:text-[#0F172A]'
+                  ? 'text-[#0A3659] font-extrabold'
+                  : 'text-[#0A3659]/60 font-semibold hover:text-[#0A3659]'
               )}
             >
               <div
                 className={cn(
-                  'p-1 rounded-xl transition-colors',
-                  active ? 'bg-[#0F172A]/10 text-[#0F172A]' : 'text-slate-400 group-hover:text-[#0F172A]'
+                  'p-1.5 rounded-2xl transition-all duration-300 relative',
+                  active
+                    ? 'bg-[#0A3659] text-white shadow-md border border-[#D4AF37]/40 scale-105'
+                    : 'text-[#0A3659]/70 group-hover:text-[#0A3659] group-hover:bg-white/60'
                 )}
               >
-                <Icon className="h-5 w-5" />
+                <Icon className="h-4 w-4 sm:h-5 sm:w-5" />
               </div>
-              <span className="text-[11px]">{label}</span>
+              <span className="text-[10px] sm:text-[11px] tracking-tight">{label}</span>
               {active && (
-                <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37] absolute -bottom-0.5" />
+                <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37] absolute -bottom-0.5 shadow-[0_0_8px_#D4AF37]" />
               )}
             </Link>
           );

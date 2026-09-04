@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import dynamic from 'next/dynamic';
-import { Sparkles, Search, Camera, Tag } from 'lucide-react';
+import { Sparkles, Search, Camera, X } from 'lucide-react';
 import PortfolioCard, { PortfolioCardItem } from '@/components/PortfolioCard';
 
 const PortfolioDetailModal = dynamic(() => import('@/components/PortfolioDetailModal'), {
@@ -21,8 +21,7 @@ const WHATSAPP_BOOKING_BASE_URL = 'https://wa.me/916384947914';
 const DEFAULT_INSTAGRAM_URL = 'https://www.instagram.com/tharikadecors';
 
 /**
- * Normalizes an Instagram string from the database (e.g. handle, @handle, full URL)
- * into a safe, valid clickable external URL.
+ * Normalizes an Instagram string from the database into a safe, valid external URL.
  */
 function formatInstagramUrl(url?: string | null): string {
   if (!url || !url.trim()) return DEFAULT_INSTAGRAM_URL;
@@ -35,7 +34,7 @@ function formatInstagramUrl(url?: string | null): string {
 }
 
 /**
- * Formats raw price input (e.g. 30000, 75000, Starts at 75000) into ₹30,000 Indian currency format.
+ * Formats raw price input into ₹30,000 Indian currency format.
  */
 function formatPrice(rawPrice?: string | null): string {
   if (!rawPrice || !rawPrice.trim()) return 'Custom Quote';
@@ -184,115 +183,118 @@ export default function PortfolioFeed({
   };
 
   return (
-    <section className="w-full min-h-screen bg-[#FAF7F2] pt-6 sm:pt-10 pb-16 font-sans">
+    <section className="w-full min-h-screen bg-[#FAF7F2] pt-8 sm:pt-14 pb-20 font-sans">
       {/* ── Top Header / Hero Section ── */}
-      <div className="max-w-xl mx-auto text-center px-4 mb-6 sm:mb-8">
+      <div className="max-w-2xl mx-auto text-center px-4 mb-8 sm:mb-12">
         {/* Subtle Gold Brand Tag */}
-        <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-[11px] font-bold uppercase tracking-widest text-[#B8860B] bg-[#D4AF37]/15 border border-[#D4AF37]/30 mb-3 shadow-2xs">
+        <div className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest text-[#0A3659] bg-white/80 backdrop-blur-md border border-[#D4AF37]/40 mb-4 shadow-sm">
           <Sparkles className="w-3.5 h-3.5 text-[#D4AF37]" />
-          <span>Tharika Showcase</span>
+          <span>Curated Portfolio</span>
         </div>
 
         {/* Heading in Playfair Display Serif */}
-        <h1 className="font-heading font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#0F172A] tracking-tight leading-tight">
+        <h1 className="font-heading font-serif text-3xl sm:text-5xl font-bold text-[#0A3659] tracking-tight leading-tight">
           {title}
         </h1>
 
         {/* Subtitle */}
-        <p className="mt-2.5 text-xs sm:text-sm text-slate-600 max-w-md mx-auto leading-relaxed">
+        <p className="mt-3 text-sm sm:text-base text-slate-600 max-w-lg mx-auto leading-relaxed">
           {subtitle}
         </p>
 
-        {/* ── Live Search Bar ── */}
-        <div className="mt-5 relative max-w-md mx-auto">
+        {/* ── Live Search Bar (Liquid Glass Input) ── */}
+        <div className="mt-6 relative max-w-lg mx-auto">
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search by decor style, theme, or budget..."
-            className="w-full pl-10 pr-10 py-2.5 rounded-full border border-slate-200 bg-white shadow-xs text-xs sm:text-sm text-[#0F172A] focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37]/20 outline-none transition-all placeholder:text-slate-400"
+            className="w-full pl-11 pr-10 py-3 rounded-full liquid-glass-input text-xs sm:text-sm text-[#0A3659] outline-none placeholder:text-slate-400"
           />
-          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
+          <Search className="w-4 h-4 text-[#D4AF37] absolute left-4 top-3.5" />
           {searchQuery && (
             <button
               type="button"
               onClick={() => setSearchQuery('')}
-              className="absolute right-3.5 top-2.5 text-xs text-slate-400 hover:text-slate-700 cursor-pointer"
+              className="absolute right-3.5 top-3 p-1 rounded-full text-slate-400 hover:text-slate-700 cursor-pointer"
             >
-              Clear
+              <X className="w-3.5 h-3.5" />
             </button>
           )}
         </div>
 
-        {/* ── Category Filter Tabs ── */}
+        {/* ── Category Filter Tabs (Liquid Glass Pills) ── */}
         {!hideFilterTabs && categoryOptions.length > 0 && (
-          <div className="w-full max-w-xl mx-auto mt-4 px-2">
+          <div className="w-full max-w-2xl mx-auto mt-6 px-2">
             <div className="flex items-center justify-start sm:justify-center gap-2 overflow-x-auto py-2 px-2 scrollbar-none">
               <button
                 type="button"
                 onClick={() => setSelectedCategory('all')}
-                className={`px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all cursor-pointer shadow-xs ${
+                className={`px-5 py-2 rounded-full text-xs font-bold uppercase tracking-wider whitespace-nowrap transition-all duration-300 cursor-pointer ${
                   selectedCategory === 'all'
-                    ? 'bg-[#0F172A] text-white shadow-sm'
-                    : 'bg-white text-slate-600 border border-slate-200/80 hover:bg-slate-50'
+                    ? 'liquid-glass-pill-active scale-105'
+                    : 'liquid-glass-pill text-slate-700 hover:text-[#0A3659] hover:bg-white'
                 }`}
               >
-                All Works
+                All Works ({initialItems.length})
               </button>
-              {categoryOptions.map((cat) => (
-                <button
-                  key={cat}
-                  type="button"
-                  onClick={() => setSelectedCategory(cat)}
-                  className={`px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all cursor-pointer shadow-xs ${
-                    selectedCategory.toLowerCase() === cat.toLowerCase()
-                      ? 'bg-[#0F172A] text-white shadow-sm'
-                      : 'bg-white text-slate-600 border border-slate-200/80 hover:bg-slate-50'
-                  }`}
-                >
-                  {cat}
-                </button>
-              ))}
+              {categoryOptions.map((cat) => {
+                const count = initialItems.filter((i) => i.category?.toLowerCase() === cat.toLowerCase()).length;
+                return (
+                  <button
+                    key={cat}
+                    type="button"
+                    onClick={() => setSelectedCategory(cat)}
+                    className={`px-5 py-2 rounded-full text-xs font-bold uppercase tracking-wider whitespace-nowrap transition-all duration-300 cursor-pointer ${
+                      selectedCategory.toLowerCase() === cat.toLowerCase()
+                        ? 'liquid-glass-pill-active scale-105'
+                        : 'liquid-glass-pill text-slate-700 hover:text-[#0A3659] hover:bg-white'
+                    }`}
+                  >
+                    {cat} {count > 0 ? `(${count})` : ''}
+                  </button>
+                );
+              })}
             </div>
           </div>
         )}
       </div>
 
-      {/* ── 2. Grid of Showcase Cards ── */}
-      <div className="max-w-md mx-auto px-4 sm:px-6">
+      {/* ── Responsive Showcase Gallery Grid (1 col on mobile, 2-3 cols on tablet/desktop) ── */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {filteredItems.length === 0 ? (
-          <div className="text-center py-16 px-4 bg-white rounded-3xl border border-slate-200/80 shadow-xs">
-            <div className="w-12 h-12 rounded-full bg-amber-50 text-[#D4AF37] flex items-center justify-center mx-auto mb-3">
-              <Camera className="w-6 h-6" />
+          <div className="max-w-md mx-auto text-center py-16 px-6 liquid-glass-card rounded-3xl">
+            <div className="w-14 h-14 rounded-2xl bg-[#0A3659]/5 text-[#D4AF37] flex items-center justify-center mx-auto mb-4 border border-[#D4AF37]/30">
+              <Camera className="w-7 h-7" />
             </div>
-            <h2 className="font-heading font-serif text-lg font-bold text-slate-800">
+            <h2 className="font-heading font-serif text-xl font-bold text-[#0A3659]">
               No Showcases Found
             </h2>
-            <p className="text-xs text-slate-500 mt-1 max-w-xs mx-auto">
+            <p className="text-xs sm:text-sm text-slate-500 mt-1.5 max-w-xs mx-auto leading-relaxed">
               {searchQuery
-                ? `No items match "${searchQuery}". Try a different keyword.`
+                ? `No items match "${searchQuery}". Try searching for wedding, mandap, or baby shower.`
                 : 'No decor showcases found in this collection.'}
             </p>
-            <div className="mt-4">
+            <div className="mt-5">
               <button
                 type="button"
                 onClick={() => {
                   setSelectedCategory('all');
                   setSearchQuery('');
                 }}
-                className="w-full sm:w-auto px-5 py-2.5 rounded-full border border-slate-200 text-xs font-semibold text-slate-700 bg-white hover:bg-slate-50 transition-colors cursor-pointer"
+                className="px-6 py-2.5 rounded-full liquid-glass-pill text-xs font-bold text-[#0A3659] hover:bg-white transition-all cursor-pointer"
               >
                 View All Works
               </button>
             </div>
           </div>
         ) : (
-          <div className="flex flex-col gap-6 sm:gap-7">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {filteredItems.map((item, index) => (
               <PortfolioCard
                 key={item.id}
                 item={item}
-                priority={index === 0}
+                priority={index < 3}
                 fetchPriority={index === 0 ? 'high' : undefined}
                 onClick={() => setActiveModalItem(item)}
               />
@@ -301,7 +303,7 @@ export default function PortfolioFeed({
         )}
       </div>
 
-      {/* ── 3. Lazy-Loaded Detail Modal (Zero main-thread blocking on initial load) ── */}
+      {/* ── Lazy-Loaded Detail Modal ── */}
       {activeModalItem && (
         <PortfolioDetailModal
           item={activeModalItem}

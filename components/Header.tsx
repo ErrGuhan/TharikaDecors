@@ -4,10 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { Sparkles, MessageCircle, Calendar } from 'lucide-react';
-
-const WHATSAPP_URL =
-  'https://wa.me/916384947914?text=Hello%20Tharika%20Decors!%20I%20was%20looking%20at%20your%20works%20and%20would%20like%20to%20inquire%20about%20booking%20event%20decor';
+import { Calendar, Sparkles } from 'lucide-react';
 
 export default function Header() {
   const pathname = usePathname();
@@ -17,12 +14,22 @@ export default function Header() {
     return null;
   }
 
+  const navLinks = [
+    { label: 'Weddings', href: '/weddings' },
+    { label: 'Baby Showers', href: '/baby-showers' },
+    { label: 'Our Works', href: '/portfolio' },
+    { label: 'About Us', href: '/about' },
+  ];
+
   return (
-    <header className="sticky top-0 z-40 w-full bg-white/90 backdrop-blur-md border-b border-tharika-blue/10 shadow-2xs transition-all">
+    <header className="sticky top-0 z-40 w-full bg-[#FAF7F2]/80 backdrop-blur-xl border-b border-[#D4AF37]/25 shadow-[0_8px_32px_0_rgba(10,54,89,0.06)] transition-all select-none">
+      {/* Specular top edge highlight for optical glass realism */}
+      <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-white/80 to-transparent pointer-events-none" />
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
-        {/* Brand Logo & Title */}
+        {/* Brand Logo & Title with gentle hover scale */}
         <Link href="/" className="flex items-center gap-3 group">
-          <div className="relative h-11 w-28 sm:h-14 sm:w-36 transition-transform group-hover:scale-105 duration-300">
+          <div className="relative h-11 w-28 sm:h-14 sm:w-36 transition-transform group-hover:scale-105 duration-300 drop-shadow-sm">
             <Image
               src="/logo.png"
               alt="Tharika Decors & Events Logo"
@@ -34,49 +41,36 @@ export default function Header() {
           </div>
         </Link>
 
-        {/* Desktop Navigation Links */}
-        <nav className="hidden md:flex items-center gap-8 text-xs font-semibold uppercase tracking-widest text-gray-700">
-          <Link
-            href="/weddings"
-            className={`hover:text-tharika-blue transition-colors ${
-              pathname === '/weddings' ? 'text-tharika-blue font-bold border-b-2 border-tharika-blue pb-0.5' : ''
-            }`}
-          >
-            Weddings
-          </Link>
-          <Link
-            href="/baby-showers"
-            className={`hover:text-tharika-blue transition-colors ${
-              pathname === '/baby-showers' ? 'text-tharika-blue font-bold border-b-2 border-tharika-blue pb-0.5' : ''
-            }`}
-          >
-            Baby Showers
-          </Link>
-          <Link
-            href="/portfolio"
-            className={`hover:text-tharika-blue transition-colors ${
-              pathname === '/portfolio' ? 'text-tharika-blue font-bold border-b-2 border-tharika-blue pb-0.5' : ''
-            }`}
-          >
-            Our Works
-          </Link>
-          <Link
-            href="/about"
-            className={`hover:text-tharika-blue transition-colors ${
-              pathname === '/about' ? 'text-tharika-blue font-bold border-b-2 border-tharika-blue pb-0.5' : ''
-            }`}
-          >
-            About Us
-          </Link>
+        {/* Desktop Navigation Links with Liquid Glass Pill Micro-Interactions */}
+        <nav className="hidden md:flex items-center gap-1.5 lg:gap-2 text-xs font-bold uppercase tracking-widest text-[#0A3659]">
+          {navLinks.map((link) => {
+            const isActive = pathname === link.href;
+            return (
+              <Link
+                key={link.label}
+                href={link.href}
+                className={`relative px-4 py-2 rounded-full transition-all duration-300 flex items-center gap-1.5 ${
+                  isActive
+                    ? 'bg-[#0A3659] text-white shadow-md border border-[#D4AF37]/40'
+                    : 'text-[#0A3659]/80 hover:text-[#0A3659] hover:bg-white/60 hover:border-white/80 border border-transparent'
+                }`}
+              >
+                {isActive && (
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37] animate-pulse" />
+                )}
+                <span>{link.label}</span>
+              </Link>
+            );
+          })}
         </nav>
 
-        {/* Action Button (Book Consultation) */}
+        {/* Action Button (Book Consultation) with Refractive Gold Shimmer */}
         <div className="flex items-center gap-3">
           <Link
             href="/book"
-            className="inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-full bg-tharika-gold-gradient text-tharika-blue font-bold text-xs tracking-wider uppercase shadow-sm hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all"
+            className="gold-shimmer relative inline-flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 rounded-full bg-tharika-gold-gradient text-[#0A3659] font-extrabold text-xs tracking-wider uppercase shadow-[0_4px_16px_0_rgba(191,149,63,0.35)] hover:shadow-[0_6px_24px_0_rgba(191,149,63,0.5)] hover:scale-[1.03] active:scale-[0.98] transition-all border border-white/40"
           >
-            <Calendar className="w-4 h-4 text-tharika-blue" />
+            <Calendar className="w-4 h-4 text-[#0A3659]" />
             <span className="hidden sm:inline">Book Consultation</span>
             <span className="sm:hidden">Book</span>
           </Link>
