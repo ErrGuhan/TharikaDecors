@@ -195,5 +195,11 @@
   .gold-shimmer:hover::after {
     transform: rotate(30deg) translateY(100%);
   }
+
+  .font-script {
+    font-family: var(--font-playfair), 'Playfair Display', Georgia, cursive, serif;
+    font-style: italic;
+    letter-spacing: 0.01em;
+  }
 }
 

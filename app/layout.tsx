@@ -4,6 +4,7 @@ import { Inter, Playfair_Display } from 'next/font/google';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import BottomNav from '@/components/BottomNav';
+import Preloader from '@/components/ui/Preloader';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -45,6 +46,7 @@ export default function RootLayout({
       <body
         className={`${inter.className} bg-[#FAF7F2] text-gray-900 antialiased min-h-screen flex flex-col`}
       >
+        <Preloader />
         <Header />
         <main className="flex-1 w-full">{children}</main>
         <Footer />
