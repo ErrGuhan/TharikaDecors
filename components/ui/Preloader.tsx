@@ -79,7 +79,7 @@ export default function Preloader({ onComplete, skipIfSeen = false }: PreloaderP
     });
 
     // =========================================================================
-    // PHASE 1: "Welcome" - Regal Handwriting Animation
+    // PHASE 1: "Tharika Decors & Events" - Regal Handwriting Animation
     // Letters write sequentially from left to right
     // =========================================================================
     if (welcomeLetters && welcomeLetters.length) {
@@ -88,8 +88,8 @@ export default function Preloader({ onComplete, skipIfSeen = false }: PreloaderP
         {
           clipPath: "polygon(-40% -60%, 200% -60%, 180% 160%, -60% 160%)",
           opacity: 1,
-          duration: 0.18,
-          stagger: 0.08,
+          duration: 0.15,
+          stagger: 0.045,
           ease: "power1.inOut",
         },
         "+=0.1"
@@ -98,19 +98,19 @@ export default function Preloader({ onComplete, skipIfSeen = false }: PreloaderP
       tl.set(welcomeLetters, { clipPath: "none" });
     }
 
-    // Brief hold to appreciate "Welcome"
-    tl.to({}, { duration: 0.5 });
+    // Brief hold to appreciate "Tharika Decors & Events"
+    tl.to({}, { duration: 0.45 });
 
-    // Clean dissolve out of "Welcome"
+    // Clean dissolve out of Phase 1
     tl.to(welcomeScreenRef.current, {
       opacity: 0,
       scale: 0.98,
-      duration: 0.25,
+      duration: 0.22,
       ease: "power2.inOut",
     });
 
     // =========================================================================
-    // PHASE 2: "Tharika Decors" - Regal Signature Style
+    // PHASE 2: "Crafting Royal Moments & Grand Celebrations"
     // Letters reveal sequentially with warm radiant gold glow
     // =========================================================================
     tl.set(brandScreenRef.current, {
@@ -124,8 +124,8 @@ export default function Preloader({ onComplete, skipIfSeen = false }: PreloaderP
         {
           clipPath: "polygon(-40% -60%, 200% -60%, 180% 160%, -60% 160%)",
           opacity: 1,
-          duration: 0.16,
-          stagger: 0.06,
+          duration: 0.14,
+          stagger: 0.035,
           ease: "power1.inOut",
         },
         "+=0.08"
@@ -134,7 +134,7 @@ export default function Preloader({ onComplete, skipIfSeen = false }: PreloaderP
     }
 
     // Brief hold to admire brand signature
-    tl.to({}, { duration: 0.65 });
+    tl.to({}, { duration: 0.6 });
 
     // Quick text dissolve immediately before the curtain opens
     tl.to(brandScreenRef.current, {
@@ -237,55 +237,61 @@ export default function Preloader({ onComplete, skipIfSeen = false }: PreloaderP
           Centered Typography Content (Regal Gold Script)
          ======================================================================= */}
       <div className="relative z-[99995] flex flex-col items-center justify-center w-full max-w-5xl px-6 pointer-events-none">
-        {/* PHASE 1: "Welcome" */}
+        {/* PHASE 1: "Tharika Decors & Events" */}
         <div
           ref={welcomeScreenRef}
           className="flex flex-col items-center justify-center w-full"
         >
           <h1
-            className="font-script font-bold text-[clamp(4.2rem,12vw,8.5rem)] text-[#E5B842] leading-none tracking-normal whitespace-nowrap px-4 py-2 select-none flex items-center justify-center drop-shadow-[0_2px_18px_rgba(229,184,66,0.45)]"
+            className="font-script font-bold text-[clamp(2.2rem,6.5vw,5.5rem)] text-[#E5B842] leading-tight tracking-normal text-center px-4 py-2 select-none flex flex-wrap items-center justify-center drop-shadow-[0_2px_18px_rgba(229,184,66,0.45)]"
           >
-            {"Welcome".split("").map((char, index) => (
-              <span
-                key={`welcome-${index}`}
-                className="welcome-letter inline-block will-change-[clip-path,opacity]"
-                style={{
-                  clipPath: "polygon(-40% -60%, -40% -60%, -60% 160%, -60% 160%)",
-                  opacity: 0,
-                }}
-              >
-                {char}
+            {"Tharika Decors & Events".split(" ").map((word, wIdx, arr) => (
+              <span key={`welcome-word-${wIdx}`} className="inline-flex items-center whitespace-nowrap">
+                {word.split("").map((char, cIdx) => (
+                  <span
+                    key={`welcome-letter-${wIdx}-${cIdx}`}
+                    className="welcome-letter inline-block will-change-[clip-path,opacity]"
+                    style={{
+                      clipPath: "polygon(-40% -60%, -40% -60%, -60% 160%, -60% 160%)",
+                      opacity: 0,
+                    }}
+                  >
+                    {char}
+                  </span>
+                ))}
+                {wIdx < arr.length - 1 && <span className="inline-block w-[0.28em]">&nbsp;</span>}
               </span>
             ))}
           </h1>
         </div>
 
-        {/* PHASE 2: "Tharika Decors" */}
+        {/* PHASE 2: "Crafting Royal Moments & Grand Celebrations" */}
         <div
           ref={brandScreenRef}
-          className="absolute inset-0 flex flex-col items-center justify-center w-full opacity-0 pointer-events-none"
+          className="absolute inset-0 flex flex-col items-center justify-center w-full opacity-0 pointer-events-none px-4"
         >
           <h2
-            className="font-script font-bold text-[clamp(2.6rem,7.5vw,5.5rem)] text-[#E5B842] leading-none tracking-normal whitespace-nowrap px-4 py-2 select-none flex items-center justify-center drop-shadow-[0_2px_18px_rgba(229,184,66,0.45)]"
+            className="font-script font-bold text-[clamp(1.6rem,4.5vw,3.8rem)] text-[#E5B842] leading-snug tracking-normal text-center px-4 py-2 select-none flex flex-wrap items-center justify-center drop-shadow-[0_2px_18px_rgba(229,184,66,0.45)] max-w-4xl mx-auto"
           >
-            {"Tharika Decors".split("").map((char, index) =>
-              char === " " ? (
-                <span key={`space-${index}`} className="inline-block w-[0.28em]">&nbsp;</span>
-              ) : (
-                <span
-                  key={`brand-${index}`}
-                  className="brand-letter inline-block will-change-[clip-path,opacity]"
-                  style={{
-                    clipPath: "polygon(-40% -60%, -40% -60%, -60% 160%, -60% 160%)",
-                    opacity: 0,
-                  }}
-                >
-                  {char}
-                </span>
-              )
-            )}
+            {"Crafting Royal Moments & Grand Celebrations".split(" ").map((word, wIdx, arr) => (
+              <span key={`brand-word-${wIdx}`} className="inline-flex items-center whitespace-nowrap">
+                {word.split("").map((char, cIdx) => (
+                  <span
+                    key={`brand-letter-${wIdx}-${cIdx}`}
+                    className="brand-letter inline-block will-change-[clip-path,opacity]"
+                    style={{
+                      clipPath: "polygon(-40% -60%, -40% -60%, -60% 160%, -60% 160%)",
+                      opacity: 0,
+                    }}
+                  >
+                    {char}
+                  </span>
+                ))}
+                {wIdx < arr.length - 1 && <span className="inline-block w-[0.28em]">&nbsp;</span>}
+              </span>
+            ))}
           </h2>
-          <p className="text-xs uppercase tracking-[0.3em] text-[#E5B842]/85 mt-3 font-medium">
+          <p className="text-[11px] sm:text-xs uppercase tracking-[0.3em] text-[#E5B842]/85 mt-3 font-medium text-center">
             Luxury Event Styling &amp; Decors
           </p>
         </div>
